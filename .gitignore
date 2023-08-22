@@ -1,2 +1,36 @@
+# Program
+minishell
+
+# Object files, which are generated when you compile C
+*.o
+*.obj
+
+# Libraries
+*.lib
+*.a
+
+# Executables
+*.out
+
+# For macOS
 .DS_Store
-.idea
+
+# VS Code directories
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs (like CLion, IntelliJ)
+.idea/
+
+# For emacs
+*#
+
+# For vim
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+
+# Other build systems
+obj/
+
+# Logs
+*.log
