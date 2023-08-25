@@ -6,43 +6,11 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/08/25 11:10:39 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/08/25 13:32:25 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/colors.h"
 #include "../includes/minishell.h"
-
-char *get_colored_prompt()
-{
-	const char* prompt = "minishell$";
-	const char* colors[] = {
-		RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, LIGHT_RED, LIGHT_GREEN, LIGHT_BLUE, LIGHT_MAGENTA
-	};
-		
-	char *colored_prompt = malloc(512 * sizeof(char));
-	if (!colored_prompt) return NULL;
-		
-	int offset = 0;
-	for (int i = 0; prompt[i]; i++) {
-		const char* color = colors[i % (sizeof(colors)/sizeof(colors[0]))];
-		while (*color) {
-			colored_prompt[offset++] = *color;
-			color++;
-		}
-		colored_prompt[offset++] = prompt[i];
-	}
-		
-	const char *reset = RESET_COLOR;
-	while (*reset) {
-		colored_prompt[offset++] = *reset;
-		reset++;
-	}
-	colored_prompt[offset++] = ' ';
-	colored_prompt[offset] = '\0';
-
-	return colored_prompt;
-}
 
 // "ctrl-C"
 void handle_sigint(int signo) {
@@ -59,22 +27,23 @@ void handle_sigquit(int signo) {
     // Do nothing
 }
 
-void find_and_execute_builtin(char *cmd)
+void find_and_execute_builtin(struct termios *old_termios, char *cmd)
 {
-	printf("%s\n", cmd);
 	// if (cmd == "echo")
 
-	// else if (cmd == "cd")
+	// if (cmd == "cd")
 
-	// else if (cmd == "pwd")
+	// if (cmd == "pwd")
 
-	// else if (cmd == "export")
+	// if (cmd == "export")
 	
-	// else if (cmd == "unset")
+	// if (cmd == "unset")
 	
-	// else if (cmd == "env")
+	// if (cmd == "env")
 
-	// else if (cmd == "exit")
+    if (strcmp(cmd, "exit") == 0) {
+        exit_cmd(old_termios);
+    }
 }
 
 int main() {
@@ -94,31 +63,25 @@ int main() {
     signal(SIGINT, handle_sigint);
     signal(SIGQUIT, handle_sigquit);
 
-    char *prompt = get_colored_prompt();
-    if (!prompt) {
-        perror("Failed to allocate memory for prompt.");
-        return 1;
-    }
-
     while (1) {
-		cmd = readline(prompt);
-	
-		find_and_execute_builtin(cmd);
+		cmd = readline("\033[1;33mminishell$\033[0m ");
 
         // "ctrl-D"
 		if (!cmd) {
-			printf("exit");
-			free(cmd);
-
+			// rl_replace_line("exit", 0);
+    		// rl_redisplay();
+			printf("exit\n");
+	
 			tcsetattr(0, TCSANOW, &old_termios);
 			exit(0);
 		}
+
+		find_and_execute_builtin(&old_termios, cmd);
 
         if (*cmd) {
             add_history(cmd);
         }
         free(cmd);
     }
-	free(prompt);
     return (0);
 }

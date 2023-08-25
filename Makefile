@@ -10,6 +10,7 @@ LDFLAGS = -lreadline
 SRC = \
 	src/main.c \
 	src/builtins/cd.c \
+	src/builtins/exit.c \
 
 OBJS_DIR = objs/
 OBJS = $(addprefix $(OBJS_DIR), $(SRC:.c=.o))
