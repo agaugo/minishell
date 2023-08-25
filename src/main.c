@@ -48,7 +48,8 @@ void find_and_execute_builtin(struct termios *old_termios, char *cmd)
 
 int main() {
     char *cmd;
-    struct termios old_termios, new_termios;
+    struct termios old_termios;
+    struct termios new_termios;
 	
     // Get current terminal settings
     tcgetattr(0, &old_termios);
@@ -62,10 +63,8 @@ int main() {
 
     signal(SIGINT, handle_sigint);
     signal(SIGQUIT, handle_sigquit);
-
     while (1) {
-		cmd = readline("\033[1;33mminishell$\033[0m ");
-
+		cmd = readline("\033[1;33minishell$\033[0m ");
         // "ctrl-D"
 		if (!cmd) {
 			// rl_replace_line("exit", 0);
