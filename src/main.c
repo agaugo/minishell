@@ -6,52 +6,12 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/08/22 14:27:09 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/08/25 11:10:39 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <termios.h>
-
-
-// Temporary Colors (soon moves to header file):
-// #ifndef _COLOR_H_
-// #define _COLOR_H_
-
-# define RESET_COLOR	"\033[0m"
-# define BLACK   		"\033[30m"
-# define RED     		"\033[31m"
-# define LIGHT_RED		"\033[91m"
-# define GREEN   		"\033[32m"
-# define LIGHT_GREEN	"\033[92m"
-# define YELLOW  		"\033[33m"
-# define LIGHT_YELLOW	"\033[93m"
-# define BLUE    		"\033[34m"
-# define LIGHT_BLUE		"\033[94m"
-# define MAGENTA 		"\033[35m"
-# define LIGHT_MAGENTA	"\033[95m"
-# define CYAN    		"\033[36m"
-# define LIGHT_CYAN		"\033[96m"
-# define WHITE   		"\033[37m"
-# define GREY    		"\033[90m"
-# define LIGHT_GREY		"\033[37m"
-
-# define BLACK_BOLD   	"\033[1;30m"
-# define RED_BOLD     	"\033[1;31m"
-# define GREEN_BOLD   	"\033[1;32m"
-# define YELLOW_BOLD  	"\033[1;33m"
-# define BLUE_BOLD    	"\033[1;34m"
-# define MAGENTA_BOLD 	"\033[1;35m"
-# define CYAN_BOLD    	"\033[1;36m"
-# define WHITE_BOLD   	"\033[1;37m"
-
-// #endif
-
-
+#include "../includes/colors.h"
+#include "../includes/minishell.h"
 
 char *get_colored_prompt()
 {
@@ -99,8 +59,26 @@ void handle_sigquit(int signo) {
     // Do nothing
 }
 
+void find_and_execute_builtin(char *cmd)
+{
+	printf("%s\n", cmd);
+	// if (cmd == "echo")
+
+	// else if (cmd == "cd")
+
+	// else if (cmd == "pwd")
+
+	// else if (cmd == "export")
+	
+	// else if (cmd == "unset")
+	
+	// else if (cmd == "env")
+
+	// else if (cmd == "exit")
+}
+
 int main() {
-    char *input;
+    char *cmd;
     struct termios old_termios, new_termios;
 	
     // Get current terminal settings
@@ -123,21 +101,23 @@ int main() {
     }
 
     while (1) {
-		input = readline(prompt);
+		cmd = readline(prompt);
 	
+		find_and_execute_builtin(cmd);
+
         // "ctrl-D"
-		if (!input) {
+		if (!cmd) {
 			printf("exit");
-			free(input);
+			free(cmd);
 
 			tcsetattr(0, TCSANOW, &old_termios);
 			exit(0);
 		}
 
-        if (*input) {
-            add_history(input);
+        if (*cmd) {
+            add_history(cmd);
         }
-        free(input);
+        free(cmd);
     }
 	free(prompt);
     return (0);

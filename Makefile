@@ -2,11 +2,12 @@ NAME = minishell
 LIBFT = libft/libft.a
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -Iincludes/
 LDFLAGS = -lreadline
 
 SRC = \
-		src/main.c
+		src/main.c \
+		src/builtins/cd.c \
 
 OBJS_DIR = objs/
 OBJS = $(addprefix $(OBJS_DIR), $(SRC:.c=.o))
