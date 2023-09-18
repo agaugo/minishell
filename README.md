@@ -6,6 +6,7 @@ include/
 - header files including struct definitions and libraries.
 
 ##sub projecs##
+
 libft/
 - implementations of common practice utility functions
 ft_printf/
