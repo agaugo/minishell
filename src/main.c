@@ -41,24 +41,51 @@ void find_and_execute_builtin(struct termios *old_termios, char *cmd)
 }
 
 //RESTORE TERMINAL TO DEFAULT
-void restore_terminal(struct termios *old_termios) {
-  tcsetattr(0, TCSANOW, old_termios);
+int restore_terminal(struct termios *old_termios) {
+  if (tcsetattr(0, TCSANOW, old_termios)!= 0){
+    perror("tcsetattr");
+    return (-1);
+  }
+  return (0);
 }
 
 //INITIALISE SIGNALS
-void init_signals(void){
-  signal(SIGINT, handle_sigint);
-  signal(SIGQUIT, handle_sigquit);
+int init_signals(void){
+  if (signal(SIGINT, handle_sigint) == SIG_ERR || signal(SIGQUIT, handle_sigquit) == SIG_ERR){
+    perror("signal");
+    return (-1);
+  }
+  return (0);
 }
 
 //INITIALISE TERMINAL
-void init_terminal(struct termios *old_termios){
+int init_terminal(struct termios *old_termios){
   struct termios new_termios;
   
-  tcgetattr(0, old_termios);           // Get current terminal settings.
+  if (tcgetattr(0, old_termios) != 0){
+    perror("tcgetattr");
+    return (-1);                       // Get current terminal settings.
+  }
   new_termios = * old_termios;
   new_termios.c_lflag &= ~ECHOCTL;     // Disable echoing of control chars.
-  tcsetattr(0, TCSANOW, &new_termios); //Set terminal to new settings
+  if (tcsetattr(0, TCSANOW, &new_termios) != 0) {
+    perror("tcsetattr");
+    return (-1);
+  }                                    // Change terminal settings to new shell.
+  return (0);
+}
+
+void exit_shell(struct termios *old_termios) {
+  printf("//exit//\n");
+  restore_terminal(old_termios);
+  exit(0);
+}
+
+void process_cmd(char *cmd, struct termios *old_termios) {
+  if (!cmd || !*cmd)
+    return ;
+  find_and_execute_builtin(old_termios, cmd);
+  add_history(cmd);
 }
 
 int main() {
@@ -66,20 +93,15 @@ int main() {
     struct termios old_termios;
 
     printf(OPEN);
-    init_terminal(&old_termios);
-    init_signals();
+    if (init_terminal(&old_termios) == -1)
+      printf("**Failed to initialise shell.");
+    if (init_signals() == -1)
+      printf("**Failed to initialise signals.");
     while (1) {
-       //See minishell.h for prompt definition
        cmd = readline(PROMPT);
-       if (!cmd) {
-	 printf("exit\n");
-	 restore_terminal(&old_termios);
-	 exit(0);
-       }
-       find_and_execute_builtin(&old_termios, cmd);
-       if (*cmd) {
-	 add_history(cmd);
-        }
+       if (!cmd)
+	 exit_shell(&old_termios);
+       process_cmd(cmd, &old_termios);
        free(cmd);
      }
      return (0);
