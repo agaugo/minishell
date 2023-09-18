@@ -10,7 +10,10 @@ LDFLAGS = -lreadline
 SRC = \
 	src/main.c \
 	src/builtins/cd.c \
-	src/builtins/exit.c \
+	src/builtins/exit.c 
+
+# Update as you go
+
 
 OBJS_DIR = objs/
 OBJS = $(addprefix $(OBJS_DIR), $(SRC:.c=.o))
@@ -26,7 +29,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
 	@echo "$(YELLOW)Compiling $(NAME)...$(RESET)"
-	$(CC) $(LDFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
+	$(CC) $(OBJS) $(LIBFT) $(LDFLAGS) -o $(NAME)
 	@echo "$(GREEN)$(NAME) compiled successfully!$(RESET)"
 
 $(OBJS_DIR)%.o: %.c

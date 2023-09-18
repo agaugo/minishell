@@ -30,57 +30,58 @@ void handle_sigquit(int signo) {
 void find_and_execute_builtin(struct termios *old_termios, char *cmd)
 {
 	// if (cmd == "echo")
-
 	// if (cmd == "cd")
-
 	// if (cmd == "pwd")
-
 	// if (cmd == "export")
-	
 	// if (cmd == "unset")
-	
 	// if (cmd == "env")
-
     if (strcmp(cmd, "exit") == 0) {
         exit_cmd(old_termios);
     }
 }
 
+//RESTORE TERMINAL TO DEFAULT
+void restore_terminal(struct termios *old_termios) {
+  tcsetattr(0, TCSANOW, old_termios);
+}
+
+//INITIALISE SIGNALS
+void init_signals(void){
+  signal(SIGINT, handle_sigint);
+  signal(SIGQUIT, handle_sigquit);
+}
+
+//INITIALISE TERMINAL
+void init_terminal(struct termios *old_termios){
+  struct termios new_termios;
+  
+  tcgetattr(0, old_termios);           // Get current terminal settings.
+  new_termios = * old_termios;
+  new_termios.c_lflag &= ~ECHOCTL;     // Disable echoing of control chars.
+  tcsetattr(0, TCSANOW, &new_termios); //Set terminal to new settings
+}
+
 int main() {
     char *cmd;
     struct termios old_termios;
-    struct termios new_termios;
-	
-    // Get current terminal settings
-    tcgetattr(0, &old_termios);
-    new_termios = old_termios;
 
-    // Disable the echoing of control characters
-    new_termios.c_lflag &= ~ECHOCTL;
-
-    // Set the terminal to the new settings
-    tcsetattr(0, TCSANOW, &new_termios);
-
-    signal(SIGINT, handle_sigint);
-    signal(SIGQUIT, handle_sigquit);
+    printf(OPEN);
+    init_terminal(&old_termios);
+    init_signals();
     while (1) {
-		cmd = readline("\033[1;33minishell$\033[0m ");
-        // "ctrl-D"
-		if (!cmd) {
-			// rl_replace_line("exit", 0);
-    		// rl_redisplay();
-			printf("exit\n");
-	
-			tcsetattr(0, TCSANOW, &old_termios);
-			exit(0);
-		}
-
-		find_and_execute_builtin(&old_termios, cmd);
-
-        if (*cmd) {
-            add_history(cmd);
+       //See minishell.h for prompt definition
+       cmd = readline(PROMPT);
+       if (!cmd) {
+	 printf("exit\n");
+	 restore_terminal(&old_termios);
+	 exit(0);
+       }
+       find_and_execute_builtin(&old_termios, cmd);
+       if (*cmd) {
+	 add_history(cmd);
         }
-        free(cmd);
-    }
-    return (0);
+       free(cmd);
+     }
+     return (0);
 }
+
