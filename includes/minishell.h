@@ -25,11 +25,14 @@
 #include <readline/history.h>
 #include <termios.h>
 
+
+//structs
 typedef struct s_terminal
 {
 	int	x;
 } t_terminal;
 
+//functions
 int main();
 void cd_cmd(char *path);
 void exit_cmd(struct termios *old_termios);

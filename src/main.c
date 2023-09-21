@@ -11,23 +11,30 @@
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+#include "../libft/libft.h"
+
+void handle_error(int _exitCode, char *_errorMessage)
+{
+    perror(_errorMessage);
+    exit(_exitCode);
+}
 
 // "ctrl-C"
-void handle_sigint(int signo) {
-    (void)signo;  // To prevent unused variable warning
+void handle_sigint(int _signalNumber) {
+    (void)_signalNumber;  // To silence unused variable warning
     printf("\n");
-    rl_on_new_line(); // Notify readline that we have moved to a new line.
+    rl_on_new_line();     // Notify readline that we have moved to a new line.
     rl_replace_line("", 0);
     rl_redisplay();
 }
 
 // "ctrl-\"
-void handle_sigquit(int signo) {
-    (void)signo; 
+void handle_sigquit(int _signalNumber) {
+    (void)_signalNumber; 
     // Do nothing
 }
 
-void find_and_execute_builtin(struct termios *old_termios, char *cmd)
+void find_and_execute_builtin(struct termios *_oldTermios, char *_userInput)
 {
 	// if (cmd == "echo")
 	// if (cmd == "cd")
@@ -35,14 +42,14 @@ void find_and_execute_builtin(struct termios *old_termios, char *cmd)
 	// if (cmd == "export")
 	// if (cmd == "unset")
 	// if (cmd == "env")
-    if (strcmp(cmd, "exit") == 0) {
-        exit_cmd(old_termios);
+    if (ft_strcmp(_userInput, "exit") == 0) {
+        exit_cmd(_oldTermios);
     }
 }
 
 //RESTORE TERMINAL TO DEFAULT
-int restore_terminal(struct termios *old_termios) {
-  if (tcsetattr(0, TCSANOW, old_termios)!= 0){
+int restore_terminal(struct termios *_oldTermios) {
+  if (tcsetattr(0, TCSANOW, _oldTermios)!= 0){
     perror("tcsetattr");
     return (-1);
   }
@@ -59,51 +66,52 @@ int init_signals(void){
 }
 
 //INITIALISE TERMINAL
-int init_terminal(struct termios *old_termios){
-  struct termios new_termios;
+int init_terminal(struct termios *_oldTermios){
+  struct termios _newTermios;
   
-  if (tcgetattr(0, old_termios) != 0){
+  if (tcgetattr(0, _oldTermios) != 0){
     perror("tcgetattr");
     return (-1);                       // Get current terminal settings.
   }
-  new_termios = * old_termios;
-  new_termios.c_lflag &= ~ECHOCTL;     // Disable echoing of control chars.
-  if (tcsetattr(0, TCSANOW, &new_termios) != 0) {
+  _newTermios = * _oldTermios;
+  _newTermios.c_lflag &= ~ECHOCTL;     // Disable echoing of control chars.
+  if (tcsetattr(0, TCSANOW, &_newTermios) != 0) {
     perror("tcsetattr");
     return (-1);
   }                                    // Change terminal settings to new shell.
   return (0);
 }
 
-void exit_shell(struct termios *old_termios) {
+void exit_shell(struct termios *_oldTermios) {
   printf("//exit//\n");
-  restore_terminal(old_termios);
+  restore_terminal(_oldTermios);
   exit(0);
 }
 
-void process_cmd(char *cmd, struct termios *old_termios) {
-  if (!cmd || !*cmd)
+void process_cmd(char *_userInput, struct termios *_oldTermios) {
+  if (!_userInput || !*_userInput)
     return ;
-  find_and_execute_builtin(old_termios, cmd);
-  add_history(cmd);
+  find_and_execute_builtin(_oldTermios, _userInput);
+  add_history(_userInput);
 }
 
 int main() {
-    char *cmd;
-    struct termios old_termios;
+    char           *_userInput;
+    int            _mainLoop;
+    struct termios _oldTermios;
 
+    _mainLoop = 1;
     printf(OPEN);
-    if (init_terminal(&old_termios) == -1)
-      printf("**Failed to initialise shell.");
+    if (init_terminal(&_oldTermios) == -1)
+      handle_error(1, "Failed to initialise shell.");
     if (init_signals() == -1)
-      printf("**Failed to initialise signals.");
-    while (1) {
-       cmd = readline(PROMPT);
-       if (!cmd)
-	 exit_shell(&old_termios);
-       process_cmd(cmd, &old_termios);
-       free(cmd);
+        handle_error(1, "Failed to initialise signals.");
+    while (_mainLoop) {
+       _userInput = readline(PROMPT);
+       if (!_userInput)
+	 exit_shell(&_oldTermios);
+       process_cmd(_userInput, &_oldTermios);
+       free(_userInput);
      }
      return (0);
 }
-
