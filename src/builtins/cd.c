@@ -12,8 +12,8 @@
 
 #include "../../includes/minishell.h"
 
-void cd_cmd(char *path) {
+void ms_cdCommand(char *path) {
     if (chdir(path) != 0) {
-        printf("Error showed up: Replace this error with better error message.");
+        perror("Error finding directory");
     }
 }

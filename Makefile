@@ -10,7 +10,8 @@ LDFLAGS = -lreadline
 SRC = \
 	src/main.c \
 	src/builtins/cd.c \
-	src/builtins/exit.c 
+	src/builtins/exit.c \
+	src/utils/err.c
 
 # Update as you go
 

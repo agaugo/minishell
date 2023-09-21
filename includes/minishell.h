@@ -33,9 +33,21 @@ typedef struct s_terminal
 } t_terminal;
 
 //functions
-int main();
-void cd_cmd(char *path);
-void exit_cmd(struct termios *old_termios);
-char *get_colored_prompt();
+// Location: /src/main.c
+void ms_handleSigInt(int _signalNumber);
+void ms_handleSigQuit(int _signalNumber);
+void ms_executeBuiltin(struct termios *_oldTermios, char *_userInput);
+int ms_initSignals(void);
+int ms_initTerminal(struct termios *_oldTermios);
+void ms_exitShell(struct termios *_oldTermios);
+void ms_processInput(char *_userInput, struct termios *_oldTermios);
+int main(void);
+
+// Location: /src/utils/
+void ms_handleError(int _exitCode, char *_errorMessage);
+
+// Location: /src/builtins/
+int ms_restoreTerminal(struct termios *_oldTermios);
+void ms_exitShell(struct termios *_oldTermios);
 
 #endif
