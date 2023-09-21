@@ -13,14 +13,8 @@
 #include "../includes/minishell.h"
 #include "../libft/libft.h"
 
-void handle_error(int _exitCode, char *_errorMessage)
-{
-    perror(_errorMessage);
-    exit(_exitCode);
-}
-
 // "ctrl-C"
-void handle_sigint(int _signalNumber) {
+void ms_handleSigInt(int _signalNumber) {
     (void)_signalNumber;  // To silence unused variable warning
     printf("\n");
     rl_on_new_line();     // Notify readline that we have moved to a new line.
@@ -29,12 +23,12 @@ void handle_sigint(int _signalNumber) {
 }
 
 // "ctrl-\"
-void handle_sigquit(int _signalNumber) {
+void ms_handleSigQuit(int _signalNumber) {
     (void)_signalNumber; 
     // Do nothing
 }
 
-void find_and_execute_builtin(struct termios *_oldTermios, char *_userInput)
+void ms_executeBuiltin(struct termios *_oldTermios, char *_userInput)
 {
 	// if (cmd == "echo")
 	// if (cmd == "cd")
@@ -43,22 +37,13 @@ void find_and_execute_builtin(struct termios *_oldTermios, char *_userInput)
 	// if (cmd == "unset")
 	// if (cmd == "env")
     if (ft_strcmp(_userInput, "exit") == 0) {
-        exit_cmd(_oldTermios);
+        ms_exitShell(_oldTermios);
     }
 }
 
-//RESTORE TERMINAL TO DEFAULT
-int restore_terminal(struct termios *_oldTermios) {
-  if (tcsetattr(0, TCSANOW, _oldTermios)!= 0){
-    perror("tcsetattr");
-    return (-1);
-  }
-  return (0);
-}
-
 //INITIALISE SIGNALS
-int init_signals(void){
-  if (signal(SIGINT, handle_sigint) == SIG_ERR || signal(SIGQUIT, handle_sigquit) == SIG_ERR){
+int ms_initSignals(void){
+  if (signal(SIGINT, ms_handleSigInt) == SIG_ERR || signal(SIGQUIT, ms_handleSigQuit) == SIG_ERR){
     perror("signal");
     return (-1);
   }
@@ -66,7 +51,7 @@ int init_signals(void){
 }
 
 //INITIALISE TERMINAL
-int init_terminal(struct termios *_oldTermios){
+int ms_initTerminal(struct termios *_oldTermios){
   struct termios _newTermios;
   
   if (tcgetattr(0, _oldTermios) != 0){
@@ -82,16 +67,10 @@ int init_terminal(struct termios *_oldTermios){
   return (0);
 }
 
-void exit_shell(struct termios *_oldTermios) {
-  printf("//exit//\n");
-  restore_terminal(_oldTermios);
-  exit(0);
-}
-
-void process_cmd(char *_userInput, struct termios *_oldTermios) {
+void ms_processInput(char *_userInput, struct termios *_oldTermios) {
   if (!_userInput || !*_userInput)
     return ;
-  find_and_execute_builtin(_oldTermios, _userInput);
+  ms_executeBuiltin(_oldTermios, _userInput);
   add_history(_userInput);
 }
 
@@ -102,15 +81,15 @@ int main() {
 
     _mainLoop = 1;
     printf(OPEN);
-    if (init_terminal(&_oldTermios) == -1)
-      handle_error(1, "Failed to initialise shell.");
-    if (init_signals() == -1)
-        handle_error(1, "Failed to initialise signals.");
+    if (ms_initTerminal(&_oldTermios) == -1)
+      ms_handleError(1, "Failed to initialise shell.");
+    if (ms_initSignals() == -1)
+        ms_handleError(1, "Failed to initialise signals.");
     while (_mainLoop) {
        _userInput = readline(PROMPT);
-       if (!_userInput)
-	 exit_shell(&_oldTermios);
-       process_cmd(_userInput, &_oldTermios);
+//       if (!_userInput)
+//	        ms_exitShell(&_oldTermios);
+       ms_processInput(_userInput, &_oldTermios);
        free(_userInput);
      }
      return (0);

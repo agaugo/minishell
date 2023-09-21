@@ -12,9 +12,16 @@
 
 #include "../../includes/minishell.h"
 
-void exit_cmd(struct termios *old_termios)
-{
-    printf("exit\n");
-	tcsetattr(0, TCSANOW, old_termios);
-	exit(0);
+//RESTORE TERMINAL TO DEFAULT
+int ms_restoreTerminal(struct termios *_oldTermios) {
+    if (tcsetattr(0, TCSANOW, _oldTermios)!= 0)
+        ms_handleError(-1, "tcsetattr: Error restoring terminal");
+    return (0);
+}
+
+// EXIT SHELL
+void ms_exitShell(struct termios *_oldTermios) {
+    printf("//exit//\n");
+    ms_restoreTerminal(_oldTermios);
+    exit(0);
 }
