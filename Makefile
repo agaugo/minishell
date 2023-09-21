@@ -4,7 +4,7 @@ NAME = minishell
 LIBFT = libft/libft.a
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -Iincludes/
+CFLAGS = -Wall -Wextra -Werror -Iincludes/ -Ilibft/
 LDFLAGS = -lreadline
 
 SRC = \
@@ -13,7 +13,6 @@ SRC = \
 	src/builtins/exit.c 
 
 # Update as you go
-
 
 OBJS_DIR = objs/
 OBJS = $(addprefix $(OBJS_DIR), $(SRC:.c=.o))
