@@ -6,12 +6,12 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/25 10:39:58 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/08/25 11:00:59 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/09/27 14:03:56 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef COLOR_H
-# define COLOR_H
+#ifndef COLORS_H
+# define COLORS_H
 
 # define RESET_COLOR	"\033[0m"
 # define BLACK   	"\033[30m"
