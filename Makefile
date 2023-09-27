@@ -11,7 +11,8 @@ SRC = \
 	src/main.c \
 	src/builtins/cd.c \
 	src/builtins/exit.c \
-	src/utils/err.c
+	src/utils/err.c \
+	src/lex/lexer.c \
 
 # Update as you go
 

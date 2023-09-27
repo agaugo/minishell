@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/08/25 12:13:24 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/09/21 18:29:07 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@
 # define OPEN "\033[1;31m_______________________________________________________________________\n_/_____//_____//_____//_____//_____//_____//_____//_____//_____//_____/\n\n______  ______________   _____________________  ______________________ \n___   |/  /___  _/__  | / /___  _/_  ___/__  / / /__  ____/__  /___  / \n__  /|_/ / __  / __   |/ / __  / _____ \\__  /_/ /__  __/  __  / __  /  \n_  /  / / __/ /  _  /|  / __/ /  ____/ /_  __  / _  /___  _  /___  /___\n/_/  /_/  /___/  /_/ |_/  /___/  /____/ /_/ /_/  /_____/  /_____/_____/\n\n_______________________________________________________________________\n_/_____//_____//_____//_____//_____//_____//_____//_____//_____//_____/\n\n\033[0m"
 
 # include "../libft/libft.h"
-#include "../includes/colors.h"
+#include "colors.h"
+#include "lexer.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,6 +25,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <termios.h>
+#include <ctype.h>
 
 
 //structs
@@ -49,5 +51,8 @@ void ms_handleError(int _exitCode, char *_errorMessage);
 // Location: /src/builtins/
 int ms_restoreTerminal(struct termios *_oldTermios);
 void ms_exitShell(struct termios *_oldTermios);
+
+// Location: /src/lex/
+void lexer(char *_userInput);
 
 #endif
