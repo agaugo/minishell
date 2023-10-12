@@ -1,8 +1,6 @@
-lezer -> parser -> expander -> executor
+to do:
 
-Naming conventions:
-
-Variables start with '_', e.g. _index, _userInput, _commandTable. \n
-Functions declared and implemented outside of the src files bave prefix 'ft_' or nothing, for std library functions like malloc(), printf() or free() \n
-Functions Declared inside src files will have prefix 'ms' (minishell) and then a descriptive name like, 'ms_processInput' or 'ms_executeBuiltin'. \n
-
+- expand executor logic
+- refactor lexer for readability
+- refactor parser to use linked list instead of tree
+- sort out redirects
