@@ -55,6 +55,8 @@ typedef struct token {
     char *value;
     tokentype_t type;
     struct token *next;
+    char **envp;
+    char *executableDir;
 } token_t;
 
 #endif

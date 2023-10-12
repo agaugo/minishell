@@ -44,7 +44,7 @@ int ms_initSignals(void);
 int ms_initTerminal(struct termios *_oldTermios);
 void ms_exitShell(struct termios *_oldTermios);
 void ms_processInput(char *_userInput, struct termios *_oldTermios);
-int main(void);
+int main(int argc, char *argv[], char *envp[]);
 
 // Location: /src/utils/
 void ms_handleError(int _exitCode, char *_errorMessage);
@@ -54,7 +54,7 @@ int ms_restoreTerminal(struct termios *_oldTermios);
 void ms_exitShell(struct termios *_oldTermios);
 
 // Location: /src/lex/
-token_t* lexer(char *_userInput);
+token_t *lexer(char *_userInput, char *envp[]);
 
 // Location: /src/prs/
 tree_node_t *parse(token_t *head);

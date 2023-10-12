@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include "../../includes/executor.h"
 
 token_t *create_token(char *value, tokentype_t type) {
 	token_t *token = malloc(sizeof(token_t));
@@ -29,15 +30,16 @@ void print_commands(token_t *head) {
     printf("----------- lexer debug -----------------------------------------------\n");
     int i = 0;
     while (current_token) {
-        printf("Token %d: %s, Type: %d\n", i, current_token->value, current_token->type);
+        printf("Token %d: %s, Type: %d Validity: %d\n", i, current_token->value, current_token->type, validateToken(current_token));
         current_token = current_token->next;
         i++;
     }
     printf("-----------------------------------------------------------------------\n");
 }
 
-token_t *lexer(char *_userInput) {
-    token_t *head = NULL, *current_token = NULL;
+token_t *lexer(char *_userInput, char *envp[]) {
+    token_t *head = NULL;
+    token_t *current_token = NULL;
     char *current = _userInput;
 
     while (*current != '\0') {
@@ -143,6 +145,7 @@ token_t *lexer(char *_userInput) {
             token_t *new_token = malloc(sizeof(token_t));
             new_token->value = value;
             new_token->type = current_token_type;
+            new_token->envp = envp;
             new_token->next = NULL;
 
             if (!head) {

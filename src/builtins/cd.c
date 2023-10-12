@@ -14,6 +14,6 @@
 
 void ms_cdCommand(char *path) {
     if (chdir(path) != 0) {
-        perror("Error finding directory");
+        ms_handleError(127, "Error finding directory");
     }
 }
