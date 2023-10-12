@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 18:26:52 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/09/21 18:28:32 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/09/29 22:57:40 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,26 +51,10 @@ typedef enum e_tokentype {
     T_LOGICAL_OR
 } tokentype_t;
 
-/*
-** token_t:
-** Holds a token with its value and type.
-** value: The string value of the token.
-** type: The type of the token, represented by tokentype_t enum.
-*/
-typedef struct s_token {
+typedef struct token {
     char *value;
     tokentype_t type;
+    struct token *next;
 } token_t;
-
-/*
-** command_t:
-** Represents a command and holds the tokens that make up that command.
-** tokens: An array of pointers to token_t structures.
-** next: Pointer to the next command in the pipe sequence.
-*/
-typedef struct s_command {
-    token_t **tokens;
-    struct s_command *next;
-} command_t;
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 13:42:34 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/09/27 12:53:11 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/09/29 23:12:36 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,195 +23,137 @@ int is_whitespace(char c) {
 	return c == ' ' || c == '\t';
 }
 
-void print_commands(command_t *head) {
-	command_t *current_command = head;
+void print_commands(token_t *head) {
+    token_t *current_token = head;
 
-	printf("----------- lexer debug -----------------------------------------------\n");
-	while (current_command)
-	{
-		printf("Command: \n");
-		int i = 0;
-		while (current_command->tokens && current_command->tokens[i])
-		{
-			printf("Token %d: %s, Type: %d\n", i, current_command->tokens[i]->value, current_command->tokens[i]->type);
-			i++;
-		}
-		current_command = current_command->next;
-	}
-	printf("-----------------------------------------------------------------------\n");
+    printf("----------- lexer debug -----------------------------------------------\n");
+    int i = 0;
+    while (current_token) {
+        printf("Token %d: %s, Type: %d\n", i, current_token->value, current_token->type);
+        current_token = current_token->next;
+        i++;
+    }
+    printf("-----------------------------------------------------------------------\n");
 }
 
-void lexer(char *_userInput) {
-    command_t *head = NULL, *current_command = NULL;
-    
-    char *start_command = _userInput;
+token_t *lexer(char *_userInput) {
+    token_t *head = NULL, *current_token = NULL;
     char *current = _userInput;
-    
-    while (*current != '\0')
-    {
-        while (*current != '\0')
-        {
-            if (*current == '|')
-            {
-                if (*(current + 1) == '|')
-                {
-                    current += 2; // Skip over logical OR
-                    continue;
-                }
-                else
-                {
-                    *current = '\0'; // split commands on single pipe
-                    current++;
-                    break;
-                }
-            }
-            current++;
+
+    while (*current != '\0') {
+        char *start = current;
+        tokentype_t current_token_type = T_WORD; // Default token type
+
+        if (is_whitespace(*current)) {
+            while (is_whitespace(*current)) current++;
+            continue;
         }
         
-        char *command_substring = strndup(start_command, current - start_command);
-        char *trimmed_command = ft_strtrim(command_substring, " \t\n");
-        free(command_substring); 
-        
-        int j = 0;
-        token_t **tokens = NULL;
-        char *command_current = trimmed_command;
-        tokentype_t current_token_type;
-
-		while(*command_current != '\0')
-		{
-			char *start = command_current;
-			
-			if (is_whitespace(*command_current))
+        else if (*current == '|') {
+            if (*(current + 1) == '|') {
+                current_token_type = T_LOGICAL_OR;
+                current += 2;
+            } else {
+                current_token_type = T_PIPE;
+                current++;
+            }
+        }
+			else if (*(current + 1) != '\0' && *current == '<')
 			{
-				while (is_whitespace(*command_current))
-					command_current++;
-				continue;
-			}
-			else if (*command_current == '|')
-			{
-				if (*(command_current + 1) != '\0' && *(command_current+1) == '|')
-				{
-					current_token_type = T_LOGICAL_OR; 
-					command_current += 2;
-				}
-				else
-				{
-					current_token_type = T_PIPE;
-					command_current++;
-				}
-			}
-			else if (*(command_current + 1) != '\0' && *command_current == '<')
-			{
-				if (*(command_current+1) == '<')
+				if (*(current+1) == '<')
 				{
 					current_token_type = T_HEREDOC;
-					command_current += 2;
+					current += 2;
 				}
 				else
 				{
 					current_token_type = T_REDIRECT_IN;
-					command_current++;
+					current++;
 				}
 			}
-			else if (*command_current == '>')
+			else if (*current == '>')
 			{
-				if (*(command_current + 1) != '\0' && *(command_current+1) == '>')
+				if (*(current + 1) != '\0' && *(current+1) == '>')
 				{
 					current_token_type = T_APPEND_OUT;
-					command_current += 2;
+					current += 2;
 				}
 				else
 				{
 					current_token_type = T_REDIRECT_OUT;
-					command_current++;
+					current++;
 				}
 			}
-			else if (*command_current == '\'')
+			else if (*current == '\'')
 			{
 				current_token_type = T_SINGLE_QUOTE;
-				command_current++;
-				while (*command_current != '\'' && *command_current != '\0')
-					command_current++;
-				if (*command_current == '\'')
-					command_current++;
+				current++;
+				while (*current != '\'' && *current != '\0')
+					current++;
+				if (*current == '\'')
+					current++;
 			}
-			else if (*command_current == '\"')
+			else if (*current == '\"')
 			{
 				current_token_type = T_DOUBLE_QUOTE;
-				command_current++;
-				while (*command_current != '\"' && *command_current != '\0')
-					command_current++;
-				if (*command_current == '\"')
-					command_current++;
+				current++;
+				while (*current != '\"' && *current != '\0')
+					current++;
+				if (*current == '\"')
+					current++;
 			}
-			else if (*command_current == '$')
+			else if (*current == '$')
 			{
-				if (*(command_current+1) == '?')
+				if (*(current+1) == '?')
 				{
 					current_token_type = T_EXIT_STATUS;
-					command_current += 2;
+					current += 2;
 				}
 				else
 				{
 					current_token_type = T_ENV_VARIABLE;
-					command_current++;
-					while(isalnum(*command_current) || *command_current == '_')
-						command_current++;
+					current++;
+					while(isalnum(*current) || *current == '_')
+						current++;
 				}
 			}
-			else if (*command_current == '&' && *(command_current+1) == '&')
+			else if (*current == '&' && *(current+1) == '&')
+			{
+				current_token_type = T_LOGICAL_AND;
+				current += 2;
+			}
+			else if (isalnum(*current) || *current == '_' || *current == '/' || *current == '.' || (*current == '-' && isalnum(*(current + 1))))
 			{
 				current_token_type = T_WORD;
-				command_current += 2;
+				while(isalnum(*current) || *current == '_' || *current == '/' || *current == '.' || *current == '-')
+					current++; 
 			}
-			else if (isalnum(*command_current) || *command_current == '_' || *command_current == '/' || *command_current == '.' || (*command_current == '-' && isalnum(*(command_current + 1))))
-			{
-				current_token_type = T_WORD;
-				while(isalnum(*command_current) || *command_current == '_' || *command_current == '/' || *command_current == '.' || *command_current == '-')
-					command_current++; 
-			}
-			else if (*command_current == '\n')
+			else if (*current == '\n')
 			{
 				current_token_type = T_NEWLINE;
-				command_current++;
+				current++;
 			}
-			else
-			{
-				command_current++;
-			}
-
-			int len = command_current - start;
-			if(len > 0)
-			{
-				char *value = strndup(start, len);
-				tokens = realloc(tokens, (j + 2) * sizeof(token_t *));
-				tokens[j] = create_token(value, current_token_type);
-				tokens[j + 1] = NULL;
-				j++;
-			}
-		}
-
-		if (tokens) tokens = realloc(tokens, (j + 1) * sizeof(token_t *));
-		tokens[j] = NULL;
-        command_t *command = malloc(sizeof(command_t));
-        command->tokens = tokens;
-        command->next = NULL;
-        
-        if (!head)
-        {
-            head = command;
-            current_command = head;
-        }
-        else
-        {
-            current_command->next = command;
-            current_command = command;
+        else {
+            while (*current != '\0' && !is_whitespace(*current) && *current != '|')
+                current++;
         }
         
-        free(trimmed_command);
-        
-        start_command = current; // start new command after single pipe
+        if (current != start || current_token_type == T_PIPE || current_token_type == T_LOGICAL_OR) {
+            char *value = strndup(start, current - start);
+            token_t *new_token = malloc(sizeof(token_t));
+            new_token->value = value;
+            new_token->type = current_token_type;
+            new_token->next = NULL;
+
+            if (!head) {
+                head = new_token;
+                current_token = head;
+            } else {
+                current_token->next = new_token;
+                current_token = new_token;
+            }
+        }
     }
-    
-    print_commands(head);
+	print_commands(head);
+    return head;
 }

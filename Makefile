@@ -13,8 +13,7 @@ SRC = \
 	src/builtins/exit.c \
 	src/utils/err.c \
 	src/lex/lexer.c \
-
-# Update as you go
+	src/prs/parser.c \
 
 OBJS_DIR = objs/
 OBJS = $(addprefix $(OBJS_DIR), $(SRC:.c=.o))

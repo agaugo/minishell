@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/09/27 13:01:50 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/12 15:01:26 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,17 @@
 // "ctrl-C"
 void ms_handleSigInt(int _signalNumber)
 {
-		(void)_signalNumber;
-		printf("\n");
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
+	(void)_signalNumber;
+	printf("\n");
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
 // "ctrl-\"
 void ms_handleSigQuit(int _signalNumber) {
-		(void)_signalNumber; 
-		// Do nothing
+	(void)_signalNumber; 
+	// Do nothing
 }
 
 void ms_executeBuiltin(struct termios *_oldTermios, char *_userInput)
@@ -37,9 +37,8 @@ void ms_executeBuiltin(struct termios *_oldTermios, char *_userInput)
 	// if (cmd == "export")
 	// if (cmd == "unset")
 	// if (cmd == "env")
-		if (ft_strcmp(_userInput, "exit") == 0) {
-				ms_exitShell(_oldTermios);
-		}
+	if (ft_strcmp(_userInput, "exit") == 0)
+		ms_exitShell(_oldTermios);
 }
 
 //INITIALISE SIGNALS
@@ -76,23 +75,27 @@ void ms_processInput(char *_userInput, struct termios *_oldTermios) {
 }
 
 int main() {
-		char           *_userInput;
-		int            _mainLoop;
-		struct termios _oldTermios;
-
-		_mainLoop = 1;
-		printf(OPEN);
-		if (ms_initTerminal(&_oldTermios) == -1)
-			ms_handleError(1, "Failed to initialise shell.");
-		if (ms_initSignals() == -1)
-				ms_handleError(1, "Failed to initialise signals.");
-		while (_mainLoop) {
-			 _userInput = readline(PROMPT);
-			if (!_userInput)
-					ms_exitShell(&_oldTermios);
-			 lexer(_userInput);
-			 ms_processInput(_userInput, &_oldTermios);
-			 free(_userInput);
-		 }
-		 return (0);
+	char		*_userInput;
+	int			_mainLoop;
+	struct	termios _oldTermios;
+	token_t *head = NULL;
+	// tree_node_t *root = NULL;
+	
+	_mainLoop = 1;
+	printf(OPEN);
+	if (ms_initTerminal(&_oldTermios) == -1)
+		ms_handleError(1, "Failed to initialise shell.");
+	if (ms_initSignals() == -1)
+			ms_handleError(1, "Failed to initialise signals.");
+	while (_mainLoop)
+	{
+		_userInput = readline(PROMPT);
+		if (!_userInput)
+			ms_exitShell(&_oldTermios);
+		head = lexer(_userInput);
+		parse(head);
+		ms_processInput(_userInput, &_oldTermios);
+		free(_userInput);
+	}
+	return (0);
 }
