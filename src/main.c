@@ -74,14 +74,15 @@ void ms_processInput(char *_userInput, struct termios *_oldTermios) {
 	add_history(_userInput);
 }
 
-int main() {
+int main(int argc, char *argv[], char *envp[]) {
 	char		*_userInput;
 	int			_mainLoop;
 	struct	termios _oldTermios;
 	token_t *head = NULL;
 	// tree_node_t *root = NULL;
-	
-	_mainLoop = 1;
+	if (argc != 1 || argv[1]) //TO SILENCE WARNING FOR UNUSED VAR
+        ms_handleError(1, "I DONT WANT ANY ARGS PASSED YET!!!");
+    _mainLoop = 1;
 	printf(OPEN);
 	if (ms_initTerminal(&_oldTermios) == -1)
 		ms_handleError(1, "Failed to initialise shell.");
@@ -92,7 +93,7 @@ int main() {
 		_userInput = readline(PROMPT);
 		if (!_userInput)
 			ms_exitShell(&_oldTermios);
-		head = lexer(_userInput);
+		head = lexer(_userInput, envp);
 		parse(head);
 		ms_processInput(_userInput, &_oldTermios);
 		free(_userInput);
