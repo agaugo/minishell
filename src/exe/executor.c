@@ -4,28 +4,30 @@
 
 int validateToken(token_t *token)
 {
-    int i;
-    char *dirs[4];
-    char *dir;
+    int _index;
+    char *_rootDirectories[4];
+    char *_fullDirectory;
 
-    dirs[0] = "/bin/";
-    dirs[1] = "/usr/bin/";
-    dirs[2] = "/usr/local/bin/";
-    dirs[3] = NULL;
-    i = 0;
+    _rootDirectories[0] = "/bin/";
+    _rootDirectories[1] = "/usr/bin/";
+    _rootDirectories[2] = "/usr/local/bin/";
+    _rootDirectories[3] = NULL;
+    _index = 0;
     if (!token)
         ms_handleError(1, "Invalid Command");
-    while (dirs[i] != NULL)
+    while (_rootDirectories[_index] != NULL)
     {
-        dir = ft_strjoin(dirs[i], token->value);
-        if (access(dir, X_OK) != -1)
+        _fullDirectory = ft_strjoin(_rootDirectories[_index], token->value);
+        if (access(_fullDirectory, X_OK) != -1)
         {
-            token->executableDir = dir; //THIS NEEDS TO BE FREED SOMEWHERE
+            token->executableDir = _fullDirectory; //THIS NEEDS TO BE FREED SOMEWHERE
             return (1);
         }
-        free(dir);
-        i++;
+        free(_fullDirectory);
+        _index++;
     }
     //ERROR HANDLING HERE OR IN FUNCTION CALL SYSTEM?
     return (0);
 }
+
+

@@ -52,11 +52,12 @@ typedef enum e_tokentype {
 } tokentype_t;
 
 typedef struct token {
-    char *value;
-    tokentype_t type;
-    struct token *next;
-    char **envp;
-    char *executableDir;
+    char            *value;
+    tokentype_t     type;
+    struct token    *next;
+    char            **envp;
+    char            *executableDir;
+    int             *_pipe;
 } token_t;
 
 #endif
