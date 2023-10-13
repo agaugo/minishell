@@ -14,7 +14,8 @@ SRC = \
 	src/utils/err.c \
 	src/lex/lexer.c \
 	src/prs/parser.c \
-	src/exe/executor.c
+	src/exe/executor.c \
+	src/exe/redirect.c
 
 OBJS_DIR = objs/
 OBJS = $(addprefix $(OBJS_DIR), $(SRC:.c=.o))
