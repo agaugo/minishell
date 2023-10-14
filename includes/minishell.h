@@ -37,21 +37,23 @@ typedef struct s_terminal
 
 //functions
 // Location: /src/main.c
-void ms_handleSigInt(int _signalNumber);
-void ms_handleSigQuit(int _signalNumber);
-void ms_executeBuiltin(struct termios *_oldTermios, char *_userInput);
-int ms_initSignals(void);
-int ms_initTerminal(struct termios *_oldTermios);
-void ms_exitShell(struct termios *_oldTermios);
-void ms_processInput(char *_userInput, struct termios *_oldTermios);
+void handleSigInt(int _signalNumber);
+void handleSigQuit(int _signalNumber);
+void executeBuiltin(struct termios *_oldTermios, char *_userInput, token_t *_token);
+int  initSignals(void);
+int  initTerminal(struct termios *_oldTermios);
+void exitShell(struct termios *_oldTermios);
+void processInput(char *_userInput, struct termios *_oldTermios, token_t *_token);
 int main(int argc, char *argv[], char *envp[]);
 
 // Location: /src/utils/
-void ms_handleError(int _exitCode, char *_errorMessage);
+void handleError(int _exitCode, char *_errorMessage);
 
 // Location: /src/builtins/
-int ms_restoreTerminal(struct termios *_oldTermios);
-void ms_exitShell(struct termios *_oldTermios);
+int restoreTerminal(struct termios *_oldTermios);
+void exitShell(struct termios *_oldTermios);
+void cdCommand(token_t *_token);
+char *getCurrentWorkingDirectory(void);
 
 // Location: /src/lex/
 token_t *lexer(char *_userInput, char *envp[]);

@@ -14,7 +14,7 @@
 #include "../libft/libft.h"
 
 // "ctrl-C"
-void ms_handleSigInt(int _signalNumber)
+void handleSigInt(int _signalNumber)
 {
 	(void)_signalNumber;
 	printf("\n");
@@ -24,53 +24,57 @@ void ms_handleSigInt(int _signalNumber)
 }
 
 // "ctrl-\"
-void ms_handleSigQuit(int _signalNumber) {
+void handleSigQuit(int _signalNumber) {
 	(void)_signalNumber; 
 	// Do nothing
 }
 
-void ms_executeBuiltin(struct termios *_oldTermios, char *_userInput)
+void executeBuiltin(struct termios *_oldTermios, char *_userInput, token_t *_token)
 {
 	// if (cmd == "echo")
 	// if (cmd == "cd")
-	// if (cmd == "pwd")
 	// if (cmd == "export")
 	// if (cmd == "unset")
-	// if (cmd == "env")
-	if (ft_strcmp(_userInput, "exit") == 0)
-		ms_exitShell(_oldTermios);
+	// if (cmd == "env")if (cmd == "pwd")
+
+    if (_userInput == NULL)
+        _userInput = NULL;
+    if (ft_strcmp(_token->value, "pwd") == 0) {
+        printf("%s\n", getCurrentWorkingDirectory());
+    }
+    if (ft_strcmp(_token->value, "exit") == 0) {
+        exitShell(_oldTermios);
+    }
+    if (ft_strcmp(_token->value, "cd") == 0) {
+        cdCommand(_token);
+    }
 }
 
 //INITIALISE SIGNALS
-int ms_initSignals(void){
-	if (signal(SIGINT, ms_handleSigInt) == SIG_ERR || signal(SIGQUIT, ms_handleSigQuit) == SIG_ERR){
-		perror("signal");
-		return (-1);
+int initSignals(void){
+	if (signal(SIGINT, handleSigInt) == SIG_ERR || signal(SIGQUIT, handleSigQuit) == SIG_ERR){
+        handleError(-1, "sigquit");
 	}
 	return (0);
 }
 
 //INITIALISE TERMINAL
-int ms_initTerminal(struct termios *_oldTermios){
+int initTerminal(struct termios *_oldTermios){
 	struct termios _newTermios;
 	
-	if (tcgetattr(0, _oldTermios) != 0){
-		perror("tcgetattr");
-		return (-1);
-	}
+	if (tcgetattr(0, _oldTermios) != 0)
+        handleError(-1, "tcgetattr");
 	_newTermios = * _oldTermios;
 	_newTermios.c_lflag &= ~ECHOCTL;
-	if (tcsetattr(0, TCSANOW, &_newTermios) != 0) {
-		perror("tcsetattr");
-		return (-1);
-	}
+	if (tcsetattr(0, TCSANOW, &_newTermios) != 0)
+        handleError(-1, "tcsetattr");
 	return (0);
 }
 
-void ms_processInput(char *_userInput, struct termios *_oldTermios) {
+void processInput(char *_userInput, struct termios *_oldTermios, token_t *_token) {
 	if (!_userInput || !*_userInput)
 		return ;
-	ms_executeBuiltin(_oldTermios, _userInput);
+	executeBuiltin(_oldTermios, _userInput, _token);
 	add_history(_userInput);
 }
 
@@ -78,25 +82,25 @@ int main(int argc, char *argv[], char *envp[]) {
 	char		*_userInput;
 	int			_mainLoop;
 	struct	termios _oldTermios;
-	token_t *head = NULL;
+	token_t     *head = NULL;
 	// tree_node_t *root = NULL;
 	if (argc != 1 || argv[1]) //TO SILENCE WARNING FOR UNUSED VAR
-        ms_handleError(1, "I DONT WANT ANY ARGS PASSED YET!!!");
+        handleError(1, "I DONT WANT ANY ARGS PASSED YET!!!");
     _mainLoop = 1;
 	printf(OPEN);
-	if (ms_initTerminal(&_oldTermios) == -1)
-		ms_handleError(1, "Failed to initialise shell.");
-	if (ms_initSignals() == -1)
-			ms_handleError(1, "Failed to initialise signals.");
+	if (initTerminal(&_oldTermios) == -1)
+		handleError(1, "Failed to initialise shell.");
+	if (initSignals() == -1)
+        handleError(1, "Failed to initialise signals."); //unreachable
 	while (_mainLoop)
 	{
 		_userInput = readline(PROMPT);
 		if (!_userInput)
-			ms_exitShell(&_oldTermios);
+			exitShell(&_oldTermios);
 		head = lexer(_userInput, envp);
 		parse(head);
-		ms_processInput(_userInput, &_oldTermios);
+		processInput(_userInput, &_oldTermios, head);
 		free(_userInput);
 	}
-	return (0);
+	return (0); //unreachable
 }
