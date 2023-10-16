@@ -17,7 +17,8 @@ SRC = \
 	src/exe/executor.c \
 	src/exe/redirect.c \
 	src/exe/validator.c \
-	src/builtins/pwd.c
+	src/builtins/pwd.c \
+	src/builtins/env.c
 
 OBJS_DIR = objs/
 OBJS = $(addprefix $(OBJS_DIR), $(SRC:.c=.o))

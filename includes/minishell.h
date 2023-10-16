@@ -39,7 +39,7 @@ typedef struct s_terminal
 // Location: /src/main.c
 void handleSigInt(int _signalNumber);
 void handleSigQuit(int _signalNumber);
-void executeBuiltin(struct termios *_oldTermios, char *_userInput, token_t *_token);
+void executeBuiltin(struct termios *_oldTermios, token_t *_token);
 int  initSignals(void);
 int  initTerminal(struct termios *_oldTermios);
 void exitShell(struct termios *_oldTermios);
@@ -54,6 +54,7 @@ int restoreTerminal(struct termios *_oldTermios);
 void exitShell(struct termios *_oldTermios);
 void cdCommand(token_t *_token);
 char *getCurrentWorkingDirectory(void);
+void printENV(token_t *_token);
 
 // Location: /src/lex/
 token_t *lexer(char *_userInput, char *envp[]);

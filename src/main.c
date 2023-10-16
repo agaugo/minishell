@@ -29,14 +29,13 @@ void handleSigQuit(int _signalNumber) {
 	// Do nothing
 }
 
-void executeBuiltin(struct termios *_oldTermios, char *_userInput, token_t *_token)
+void executeBuiltin(struct termios *_oldTermios, token_t *_token)
 {
-	// if (cmd == "echo")
-	// if (cmd == "export")
-	// if (cmd == "unset")
-	// if (cmd == "env")
-    if (_userInput == NULL)
-        _userInput = NULL;
+//    if (ft_strcmp(_token->value, "echo") == 0)
+//    if (ft_strcmp(_token->value, "export") == 0)
+//	if (ft_strcmp(_token->value, "unset") == 0)
+	if (ft_strcmp(_token->value, "env") == 0)
+        printENV(_token);
     if (ft_strcmp(_token->value, "pwd") == 0)
         printf("%s\n", getCurrentWorkingDirectory());
     if (ft_strcmp(_token->value, "exit") == 0 || ft_strcmp(_token->value, "EXIT") == 0)
@@ -69,7 +68,7 @@ int initTerminal(struct termios *_oldTermios){
 void processInput(char *_userInput, struct termios *_oldTermios, token_t *_token) {
 	if (!_userInput || !*_userInput)
 		return ;
-	executeBuiltin(_oldTermios, _userInput, _token);
+	executeBuiltin(_oldTermios, _token);
 	add_history(_userInput);
 }
 
