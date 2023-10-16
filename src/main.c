@@ -35,8 +35,8 @@ void executeBuiltin(struct termios *_oldTermios, char *_userInput, token_t *_tok
 	// if (cmd == "cd")
 	// if (cmd == "export")
 	// if (cmd == "unset")
-	// if (cmd == "env")if (cmd == "pwd")
-
+	// if (cmd == "env")
+    // if (cmd == "pwd")
     if (_userInput == NULL)
         _userInput = NULL;
     if (ft_strcmp(_token->value, "pwd") == 0) {

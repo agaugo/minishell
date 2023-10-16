@@ -12,17 +12,52 @@
 
 #include "../../includes/minishell.h"
 
-void addDash(char **_array)
+
+void cdHome(void)
 {
+    chdir(getenv("HOME"));
+}
+
+void cdAbsolutePath(char *_path)
+{
+    if (chdir(_path) != 0) {
+        handleError(127, "Error finding directory");
+    }
+}
+
+void cdCommand(token_t *_token)
+{
+    char *_newPWD;
+    char *_direction;
+
+    if (_token->next == NULL)
+        return (cdHome());
+    _newPWD = NULL;
+    _direction = _token->next->value;
+    if (access(_direction, F_OK) == 0)
+        return (cdAbsolutePath(_direction));
+//    else
+//        _newPWD = getRelativePath(_PWD, _direction);
+    cdAbsolutePath(_newPWD);
+}
+
+
+/*
+ ******IGNORE THIS, I COMPLICATED IT TOO MUCH ************
+char *getRelativePath(char *_PWD, char *_direction) {
+    char **_array;
     int _index;
 
     _index = 0;
-    _array[0] = ft_strjoin("/", _array[_index]);
-    while(_array[_index] != NULL)
+    _array = ft_split(_PWD, '/');
+    addDash(_array);
+    if (ft_strcmp(_direction, "..") == 0) //modularise this
     {
-        _array[_index] = ft_strjoin(_array[_index], "/");
-        _index++;
+        while (_array[_index + 1] != NULL)
+            _index++;
+        _array[_index] = NULL;
     }
+    return (glueArray(_array));
 }
 
 char *glueArray(char **_array)
@@ -40,29 +75,18 @@ char *glueArray(char **_array)
     return(_gluedString);
 }
 
-void cdCommand(token_t *_token)
+void addDash(char **_array)
 {
-    char *_PWD;
-    char **_arrayPWD;
-    char *_newPWD;
-    char *_direction;
-    int   _index;
+    int _index;
 
-    _PWD = getenv("PWD");
-    printf("OLD DIRECTORY: %s\n", getCurrentWorkingDirectory());
-    _arrayPWD = ft_split(_PWD, '/'); // FIX THIS IT REMOVES THE /
-    addDash(_arrayPWD);
     _index = 0;
-    _direction = _token->next->value;
-    if (ft_strcmp(_direction, "..") == 0)
+    _array[0] = ft_strjoin("/", _array[_index]);
+    while(_array[_index] != NULL)
     {
-        while(_arrayPWD[_index + 1] != NULL)
-            _index++;
-        _arrayPWD[_index] = NULL;
+        _array[_index] = ft_strjoin(_array[_index], "/");
+        _index++;
     }
-    _newPWD = glueArray(_arrayPWD);
-    if (chdir(_newPWD) != 0) {
-        handleError(127, "Error finding directory");
-    }
-    printf("NEW DIRECTORY: %s\n", getCurrentWorkingDirectory());
 }
+
+
+*/
