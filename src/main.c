@@ -32,22 +32,17 @@ void handleSigQuit(int _signalNumber) {
 void executeBuiltin(struct termios *_oldTermios, char *_userInput, token_t *_token)
 {
 	// if (cmd == "echo")
-	// if (cmd == "cd")
 	// if (cmd == "export")
 	// if (cmd == "unset")
 	// if (cmd == "env")
-    // if (cmd == "pwd")
     if (_userInput == NULL)
         _userInput = NULL;
-    if (ft_strcmp(_token->value, "pwd") == 0) {
+    if (ft_strcmp(_token->value, "pwd") == 0)
         printf("%s\n", getCurrentWorkingDirectory());
-    }
-    if (ft_strcmp(_token->value, "exit") == 0) {
+    if (ft_strcmp(_token->value, "exit") == 0 || ft_strcmp(_token->value, "EXIT") == 0)
         exitShell(_oldTermios);
-    }
-    if (ft_strcmp(_token->value, "cd") == 0) {
+    if (ft_strcmp(_token->value, "cd") == 0)
         cdCommand(_token);
-    }
 }
 
 //INITIALISE SIGNALS
@@ -79,10 +74,11 @@ void processInput(char *_userInput, struct termios *_oldTermios, token_t *_token
 }
 
 int main(int argc, char *argv[], char *envp[]) {
-	char		*_userInput;
-	int			_mainLoop;
+	char		    *_userInput;
+	int			    _mainLoop;
 	struct	termios _oldTermios;
-	token_t     *head = NULL;
+	token_t         *head = NULL;
+
 	// tree_node_t *root = NULL;
 	if (argc != 1 || argv[1]) //TO SILENCE WARNING FOR UNUSED VAR
         handleError(1, "I DONT WANT ANY ARGS PASSED YET!!!");
