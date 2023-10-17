@@ -2,20 +2,23 @@
 
 NAME = minishell
 LIBFT = libft/libft.a
-
+FT_PRINTF = ft_printf/libftprintf.a
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -Iincludes/ -Ilibft/
+CFLAGS = -Wall -Wextra -Werror -Iincludes/ -Ilibft/ -Ift_printf/
 LDFLAGS = -lreadline
 
 SRC = \
 	src/main.c \
 	src/builtins/cd.c \
 	src/builtins/exit.c \
-	src/utils/err.c \
+	src/utils/error_handling.c \
 	src/lex/lexer.c \
 	src/prs/parser.c \
 	src/exe/executor.c \
-	src/exe/redirect.c
+	src/exe/redirect.c \
+	src/exe/validator.c \
+	src/builtins/pwd.c \
+	src/builtins/env.c
 
 OBJS_DIR = objs/
 OBJS = $(addprefix $(OBJS_DIR), $(SRC:.c=.o))
