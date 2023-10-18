@@ -2,23 +2,23 @@
 
 //refresher on linked lists!
 
-t_envLinkedList *lstAddBack(t_envLinkedList _previous, char *_content)
-{
-
-}
-
-t_envLinkedList *convertArrayToLinkedList(char **_array)
-{
-
-}
+//t_envLinkedList *lstAddBack(t_envLinkedList _previous, char *_content)
+//{
+//
+//}
+//
+//t_envLinkedList *convertArrayToLinkedList(char **_array)
+//{
+//
+//}
 
 void unsetCommand(token_t *_token)
 {
-    t_envLinkedList *_head;
+//    t_envLinkedList *_head;
 
     if (!_token->next)
         return ;
-    *_head = convertArrayToLinkedList(_token->envp);
+//    *_head = convertArrayToLinkedList(_token->envp);
 }
 
 //CONVERT ENV TO LINKED LIST
