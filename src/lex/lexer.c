@@ -35,6 +35,9 @@ void print_commands(token_t *head) {
         i++;
     }
     printf("-----------------------------------------------------------------------\n");
+    printf("OUTPUT: \n");
+
+
 }
 
 token_t *lexer(char *_userInput, char *envp[]) {

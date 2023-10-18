@@ -35,6 +35,13 @@ typedef struct s_terminal
 	int	x;
 } t_terminal;
 
+//used for converting env from char ** to linked list to dynamically add and remove variables.
+typedef struct s_envLinkedList
+{
+    char *_envVariable;
+    struct s_envLinkedList *_next;
+} t_envLinkedList;
+
 //functions
 // Location: /src/main.c
 void handleSigInt(int _signalNumber);
@@ -55,6 +62,10 @@ void exitShell(struct termios *_oldTermios);
 void cdCommand(token_t *_token);
 char *getCurrentWorkingDirectory(void);
 void printENV(token_t *_token);
+void echoCommand(token_t *_token);
+void unsetCommand(token_t *_token);
+
+
 
 // Location: /src/lex/
 token_t *lexer(char *_userInput, char *envp[]);

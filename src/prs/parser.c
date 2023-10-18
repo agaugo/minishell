@@ -18,12 +18,10 @@ void print_tree(tree_node_t *node, int depth)
 
     for(int i = 0; i < depth; i++) 
         printf("--");
-    
-    if(node->token)
-        printf("%s\n", node->token->value);
-    else
-        printf("%d\n", node->operation);
-
+//    if(node->token)
+//        printf("%s\n", node->token->value);
+//    else
+//        printf("%d\n", node->operation);
     print_tree(node->left, depth + 1);
     print_tree(node->right, depth + 1);
 }

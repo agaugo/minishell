@@ -31,9 +31,11 @@ void handleSigQuit(int _signalNumber) {
 
 void executeBuiltin(struct termios *_oldTermios, token_t *_token)
 {
-//    if (ft_strcmp(_token->value, "echo") == 0)
-//    if (ft_strcmp(_token->value, "export") == 0)
-//	if (ft_strcmp(_token->value, "unset") == 0)
+//  if (ft_strcmp(_token->value, "export") == 0)
+    if (ft_strcmp(_token->value, "unset") == 0)
+        unsetCommand(_token);
+    if (ft_strcmp(_token->value, "echo") == 0)
+        echoCommand(_token);
 	if (ft_strcmp(_token->value, "env") == 0)
         printENV(_token);
     if (ft_strcmp(_token->value, "pwd") == 0)
@@ -77,8 +79,8 @@ int main(int argc, char *argv[], char *envp[]) {
 	int			    _mainLoop;
 	struct	termios _oldTermios;
 	token_t         *head = NULL;
-
 	// tree_node_t *root = NULL;
+
 	if (argc != 1 || argv[1]) //TO SILENCE WARNING FOR UNUSED VAR
         handleError(1, "I DONT WANT ANY ARGS PASSED YET!!!");
     _mainLoop = 1;
