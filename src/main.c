@@ -32,8 +32,8 @@ void handleSigQuit(int _signalNumber) {
 void executeBuiltin(struct termios *_oldTermios, token_t *_token)
 {
 //  if (ft_strcmp(_token->value, "export") == 0)
-    if (ft_strcmp(_token->value, "unset") == 0)
-        unsetCommand(_token);
+//    if (ft_strcmp(_token->value, "unset") == 0)
+//        unsetCommand(_token->envp);
     if (ft_strcmp(_token->value, "echo") == 0)
         echoCommand(_token);
 	if (ft_strcmp(_token->value, "env") == 0)
