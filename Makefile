@@ -4,7 +4,7 @@ NAME = minishell
 LIBFT = libft/libft.a
 FT_PRINTF = ft_printf/libftprintf.a
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -Iincludes/ -Ilibft/ -Ift_printf/
+CFLAGS = -Iincludes/ -Ilibft/ -Ift_printf/
 LDFLAGS = -lreadline
 
 SRC = \
