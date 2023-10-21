@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/09/29 23:13:30 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/19 14:08:59 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "colors.h"
 #include "lexer.h"
 #include "parser.h"
+#include "executor.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -69,6 +70,6 @@ void unsetCommand(token_t *_token);
 token_t *lexer(char *_userInput, char *envp[]);
 
 // Location: /src/prs/
-tree_node_t *parse(token_t *head);
+command_node_t *parse(token_t *head);
 
 #endif
