@@ -29,21 +29,23 @@ void handleSigQuit(int _signalNumber) {
 	// Do nothing
 }
 
-void executeBuiltin(struct termios *_oldTermios, token_t *_token)
+void execute(struct termios *_oldTermios, token_t *_token)
 {
 //  if (ft_strcmp(_token->value, "export") == 0)
 //    if (ft_strcmp(_token->value, "unset") == 0)
 //        unsetCommand(_token->envp);
     if (ft_strcmp(_token->value, "echo") == 0)
         echoCommand(_token);
-	if (ft_strcmp(_token->value, "env") == 0)
+	else if (ft_strcmp(_token->value, "env") == 0)
         printENV(_token);
-    if (ft_strcmp(_token->value, "pwd") == 0)
+    else if (ft_strcmp(_token->value, "pwd") == 0)
         printf("%s\n", getCurrentWorkingDirectory());
-    if (ft_strcmp(_token->value, "exit") == 0 || ft_strcmp(_token->value, "EXIT") == 0)
+    else if (ft_strcmp(_token->value, "exit") == 0 || ft_strcmp(_token->value, "EXIT") == 0)
         exitShell(_oldTermios);
-    if (ft_strcmp(_token->value, "cd") == 0)
+    else if (ft_strcmp(_token->value, "cd") == 0)
         cdCommand(_token);
+    else
+        identifyCommand(_token);
 }
 
 //INITIALISE SIGNALS
@@ -70,7 +72,7 @@ int initTerminal(struct termios *_oldTermios){
 void processInput(char *_userInput, struct termios *_oldTermios, token_t *_token) {
 	if (!_userInput || !*_userInput)
 		return ;
-	executeBuiltin(_oldTermios, _token);
+	execute(_oldTermios, _token);
 	add_history(_userInput);
 }
 
