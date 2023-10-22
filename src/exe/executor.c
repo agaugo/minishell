@@ -2,6 +2,7 @@
 
 void executeCommand(char *_path)
 {
+    printf("%s", _path);
     //execve();
 }
 
@@ -25,5 +26,3 @@ void identifyCommand(token_t *_token)
     }
     perror("Invalid Command");
 }
-
-
