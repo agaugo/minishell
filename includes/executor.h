@@ -13,6 +13,6 @@ void    handleRedirect(token_t *_token, tokentype_t _direction); //so t_directio
 void freeTwoDimensionalArray(char **_array);
 int checkAbsolutePath(token_t *_token);
 int validateToken(token_t *_token);
-void executeCommand(char *_path);
+void executeCommand(char **_array, char **_envp);
 void identifyCommand(token_t *_token);
 
