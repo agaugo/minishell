@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/19 14:07:08 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/23 00:27:48 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,15 +35,15 @@ void execute(struct termios *_oldTermios, token_t *_token)
 //    if (ft_strcmp(_token->value, "unset") == 0)
 //        unsetCommand(_token->envp);
     if (ft_strcmp(_token->value, "echo") == 0)
-        echoCommand(_token);
+        ms_echo_command(_token);
 	else if (ft_strcmp(_token->value, "env") == 0)
-        printENV(_token);
+        ms_print_env_variables(_token);
     else if (ft_strcmp(_token->value, "pwd") == 0)
-        printf("%s\n", getCurrentWorkingDirectory());
+        printf("%s\n", ms_get_current_working_dir());
     else if (ft_strcmp(_token->value, "exit") == 0 || ft_strcmp(_token->value, "EXIT") == 0)
-        exitShell(_oldTermios);
+        ms_exit_shell(_oldTermios);
     else if (ft_strcmp(_token->value, "cd") == 0)
-        cdCommand(_token);
+        ms_cd_command(_token);
     else
         identifyCommand(_token);
 }
@@ -95,7 +95,7 @@ int main(int argc, char *argv[], char *envp[]) {
 	{
 		_userInput = readline(PROMPT);
 		if (!_userInput)
-			exitShell(&_oldTermios);
+			ms_exit_shell(&_oldTermios);
 		head = lexer(_userInput, envp);
 		parse(head);
 		processInput(_userInput, &_oldTermios, head);

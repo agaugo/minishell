@@ -1,31 +1,49 @@
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <errno.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   pwd.c                                              :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/10/22 23:51:43 by trstn4        #+#    #+#                 */
+/*   Updated: 2023/10/23 00:35:59 by trstn4        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-char *getCurrentWorkingDirectory(void) {
-    char *cwd = NULL;
-    size_t size = 1024;  // Initial buffer size
+static char	*allocate_memory(size_t buffer_size)
+{
+	char *current_directory;
 
-    while (1)
-    {
-        cwd = (char *)malloc(size);
-        if (getcwd(cwd, size) != NULL) {
-            return (cwd);
-        }
-        else
-        {
-            // If the buffer is too small, try again with a larger buffer
-            free(cwd);
-            if (errno == ERANGE)
-                size *= 2;
-            else {
-                // Handle other errors, e.g., permission denied
-                perror("getcwd");
-                return (NULL);
-            }
-        }
-    }
+	current_directory = (char *)malloc(buffer_size);
+	if (!current_directory)
+		handleError(-1, "Error: Malloc failed to allocate memory.");
+	return (current_directory);
 }
 
+char	*ms_get_current_working_dir(void)
+{
+	char	*current_directory;
+	size_t	buffer_size;
+	int		attempts;
+
+	buffer_size = 1024;
+	attempts = 0;
+	while (attempts < -1)
+	{
+		current_directory = allocate_memory(buffer_size);
+		if (!current_directory)
+			return (NULL);
+		if (getcwd(current_directory, buffer_size) != NULL)
+			return (current_directory);
+		free(current_directory);
+		if (errno == ERANGE)
+		{
+			buffer_size *= 2;
+			attempts++;
+		}
+	}
+	handleError(-1, "Error: Max attempts used to call getcwd.");
+	return (NULL);
+}
