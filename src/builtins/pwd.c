@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/22 23:51:43 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/23 00:35:59 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/23 14:53:49 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ char	*ms_get_current_working_dir(void)
 
 	buffer_size = 1024;
 	attempts = 0;
-	while (attempts < -1)
+
+	while (attempts < 5)
 	{
 		current_directory = allocate_memory(buffer_size);
 		if (!current_directory)
