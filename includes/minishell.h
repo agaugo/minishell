@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/10/22 22:45:48 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/23 00:27:43 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 #include <readline/history.h>
 #include <termios.h>
 #include <ctype.h>
+#include <unistd.h>
+#include <errno.h>
 
 
 //structs
@@ -59,11 +61,11 @@ void handleError(int _exitCode, char *_errorMessage);
 
 // Location: /src/builtins/
 int restoreTerminal(struct termios *_oldTermios);
-void exitShell(struct termios *_oldTermios);
-void cdCommand(token_t *_token);
-char *getCurrentWorkingDirectory(void);
-void printENV(token_t *_token);
-void echoCommand(token_t *_token);
+void	ms_exit_shell(struct termios *old_termios);
+void	ms_cd_command(token_t *_token);
+char	*ms_get_current_working_dir(void);
+void	ms_print_env_variables(token_t *token);
+void	ms_echo_command(token_t *token);
 void unsetCommand(token_t *_token);
 
 // Location: /src/lex/

@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   echo.c                                             :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/10/23 00:11:40 by trstn4        #+#    #+#                 */
+/*   Updated: 2023/10/23 00:21:37 by trstn4        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-void echoCommand(token_t *_token)
+void	ms_echo_command(token_t *token)
 {
-    if (_token->next == NULL)
-        printf("\n");
-    else
-        printf("%s\n", _token->next->value);
+	if (token->next == NULL || token->next->value == NULL)
+		printf("\n");
+	else
+		printf("%s\n", token->next->value);
 }

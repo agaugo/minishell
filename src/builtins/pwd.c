@@ -30,6 +30,7 @@ char	*ms_get_current_working_dir(void)
 
 	buffer_size = 1024;
 	attempts = 0;
+
 	while (attempts < 5)
 	{
 		current_directory = allocate_memory(buffer_size);
