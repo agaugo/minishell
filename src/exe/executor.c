@@ -1,8 +1,18 @@
 #include "../../includes/minishell.h"
 
-void executeCommand(char **_array, char **_envp)
-{
-    execve(_array[0], _array, _envp);
+void executeCommand(char **_array, char **_envp) {
+    pid_t pid;
+
+    pid = fork();  // Create a child process
+    if (pid == -1) // Fork failed
+        handleError(EXIT_FAILURE, "Fork Failure");
+    else if (pid == 0) // In child process
+    {
+        execve(_array[0], _array, _envp);
+        handleError(EXIT_FAILURE, "Execve Failure"); //will only run if execve fails
+    }
+    else  // In parent process
+        wait(NULL);  // Wait for child process to finish
 }
 
 int countArrayLen(token_t *_token)
@@ -20,9 +30,8 @@ int countArrayLen(token_t *_token)
     return (_count);
 }
 
-char **getFullArgs(token_t *_token)
+char **getFullArgs(token_t *_token, char *_fullPath)
 {
-    token_t *_newToken;
     char    **_returnArray;
     int     _index;
     int     _len;
@@ -31,12 +40,13 @@ char **getFullArgs(token_t *_token)
     _index = 0;
     _returnArray = (char **) malloc((_len + 1) * sizeof(char *));
     _returnArray[_len] = NULL;
-
-    _newToken = _token;
-    while (_newToken != NULL)
+    _token = _token->next;
+    _returnArray[_index] = ft_strdup(_fullPath);
+    _index++;
+    while (_token != NULL)
     {
-        _returnArray[_index] = ft_strdup(_newToken->value);
-        _newToken = _newToken->next;
+        _returnArray[_index] = ft_strdup(_token->value);
+        _token = _token->next;
         _index++;
     }
     return(_returnArray);
@@ -48,9 +58,11 @@ void identifyCommand(token_t *_token)
     char *_fullPath;
     char **_allPath;
     char **_execAll;
+    int  _error;
     int  _index;
 
     _index = 0;
+    _error = 0;
     _cmd = _token->value;
     _allPath = ft_split(getenv("PATH"), ':');
     while (_allPath[_index] != NULL)
@@ -59,12 +71,12 @@ void identifyCommand(token_t *_token)
         _fullPath = ft_strjoin(_allPath[_index], _cmd);
         if (access(_fullPath, X_OK) != -1)
         {
-            _execAll = getFullArgs(_token);
+            _execAll = getFullArgs(_token, _fullPath);
             executeCommand(_execAll, _token->envp);
+            _error = 1;
         }
         _index++;
     }
-    perror("Invalid Command");
+    if (!_error)
+        perror("Invalid Command");
 }
-
-
