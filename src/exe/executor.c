@@ -5,15 +5,21 @@ void executeCommand(char **_array, char **_envp) {
 
     pid = fork();  // Create a child process
     if (pid == -1) // Fork failed
+	{
+		freeTwoDimensionalArray(_array);
         handleError(EXIT_FAILURE, "Fork Failure");
+	}
     else if (pid == 0) // In child process
     {
         execve(_array[0], _array, _envp);
+		freeTwoDimensionalArray(_array);
         handleError(EXIT_FAILURE, "Execve Failure"); //will only run if execve fails
     }
     else  // In parent process
         wait(NULL);  // Wait for child process to finish
+	freeTwoDimensionalArray(_array);
 }
+
 
 int countArrayLen(token_t *_token)
 {
