@@ -15,6 +15,8 @@ RESET = \033[0m
 
 SRC = \
 	src/main/main.c \
+	src/main/init.c \
+	src/main/signal.c \
 	src/builtins/cd.c \
 	src/builtins/exit.c \
 	src/utils/error_handling.c \
