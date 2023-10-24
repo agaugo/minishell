@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/10/24 23:20:43 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/24 23:40:16 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void executeBuiltin(struct termios *_oldTermios, token_t *_token);
 int  initSignals(void);
 int  initTerminal(struct termios *_oldTermios);
 void exitShell(struct termios *_oldTermios);
-void processInput(char *_userInput, struct termios *_oldTermios, token_t *_token, char ***cloned_envp_ptr);
+void processInput(char *_userInput, struct termios *_oldTermios, token_t *_token, char ***envp);
 int main(int argc, char *argv[], char *envp[]);
 
 // Location: /src/utils/

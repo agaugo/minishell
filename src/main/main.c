@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/24 23:36:22 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/24 23:40:06 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,16 +50,12 @@ char **duplicate_envp(char **envp) {
     return new_envp;
 }
 
-void execute(struct termios *_oldTermios, token_t *_token, char ***cloned_envp_ptr)
+void execute(struct termios *_oldTermios, token_t *_token, char ***envp)
 {
-	// char **dynamic_envp = duplicate_envp(envp);
-//  if (ft_strcmp(_token->value, "export") == 0)
-//    if (ft_strcmp(_token->value, "unset") == 0)
-//        unsetCommand(_token->envp);
     if (ft_strcmp(_token->value, "export") == 0)
-        ms_export_command(_token, cloned_envp_ptr);
+        ms_export_command(_token, envp);
     else if (ft_strcmp(_token->value, "unset") == 0)
-        ms_unset_command(_token, cloned_envp_ptr);
+        ms_unset_command(_token, envp);
     else if (ft_strcmp(_token->value, "echo") == 0)
         ms_echo_command(_token);
 	else if (ft_strcmp(_token->value, "env") == 0)
@@ -95,10 +91,10 @@ int initTerminal(struct termios *_oldTermios){
 	return (0);
 }
 
-void processInput(char *_userInput, struct termios *_oldTermios, token_t *_token, char ***cloned_envp_ptr) {
+void processInput(char *_userInput, struct termios *_oldTermios, token_t *_token, char ***envp) {
     if (!_userInput || !*_userInput)
         return;
-    execute(_oldTermios, _token, cloned_envp_ptr);
+    execute(_oldTermios, _token, envp);
     add_history(_userInput);
 }
 
