@@ -13,7 +13,6 @@ SRC = \
 	src/builtins/exit.c \
 	src/utils/error_handling.c \
 	src/lex/lexer.c \
-	src/prs/parser.c \
 	src/exe/executor.c \
 	src/exe/redirect.c \
 	src/exe/validator.c \

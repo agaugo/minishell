@@ -1,7 +1,4 @@
 #include "minishell.h"
-#include "lexer.h"
-#include "parser.h"
-
 
 // ** src/exe/redirect.c
 
