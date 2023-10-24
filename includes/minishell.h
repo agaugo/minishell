@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/10/24 23:10:19 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/24 23:20:43 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@
 #include "lexer.h"
 #include "executor.h"
 
-#include <readline/readline.h>
-#include <readline/history.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -29,6 +27,8 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <errno.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 //structs
 typedef struct s_terminal
