@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/25 10:37:37 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/23 00:23:30 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/24 12:44:59 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,9 @@ static int	restore_terminal_to_default(struct termios *old_termios)
 
 void	ms_exit_shell(struct termios *old_termios)
 {
-	printf("//exit//\n");
+	printf("exit\n");
 	if (restore_terminal_to_default(old_termios) == -1)
 		exit(EXIT_FAILURE);
 	exit(EXIT_SUCCESS);
 }
+ 

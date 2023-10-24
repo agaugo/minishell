@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 13:42:34 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/22 23:48:39 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/23 22:18:10 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,8 +137,29 @@ static tokentype_t	parse_special_token(char **current)
 
 static tokentype_t	parse_word_token(char **current)
 {
-	while (isalnum(**current) || **current == '_' || **current == '/'
-		|| **current == '.' || **current == '-')
+	char *start = *current;
+
+	if (isalnum(**current) || **current == '_')  // Checking for start of a variable name
+	{
+		(*current)++;
+		while (isalnum(**current) || **current == '_')
+			(*current)++;
+		if (**current == '=')  // It's an assignment
+		{
+			(*current)++;
+			while (isalnum(**current) || **current == '_' || **current == '/' ||
+				   **current == '.' || **current == '-')
+				(*current)++;
+			return T_ASSIGNMENT;
+		}
+		else
+		{
+			*current = start;  // Resetting back if not an assignment
+		}
+	}
+
+	while (isalnum(**current) || **current == '_' || **current == '/' ||
+		   **current == '.' || **current == '-')
 		(*current)++;
 	return (T_WORD);
 }

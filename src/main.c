@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/23 00:27:48 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/24 19:39:50 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,39 @@ void handleSigQuit(int _signalNumber) {
 	// Do nothing
 }
 
-void execute(struct termios *_oldTermios, token_t *_token)
+char **duplicate_envp(char **envp) {
+    int count = 0;
+    while (envp[count]) count++;
+
+    char **new_envp = malloc(sizeof(char *) * (count + 1));
+    if (!new_envp) {
+        perror("Failed to allocate memory for new_envp");
+        exit(EXIT_FAILURE);
+    }
+
+    for (int i = 0; i < count; i++) {
+        new_envp[i] = strdup(envp[i]);
+        if (!new_envp[i]) {
+            perror("Failed to duplicate string for new_envp");
+            exit(EXIT_FAILURE);
+        }
+    }
+    new_envp[count] = NULL;
+
+    return new_envp;
+}
+
+void execute(struct termios *_oldTermios, token_t *_token, char ***cloned_envp_ptr)
 {
+	// char **dynamic_envp = duplicate_envp(envp);
 //  if (ft_strcmp(_token->value, "export") == 0)
 //    if (ft_strcmp(_token->value, "unset") == 0)
 //        unsetCommand(_token->envp);
-    if (ft_strcmp(_token->value, "echo") == 0)
+    if (ft_strcmp(_token->value, "export") == 0)
+        ms_export_command(_token, cloned_envp_ptr);
+    else if (ft_strcmp(_token->value, "unset") == 0)
+        ms_unset_command(_token, cloned_envp_ptr);
+    else if (ft_strcmp(_token->value, "echo") == 0)
         ms_echo_command(_token);
 	else if (ft_strcmp(_token->value, "env") == 0)
         ms_print_env_variables(_token);
@@ -69,11 +96,11 @@ int initTerminal(struct termios *_oldTermios){
 	return (0);
 }
 
-void processInput(char *_userInput, struct termios *_oldTermios, token_t *_token) {
-	if (!_userInput || !*_userInput)
-		return ;
-	execute(_oldTermios, _token);
-	add_history(_userInput);
+void processInput(char *_userInput, struct termios *_oldTermios, token_t *_token, char ***cloned_envp_ptr) {
+    if (!_userInput || !*_userInput)
+        return;
+    execute(_oldTermios, _token, cloned_envp_ptr);
+    add_history(_userInput);
 }
 
 int main(int argc, char *argv[], char *envp[]) {
@@ -81,7 +108,7 @@ int main(int argc, char *argv[], char *envp[]) {
 	int			    _mainLoop;
 	struct	termios _oldTermios;
 	token_t         *head = NULL;
-	// tree_node_t *root = NULL;
+	char **cloned_envp = NULL;
 
 	if (argc != 1 || argv[1]) //TO SILENCE WARNING FOR UNUSED VAR
         handleError(1, "I DONT WANT ANY ARGS PASSED YET!!!");
@@ -91,15 +118,22 @@ int main(int argc, char *argv[], char *envp[]) {
 		handleError(1, "Failed to initialise shell.");
 	if (initSignals() == -1)
         handleError(1, "Failed to initialise signals."); //unreachable
-	while (_mainLoop)
+	cloned_envp = duplicate_envp(envp);
+    while (_mainLoop)
+    {
+        _userInput = readline(PROMPT);
+        if (!_userInput)
+            ms_exit_shell(&_oldTermios);
+        head = lexer(_userInput, cloned_envp);
+        processInput(_userInput, &_oldTermios, head, &cloned_envp);
+        free(_userInput);
+    }
+	int i = 0;
+	while (cloned_envp[i])
 	{
-		_userInput = readline(PROMPT);
-		if (!_userInput)
-			ms_exit_shell(&_oldTermios);
-		head = lexer(_userInput, envp);
-		parse(head);
-		processInput(_userInput, &_oldTermios, head);
-		free(_userInput);
+		free(cloned_envp[i]);
+		i++;
 	}
+	free(cloned_envp);
 	return (0); //unreachable
 }
