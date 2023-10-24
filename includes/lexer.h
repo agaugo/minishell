@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 18:26:52 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/19 15:34:55 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/23 18:05:54 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ typedef enum e_tokentype {
     T_EXIT_STATUS,
     T_NEWLINE,
     T_WHITESPACE,
-    T_BUILTIN
+    T_BUILTIN,
+    T_ASSIGNMENT
 } tokentype_t;
 
 typedef struct token {

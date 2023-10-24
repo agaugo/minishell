@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/10/23 00:27:43 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/24 19:40:33 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void executeBuiltin(struct termios *_oldTermios, token_t *_token);
 int  initSignals(void);
 int  initTerminal(struct termios *_oldTermios);
 void exitShell(struct termios *_oldTermios);
-void processInput(char *_userInput, struct termios *_oldTermios, token_t *_token);
+void processInput(char *_userInput, struct termios *_oldTermios, token_t *_token, char ***cloned_envp_ptr);
 int main(int argc, char *argv[], char *envp[]);
 
 // Location: /src/utils/
@@ -66,7 +66,8 @@ void	ms_cd_command(token_t *_token);
 char	*ms_get_current_working_dir(void);
 void	ms_print_env_variables(token_t *token);
 void	ms_echo_command(token_t *token);
-void unsetCommand(token_t *_token);
+void	ms_export_command(token_t *token, char ***cloned_envp_ptr);
+void	ms_unset_command(token_t *_token, char ***envp);
 
 // Location: /src/lex/
 token_t *lexer(char *_userInput, char *envp[]);
