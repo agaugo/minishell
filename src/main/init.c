@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/24 23:38:22 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/24 23:47:53 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 00:20:09 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int ms_set_terminal_settings(struct termios *_oldTermios)
 	return (0);
 }
 
-char **duplicate_envp(char **envp)
+char **ms_clone_envp(char **envp)
 {
     int count = 0;
     while (envp[count]) count++;

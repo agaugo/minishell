@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 00:05:31 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 00:20:21 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,13 @@ int main(int argc, char *argv[], char *envp[]) {
 		handleError(1, "Failed to initialise shell.");
 	if (ms_init_signals() == -1)
         handleError(1, "Failed to initialise signals."); //unreachable
-	cloned_envp = duplicate_envp(envp);
+	cloned_envp = ms_clone_envp(envp);
     _mainLoop = 1;
     while (_mainLoop)
     {
         _userInput = readline(PROMPT);
         ms_handle_ctrl_d(&_oldTermios, _userInput);
-        head = lexer(_userInput, cloned_envp);
+        head = ms_lexer(_userInput, cloned_envp);
         processInput(_userInput, &_oldTermios, head, &cloned_envp);
         free(_userInput);
     }

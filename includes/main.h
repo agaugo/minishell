@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/10/25 00:04:29 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 00:20:06 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 // Location: /src/main/init.c
 int ms_set_terminal_settings(struct termios *_oldTermios);
-char **duplicate_envp(char **envp);
+char **ms_clone_envp(char **envp);
 
 // Location: /src/main/signal.c
 void ms_handle_ctrl_c(int _signalNumber);
