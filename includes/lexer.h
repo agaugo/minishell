@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 18:26:52 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/23 18:05:54 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/24 23:09:44 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 ** Represents different types of tokens available in the shell.
 **
 ** T_WORD: Generic word or command name.
+** T_FLAG: Represents a flag used in commands, usually preceded by '-' (e.g., -l).
 ** T_PIPE: The '|' character, representing a pipe between commands.
 ** T_REDIRECT_IN: The '<' character, representing input redirection.
 ** T_REDIRECT_OUT: The '>' character, representing output redirection.
@@ -30,8 +31,7 @@
 ** T_NEWLINE: The '\n' character, representing the end of a command.
 ** T_WHITESPACE: Represents spaces or tabs, which are used to separate tokens.
 ** T_BUILTIN: Represents built-in commands like echo, cd, pwd, etc.
-** T_LOGICAL_AND: The '&&' characters, representing logical AND.
-** T_LOGICAL_OR: The '||' characters, representing logical OR.
+** T_ASSIGNMENT: Represents assignment operations, usually in the format VAR=VALUE.
 */
 typedef enum e_tokentype {
     T_WORD,
@@ -51,6 +51,28 @@ typedef enum e_tokentype {
     T_ASSIGNMENT
 } tokentype_t;
 
+/*
+** token_t:
+** Represents a single token parsed from a shell command.
+**
+** value: A string representation of the token's value. This could be the actual word, flag, 
+**        or any other parsed element from the command.
+**
+** type: Specifies the type of the token. It is an enum value which tells whether the token 
+**       is a word, flag, pipe, redirection, etc.
+**
+** next: A pointer to the next token in the linked list of tokens. This allows for the sequential 
+**       processing of each token in a command.
+**
+** envp: An array of environment variables. This is typically used to reference any environment 
+**       variables that might be invoked during command execution.
+**
+** executableDir: A string representation of the directory path where the executable corresponding 
+**                to this token is located. Useful for commands that require path resolution.
+**
+** _pipe: Represents an array that can be used for creating pipes between commands. This allows 
+**        for commands to communicate by sending and receiving data from one another.
+*/
 typedef struct token {
     char            *value;
     tokentype_t     type;
@@ -59,5 +81,8 @@ typedef struct token {
     char            *executableDir;
     int             *_pipe;
 } token_t;
+
+// Location: /src/lex/lexer.c
+token_t *lexer(char *_userInput, char *envp[]);
 
 #endif

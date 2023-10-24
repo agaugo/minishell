@@ -6,61 +6,18 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/24 19:39:50 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 00:05:31 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
-#include "../libft/libft.h"
+#include "../../includes/minishell.h"
 
-// "ctrl-C"
-void handleSigInt(int _signalNumber)
+void execute(struct termios *_oldTermios, token_t *_token, char ***envp)
 {
-	(void)_signalNumber;
-	printf("\n");
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
-
-// "ctrl-\"
-void handleSigQuit(int _signalNumber) {
-	(void)_signalNumber; 
-	// Do nothing
-}
-
-char **duplicate_envp(char **envp) {
-    int count = 0;
-    while (envp[count]) count++;
-
-    char **new_envp = malloc(sizeof(char *) * (count + 1));
-    if (!new_envp) {
-        perror("Failed to allocate memory for new_envp");
-        exit(EXIT_FAILURE);
-    }
-
-    for (int i = 0; i < count; i++) {
-        new_envp[i] = strdup(envp[i]);
-        if (!new_envp[i]) {
-            perror("Failed to duplicate string for new_envp");
-            exit(EXIT_FAILURE);
-        }
-    }
-    new_envp[count] = NULL;
-
-    return new_envp;
-}
-
-void execute(struct termios *_oldTermios, token_t *_token, char ***cloned_envp_ptr)
-{
-	// char **dynamic_envp = duplicate_envp(envp);
-//  if (ft_strcmp(_token->value, "export") == 0)
-//    if (ft_strcmp(_token->value, "unset") == 0)
-//        unsetCommand(_token->envp);
     if (ft_strcmp(_token->value, "export") == 0)
-        ms_export_command(_token, cloned_envp_ptr);
+        ms_export_command(_token, envp);
     else if (ft_strcmp(_token->value, "unset") == 0)
-        ms_unset_command(_token, cloned_envp_ptr);
+        ms_unset_command(_token, envp);
     else if (ft_strcmp(_token->value, "echo") == 0)
         ms_echo_command(_token);
 	else if (ft_strcmp(_token->value, "env") == 0)
@@ -75,31 +32,10 @@ void execute(struct termios *_oldTermios, token_t *_token, char ***cloned_envp_p
         identifyCommand(_token);
 }
 
-//INITIALISE SIGNALS
-int initSignals(void){
-	if (signal(SIGINT, handleSigInt) == SIG_ERR || signal(SIGQUIT, handleSigQuit) == SIG_ERR){
-        handleError(-1, "sigquit");
-	}
-	return (0);
-}
-
-//INITIALISE TERMINAL
-int initTerminal(struct termios *_oldTermios){
-	struct termios _newTermios;
-	
-	if (tcgetattr(0, _oldTermios) != 0)
-        handleError(-1, "tcgetattr");
-	_newTermios = * _oldTermios;
-	_newTermios.c_lflag &= ~ECHOCTL;
-	if (tcsetattr(0, TCSANOW, &_newTermios) != 0)
-        handleError(-1, "tcsetattr");
-	return (0);
-}
-
-void processInput(char *_userInput, struct termios *_oldTermios, token_t *_token, char ***cloned_envp_ptr) {
+void processInput(char *_userInput, struct termios *_oldTermios, token_t *_token, char ***envp) {
     if (!_userInput || !*_userInput)
         return;
-    execute(_oldTermios, _token, cloned_envp_ptr);
+    execute(_oldTermios, _token, envp);
     add_history(_userInput);
 }
 
@@ -112,18 +48,17 @@ int main(int argc, char *argv[], char *envp[]) {
 
 	if (argc != 1 || argv[1]) //TO SILENCE WARNING FOR UNUSED VAR
         handleError(1, "I DONT WANT ANY ARGS PASSED YET!!!");
-    _mainLoop = 1;
 	printf(OPEN);
-	if (initTerminal(&_oldTermios) == -1)
+	if (ms_set_terminal_settings(&_oldTermios) == -1)
 		handleError(1, "Failed to initialise shell.");
-	if (initSignals() == -1)
+	if (ms_init_signals() == -1)
         handleError(1, "Failed to initialise signals."); //unreachable
 	cloned_envp = duplicate_envp(envp);
+    _mainLoop = 1;
     while (_mainLoop)
     {
         _userInput = readline(PROMPT);
-        if (!_userInput)
-            ms_exit_shell(&_oldTermios);
+        ms_handle_ctrl_d(&_oldTermios, _userInput);
         head = lexer(_userInput, cloned_envp);
         processInput(_userInput, &_oldTermios, head, &cloned_envp);
         free(_userInput);
