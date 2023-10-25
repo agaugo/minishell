@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 18:26:52 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 00:19:29 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 13:40:15 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,5 @@ typedef struct token
 	char			*executableDir;
 	int				*_pipe;
 }					token_t;
-
-// Location: /src/lex/lexer.c
-token_t				*ms_lexer(char *_userInput, char *envp[]);
 
 #endif
