@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   ft_strncmp.c                                       :+:    :+:            */
+/*   main.h                                             :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/10/10 16:35:56 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2022/10/13 11:42:39 by tvan-bee      ########   odam.nl         */
+/*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
+/*   Updated: 2023/10/25 00:20:06 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#ifndef MAIN_H
+# define MAIN_H
 
-int	ft_strcmp(const char *s1, const char *s2)
-{
-	size_t	i;
+// Location: /src/main/init.c
+int		ms_set_terminal_settings(struct termios *_oldTermios);
+char	**ms_clone_envp(char **envp);
 
-	i = 0;
-	while (s1[i] && s2[i] && s1[i] == s2[i])
-		i++;
-	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-}
+// Location: /src/main/signal.c
+void	ms_handle_ctrl_c(int _signalNumber);
+void	ms_handle_ctrl_d(struct termios *_oldTermios, char *_userInput);
+void	ms_handle_ctrl_backspace(int _signalNumber);
+int		ms_init_signals(void);
+
+#endif

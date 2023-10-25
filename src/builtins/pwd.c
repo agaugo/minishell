@@ -14,11 +14,11 @@
 
 static char	*allocate_memory(size_t buffer_size)
 {
-	char *current_directory;
+	char	*current_directory;
 
 	current_directory = (char *)malloc(buffer_size);
 	if (!current_directory)
-		handleError(-1, "Error: Malloc failed to allocate memory.");
+		ms_handle_error(-1, "Error: Malloc failed to allocate memory.");
 	return (current_directory);
 }
 
@@ -30,7 +30,6 @@ char	*ms_get_current_working_dir(void)
 
 	buffer_size = 1024;
 	attempts = 0;
-
 	while (attempts < 5)
 	{
 		current_directory = allocate_memory(buffer_size);
@@ -45,6 +44,6 @@ char	*ms_get_current_working_dir(void)
 			attempts++;
 		}
 	}
-	handleError(-1, "Error: Max attempts used to call getcwd.");
+	ms_handle_error(-1, "Error: Max attempts used to call getcwd.");
 	return (NULL);
 }

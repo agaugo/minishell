@@ -20,13 +20,13 @@ static void	cd_home(void)
 	if (home_path)
 		chdir(home_path);
 	else
-        handleError(-1, "Error: HOME environment variable not found.");
+		ms_handle_error(-1, "Error: HOME environment variable not found.");
 }
 
 static void	cd_absolute_path(char *path)
 {
 	if (!path || chdir(path) != 0)
-        perror("Error: No such file or directory.");
+		perror("Error: No such file or directory.");
 }
 
 void	ms_cd_command(data_t data)

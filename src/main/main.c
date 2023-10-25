@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 13:34:07 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 14:05:17 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void execute(data_t data)
     else if (ft_strcmp(data.tokens->value, "cd") == 0)
         ms_cd_command(data);
     else
-        identifyCommand(data.tokens);
+        ms_identify_command(data.tokens);
 }
 
 void processInput(data_t data) {
@@ -42,15 +42,15 @@ void processInput(data_t data) {
 int main(int argc, char *argv[], char *envp[]) {
     data_t  data;
 	int			    _mainLoop;
-
-	if (argc != 1 || argv[1]) //TO SILENCE WARNING FOR UNUSED VAR
-        handleError(1, "I DONT WANT ANY ARGS PASSED YET!!!");
+	
+	if (argc != 1 || argv[1]) // TO SILENCE WARNING FOR UNUSED VAR
+		ms_handle_error(1, "I DONT WANT ANY ARGS PASSED YET!!!");
 	printf(OPEN);
     memset(&data, 0, sizeof(data_t)); // Initialize data to zero
 	if (ms_set_terminal_settings(data) == -1)
-		handleError(1, "Failed to initialise shell.");
+		ms_handle_error(1, "Failed to initialise shell.");
 	if (ms_init_signals() == -1)
-        handleError(1, "Failed to initialise signals."); //unreachable
+        ms_handle_error(1, "Failed to initialise signals."); //unreachable
 	data.envp = ms_clone_envp(envp);
     _mainLoop = 1;
     while (_mainLoop)

@@ -29,4 +29,3 @@ void	ms_exit_shell(data_t data)
 		exit(EXIT_FAILURE);
 	exit(EXIT_SUCCESS);
 }
- 

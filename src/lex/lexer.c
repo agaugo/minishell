@@ -6,19 +6,18 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 13:42:34 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 13:35:36 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 14:11:11 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int		is_whitespace(char c)
+static int	is_whitespace(char c)
 {
 	return (c == ' ' || c == '\t');
 }
 
-static token_t	*init_new_token(char *start, char *current, tokentype_t type,
-								data_t data)
+static token_t	*init_new_token(char *start, char *current, tokentype_t type, data_t data)
 {
 	token_t	*new_token;
 
@@ -32,7 +31,7 @@ static token_t	*init_new_token(char *start, char *current, tokentype_t type,
 	return (new_token);
 }
 
-void			print_commands(token_t *head)
+void	print_commands(token_t *head)
 {
 	token_t	*current_token;
 	int		i;
@@ -42,9 +41,8 @@ void			print_commands(token_t *head)
 	printf("----------- lexer debug --------------------------------------\n");
 	while (current_token)
 	{
-		printf("Token %d: %s, Type: %d Validity: %d\n", i,
-				current_token->value, current_token->type,
-				validateToken(current_token));
+		printf("Token %d: %s, Type: %d Validity: %d\n", i, current_token->value,
+			current_token->type, ms_validate_token(current_token));
 		current_token = current_token->next;
 		i++;
 	}
@@ -63,7 +61,7 @@ static tokentype_t	parse_pipe_token(char **current)
 
 static tokentype_t	parse_redirect_token(char **current)
 {
-	if (*(*current + 1) != '\0' && **current == '<') 
+	if (*(*current + 1) != '\0' && **current == '<')
 	{
 		if (*(*current + 1) == '<')
 		{
@@ -137,29 +135,30 @@ static tokentype_t	parse_special_token(char **current)
 
 static tokentype_t	parse_word_token(char **current)
 {
-	char *start = *current;
+	char	*start;
 
-	if (isalnum(**current) || **current == '_')  // Checking for start of a variable name
+	start = *current;
+	if (isalnum(**current) || **current == '_')
+		// Checking for start of a variable name
 	{
 		(*current)++;
 		while (isalnum(**current) || **current == '_')
 			(*current)++;
-		if (**current == '=')  // It's an assignment
+		if (**current == '=') // It's an assignment
 		{
 			(*current)++;
-			while (isalnum(**current) || **current == '_' || **current == '/' ||
-				   **current == '.' || **current == '-')
+			while (isalnum(**current) || **current == '_' || **current == '/'
+				|| **current == '.' || **current == '-')
 				(*current)++;
-			return T_ASSIGNMENT;
+			return (T_ASSIGNMENT);
 		}
 		else
 		{
-			*current = start;  // Resetting back if not an assignment
+			*current = start; // Resetting back if not an assignment
 		}
 	}
-
-	while (isalnum(**current) || **current == '_' || **current == '/' ||
-		   **current == '.' || **current == '-')
+	while (isalnum(**current) || **current == '_' || **current == '/'
+		|| **current == '.' || **current == '-')
 		(*current)++;
 	return (T_WORD);
 }
@@ -178,22 +177,27 @@ static tokentype_t	parse_flag_token(char **current)
 
 token_t	*ms_lexer(data_t data)
 {
-	token_t *head = NULL;
-	token_t *current_token = NULL;
-	char *current = data.user_input;
+	token_t		*head;
+	token_t		*current_token;
+	char		*current;
+	char		*start;
+	tokentype_t	current_token_type;
+	char		*value;
+	token_t		*new_token;
 
+	head = NULL;
+	current_token = NULL;
+	current = data.user_input;
 	while (*current != '\0')
 	{
-		char *start = current;
-		tokentype_t current_token_type = T_WORD;
-
+		start = current;
+		current_token_type = T_WORD;
 		if (is_whitespace(*current))
 		{
 			while (is_whitespace(*current))
 				current++;
-			continue;
+			continue ;
 		}
-
 		if (*current == '|')
 			current_token_type = parse_pipe_token(&current);
 		else if (*current == '<' || *current == '>')
@@ -206,13 +210,11 @@ token_t	*ms_lexer(data_t data)
 			current_token_type = parse_special_token(&current);
 		else
 			current_token_type = parse_word_token(&current);
-
 		// Token creation and addition to the linked list
-		char *value = strndup(start, current - start);
-		token_t *new_token = init_new_token(value, current, current_token_type, data);
+		value = strndup(start, current - start);
+		new_token = init_new_token(value, current, current_token_type, data);
 		new_token->envp = data.envp;
 		new_token->next = NULL;
-
 		if (!head)
 		{
 			head = new_token;
@@ -225,5 +227,5 @@ token_t	*ms_lexer(data_t data)
 		}
 	}
 	print_commands(head);
-	return head;
+	return (head);
 }

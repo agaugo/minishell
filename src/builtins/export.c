@@ -6,24 +6,28 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 17:46:14 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 12:12:43 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 13:52:30 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int find_env_index(char **envp, const char *key) {
-    int i = 0;
-    int key_len = strlen(key);
+static int	find_env_index(char **envp, const char *key)
+{
+	int	i;
+	int	key_len;
 
-    while (envp[i]) {
-        if (strncmp(envp[i], key, key_len) == 0 && envp[i][key_len] == '=') {
-            return i;
-        }
-        i++;
-    }
-
-    return -1;
+	i = 0;
+	key_len = strlen(key);
+	while (envp[i])
+	{
+		if (strncmp(envp[i], key, key_len) == 0 && envp[i][key_len] == '=')
+		{
+			return (i);
+		}
+		i++;
+	}
+	return (-1);
 }
 
 void ms_export_command(data_t data) {
