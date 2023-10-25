@@ -6,71 +6,67 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 11:40:52 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 13:34:07 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void execute(data_t data, struct termios *_oldTermios, token_t *_token, char ***envp)
+void execute(data_t data)
 {
-    if (ft_strcmp(_token->value, "export") == 0)
-        ms_export_command(_token, envp);
-    else if (ft_strcmp(_token->value, "unset") == 0)
-        ms_unset_command(_token, envp);
-    else if (ft_strcmp(_token->value, "echo") == 0)
-        ms_echo_command(_token);
-	else if (ft_strcmp(_token->value, "env") == 0)
+    if (ft_strcmp(data.tokens->value, "export") == 0)
+        ms_export_command(data);
+    else if (ft_strcmp(data.tokens->value, "unset") == 0)
+        ms_unset_command(data);
+    else if (ft_strcmp(data.tokens->value, "echo") == 0)
+        ms_echo_command(data);
+	else if (ft_strcmp(data.tokens->value, "env") == 0)
         ms_print_env_variables(data);
-    else if (ft_strcmp(_token->value, "pwd") == 0)
+    else if (ft_strcmp(data.tokens->value, "pwd") == 0)
         printf("%s\n", ms_get_current_working_dir());
-    else if (ft_strcmp(_token->value, "exit") == 0 || ft_strcmp(_token->value, "EXIT") == 0)
-        ms_exit_shell(_oldTermios);
-    else if (ft_strcmp(_token->value, "cd") == 0)
-        ms_cd_command(_token);
+    else if (ft_strcmp(data.tokens->value, "exit") == 0 || ft_strcmp(data.tokens->value, "EXIT") == 0)
+        ms_exit_shell(data);
+    else if (ft_strcmp(data.tokens->value, "cd") == 0)
+        ms_cd_command(data);
     else
-        identifyCommand(_token);
+        identifyCommand(data.tokens);
 }
 
-void processInput(data_t data, char *_userInput, struct termios *_oldTermios, token_t *_token, char ***envp) {
-    if (!_userInput || !*_userInput)
+void processInput(data_t data) {
+    if (!data.user_input || !*data.user_input)
         return;
-    execute(data, _oldTermios, _token, envp);
-    add_history(_userInput);
+    execute(data);
+    add_history(data.user_input);
 }
 
 int main(int argc, char *argv[], char *envp[]) {
     data_t  data;
-	char		    *_userInput;
 	int			    _mainLoop;
-	struct	termios _oldTermios;
-	token_t         *head = NULL;
-	char **cloned_envp = NULL;
 
 	if (argc != 1 || argv[1]) //TO SILENCE WARNING FOR UNUSED VAR
         handleError(1, "I DONT WANT ANY ARGS PASSED YET!!!");
 	printf(OPEN);
-	if (ms_set_terminal_settings(&_oldTermios) == -1)
+    memset(&data, 0, sizeof(data_t)); // Initialize data to zero
+	if (ms_set_terminal_settings(data) == -1)
 		handleError(1, "Failed to initialise shell.");
 	if (ms_init_signals() == -1)
         handleError(1, "Failed to initialise signals."); //unreachable
 	data.envp = ms_clone_envp(envp);
-    cloned_envp = ms_clone_envp(envp);
     _mainLoop = 1;
     while (_mainLoop)
     {
-        _userInput = readline(PROMPT);
-        ms_handle_ctrl_d(&_oldTermios, _userInput);
-        head = ms_lexer(_userInput, cloned_envp);
-        processInput(data, _userInput, &_oldTermios, head, &cloned_envp);
-        free(_userInput);
+        data.user_input = readline(PROMPT);
+        ms_handle_ctrl_d(data);
+        data.tokens = ms_lexer(data);
+        processInput(data);
+        free(data.user_input);
     }
 	int i = 0;
-	while (cloned_envp[i])
+	while (data.envp[i])
 	{
-		free(cloned_envp[i]);
+		free(data.envp[i]);
 		i++;
 	}
-	free(cloned_envp);
+	free(data.envp);
 	return (0); //unreachable
 }

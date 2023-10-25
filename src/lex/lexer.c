@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 13:42:34 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 00:19:37 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 13:35:36 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static int		is_whitespace(char c)
 }
 
 static token_t	*init_new_token(char *start, char *current, tokentype_t type,
-								char *envp[])
+								data_t data)
 {
 	token_t	*new_token;
 
@@ -27,7 +27,7 @@ static token_t	*init_new_token(char *start, char *current, tokentype_t type,
 		return (NULL);
 	new_token->value = strndup(start, current - start);
 	new_token->type = type;
-	new_token->envp = envp;
+	new_token->envp = data.envp;
 	new_token->next = NULL;
 	return (new_token);
 }
@@ -176,11 +176,11 @@ static tokentype_t	parse_flag_token(char **current)
 	return (T_WORD); // Default return
 }
 
-token_t	*ms_lexer(char *_userInput, char *envp[])
+token_t	*ms_lexer(data_t data)
 {
 	token_t *head = NULL;
 	token_t *current_token = NULL;
-	char *current = _userInput;
+	char *current = data.user_input;
 
 	while (*current != '\0')
 	{
@@ -209,8 +209,8 @@ token_t	*ms_lexer(char *_userInput, char *envp[])
 
 		// Token creation and addition to the linked list
 		char *value = strndup(start, current - start);
-		token_t *new_token = init_new_token(value, current, current_token_type, envp);
-		new_token->envp = envp;
+		token_t *new_token = init_new_token(value, current, current_token_type, data);
+		new_token->envp = data.envp;
 		new_token->next = NULL;
 
 		if (!head)

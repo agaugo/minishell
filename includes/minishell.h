@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/10/25 11:40:43 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 13:33:30 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,8 @@
 # define OPEN "\033[1;31m_______________________________________________________________________\n_/_____//_____//_____//_____//_____//_____//_____//_____//_____//_____/\n\n______  ______________   _____________________  ______________________ \n___   |/  /___  _/__  | / /___  _/_  ___/__  / / /__  ____/__  /___  / \n__  /|_/ / __  / __   |/ / __  / _____ \\__  /_/ /__  __/  __  / __  /  \n_  /  / / __/ /  _  /|  / __/ /  ____/ /_  __  / _  /___  _  /___  /___\n/_/  /_/  /___/  /_/ |_/  /___/  /____/ /_/ /_/  /_____/  /_____/_____/\n\n_______________________________________________________________________\n_/_____//_____//_____//_____//_____//_____//_____//_____//_____//_____/\n\n\033[0m"
 
 #include "../libft/libft.h"
-#include "builtins.h"
 #include "lexer.h"
 #include "executor.h"
-#include "main.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,7 +41,7 @@ typedef struct data {
 // Location: /src/main.c
 void executeBuiltin(struct termios *_oldTermios, token_t *_token);
 void exitShell(struct termios *_oldTermios);
-void processInput(data_t data, char *_userInput, struct termios *_oldTermios, token_t *_token, char ***envp);
+void processInput(data_t data);
 int main(int argc, char *argv[], char *envp[]);
 
 // Location: /src/utils/
@@ -52,7 +50,33 @@ void handleError(int _exitCode, char *_errorMessage);
 // Location: /src/builtins/
 int restoreTerminal(struct termios *_oldTermios);
 
+/******** /src/builtins ********/
 // Location: /src/builtins/env.c
 void	ms_print_env_variables(data_t data);
+// Location: /src/builtins/cd.c
+void	ms_cd_command(data_t data);
+// Location: /src/builtins/echo.c
+void	ms_echo_command(data_t data);
+// Location: /src/builtins/exit.c
+void	ms_exit_shell(data_t data);
+// Location: /src/builtins/export.c
+void	ms_export_command(data_t data);
+// Location: /src/builtins/pwd.c
+char	*ms_get_current_working_dir(void);
+// Location: /src/builtins/unset.c
+void	ms_unset_command(data_t data);
+/*******************************/
+
+// Location: /src/main/init.c
+int ms_set_terminal_settings(data_t data);
+char **ms_clone_envp(char **envp);
+
+// Location: /src/main/signal.c
+void ms_handle_ctrl_c(int _signalNumber);
+void ms_handle_ctrl_d(data_t data);
+void ms_handle_ctrl_backspace(int _signalNumber);
+int ms_init_signals(void);
+
+token_t	*ms_lexer(data_t data);
 
 #endif

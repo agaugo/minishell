@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/25 10:37:37 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/23 00:37:16 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 11:51:03 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,15 @@ static void	cd_absolute_path(char *path)
         perror("Error: No such file or directory.");
 }
 
-void	ms_cd_command(token_t *token)
+void	ms_cd_command(data_t data)
 {
 	char	*direction;
 
-	if (token->next == NULL)
+	if (data.tokens->next == NULL)
 		cd_home();
 	else
 	{
-		direction = token->next->value;
+		direction = data.tokens->next->value;
 		if (access(direction, F_OK) == 0)
 			cd_absolute_path(direction);
 		else
