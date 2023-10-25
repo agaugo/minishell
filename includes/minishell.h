@@ -30,6 +30,7 @@
 #include <errno.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <sys/wait.h>
 
 //structs
 typedef struct s_terminal
