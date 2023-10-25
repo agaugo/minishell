@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 15:08:15 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 16:12:29 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void execute(data_t data)
+void ms_check_command(data_t data)
 {
     if (ft_strcmp(data.tokens->value, "export") == 0)
         ms_export_command(data);
@@ -35,7 +35,7 @@ void execute(data_t data)
 void processInput(data_t data) {
     if (!data.user_input || !*data.user_input)
         return;
-    execute(data);
+    ms_check_command(data);
     add_history(data.user_input);
 }
 
@@ -47,8 +47,6 @@ int main(int argc, char *argv[], char *envp[]) {
 		ms_handle_error(1, "I DONT WANT ANY ARGS PASSED YET!!!");
 	printf(OPEN);
     memset(&data, 0, sizeof(data_t)); // Initialize data to zero
-	// if (ms_set_terminal_settings(data) == -1)
-		// ms_handle_error(1, "Failed to initialise shell.");
 	if (ms_init_signals() == -1)
         ms_handle_error(1, "Failed to initialise signals."); //unreachable
 	data.envp = ms_clone_envp(envp);
