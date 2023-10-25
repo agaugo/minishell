@@ -6,13 +6,14 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/10/24 23:08:31 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 11:38:23 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef BUILTINS_H
 # define BUILTINS_H
 
+#include "minishell.h"
 #include "lexer.h"
 
 #include <termios.h>
@@ -22,9 +23,6 @@ void	ms_cd_command(token_t *_token);
 
 // Location: /src/builtins/echo.c
 void	ms_echo_command(token_t *token);
-
-// Location: /src/builtins/env.c
-void	ms_print_env_variables(token_t *token);
 
 // Location: /src/builtins/exit.c
 void	ms_exit_shell(struct termios *old_termios);
