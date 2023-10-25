@@ -85,7 +85,7 @@ int	ms_custom_exec(token_t *_token, char *_cmd)
 			ms_execute_command(_execall, _token->envp);
 		}
 		else
-			perror("No such file or Directory");
+			perror("File is a directory");
 		return (1);
 	}
 	return (-1);

@@ -208,6 +208,8 @@ token_t	*ms_lexer(data_t data)
 			current_token_type = parse_quote_token(&current);
 		else if (*current == '$')
 			current_token_type = parse_special_token(&current);
+		// else if (*current == '~')
+		// 	current_token_type = T_TILDE;
 		else
 			current_token_type = parse_word_token(&current);
 		// Token creation and addition to the linked list
