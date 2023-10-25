@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 14:05:17 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 15:08:15 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void execute(data_t data)
     else if (ft_strcmp(data.tokens->value, "pwd") == 0)
         printf("%s\n", ms_get_current_working_dir());
     else if (ft_strcmp(data.tokens->value, "exit") == 0 || ft_strcmp(data.tokens->value, "EXIT") == 0)
-        ms_exit_shell(data);
+        ms_exit_shell();
     else if (ft_strcmp(data.tokens->value, "cd") == 0)
         ms_cd_command(data);
     else
@@ -47,8 +47,8 @@ int main(int argc, char *argv[], char *envp[]) {
 		ms_handle_error(1, "I DONT WANT ANY ARGS PASSED YET!!!");
 	printf(OPEN);
     memset(&data, 0, sizeof(data_t)); // Initialize data to zero
-	if (ms_set_terminal_settings(data) == -1)
-		ms_handle_error(1, "Failed to initialise shell.");
+	// if (ms_set_terminal_settings(data) == -1)
+		// ms_handle_error(1, "Failed to initialise shell.");
 	if (ms_init_signals() == -1)
         ms_handle_error(1, "Failed to initialise signals."); //unreachable
 	data.envp = ms_clone_envp(envp);

@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/24 23:57:59 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 13:48:18 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 15:08:27 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	ms_handle_ctrl_c(int _signalNumber)
 void ms_handle_ctrl_d(data_t data)
 {
     if (!data.user_input)
-        ms_exit_shell(data);
+        ms_exit_shell();
 }
 
 // "ctrl-\"

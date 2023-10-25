@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/10/25 13:40:45 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 15:07:59 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@
 #include <readline/history.h>
 
 typedef struct data {
-    struct termios  orig_termios;
     char            **envp;
     char            *user_input;
     char            *executableDir;
@@ -40,7 +39,6 @@ typedef struct data {
 
 // Location: /src/main.c
 void executeBuiltin(struct termios *_oldTermios, token_t *_token);
-void exitShell(struct termios *_oldTermios);
 void processInput(data_t data);
 int main(int argc, char *argv[], char *envp[]);
 
@@ -58,7 +56,7 @@ void	ms_cd_command(data_t data);
 // Location: /src/builtins/echo.c
 void	ms_echo_command(data_t data);
 // Location: /src/builtins/exit.c
-void	ms_exit_shell(data_t data);
+void	ms_exit_shell(void);
 // Location: /src/builtins/export.c
 void	ms_export_command(data_t data);
 // Location: /src/builtins/pwd.c
