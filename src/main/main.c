@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 16:12:29 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 16:39:44 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ int main(int argc, char *argv[], char *envp[]) {
     {
         data.user_input = readline(PROMPT);
         ms_handle_ctrl_d(data);
-        data.tokens = ms_lexer(data);
+        // printf("%s", replace_tilde_with_home("~", data.envp));
+        data.tokens = ms_tokenizer(data);
         processInput(data);
         free(data.user_input);
     }

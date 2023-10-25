@@ -20,7 +20,7 @@ SRC = \
 	src/builtins/cd.c \
 	src/builtins/exit.c \
 	src/utils/error_handling.c \
-	src/lex/lexer.c \
+	src/tok/tokenizer.c \
 	src/exe/executor.c \
 	src/exe/redirect.c \
 	src/exe/validator.c \

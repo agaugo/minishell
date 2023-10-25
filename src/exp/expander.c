@@ -1,17 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   main.c                                             :+:    :+:            */
+/*   expander.c                                         :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 00:20:21 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 16:38:39 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
 
 /*
 
@@ -46,3 +45,15 @@ char *expand_quotes(data_t data)
 
 }
 
+char *expand_tilde(data_t data) {
+    if (strcmp(str, "~") == 0) {
+        int index = find_env_index(envp, "HOME");
+        if (index == -1) {
+            perror("Environment Variable Not Found");
+            return str;
+        }
+        char *home_val = strchr(envp[index], '=') + 1;
+        return strdup(home_val);
+    }
+    return str;
+}
