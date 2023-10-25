@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/25 10:37:37 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 11:51:03 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/25 16:26:48 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void	cd_home(data_t data)
 	char	*home_path;
 	char	*full;
 	int		index;
-
+	
 	index = find_env_index(data.envp, "HOME");
 	if (index == -1)
 	{
