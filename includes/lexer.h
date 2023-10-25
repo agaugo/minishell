@@ -52,7 +52,8 @@ typedef enum e_tokentype
 	T_NEWLINE,
 	T_WHITESPACE,
 	T_BUILTIN,
-	T_ASSIGNMENT
+	T_ASSIGNMENT,
+	T_TILDE
 }					tokentype_t;
 
 /*
