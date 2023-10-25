@@ -31,17 +31,12 @@ char **ms_clone_envp(char **envp)
     while (envp[count]) count++;
 
     char **new_envp = malloc(sizeof(char *) * (count + 1));
-    if (!new_envp) {
-        perror("Failed to allocate memory for new_envp");
-        exit(EXIT_FAILURE);
-    }
-
+    if (!new_envp)
+        handleError(EXIT_FAILURE, "Failed to allocate memory for new_envp");
     for (int i = 0; i < count; i++) {
         new_envp[i] = strdup(envp[i]);
-        if (!new_envp[i]) {
-            perror("Failed to duplicate string for new_envp");
-            exit(EXIT_FAILURE);
-        }
+        if (!new_envp[i])
+            handleError(EXIT_FAILURE, "Failed to duplicate string for new_envp");
     }
     new_envp[count] = NULL;
 

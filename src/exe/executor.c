@@ -15,8 +15,9 @@ void executeCommand(char **_array, char **_envp) {
 		freeTwoDimensionalArray(_array);
         handleError(EXIT_FAILURE, "Execve Failure"); //will only run if execve fails
     }
-    else  // In parent process
+    else {
         wait(NULL);  // Wait for child process to finish
+    }
 	freeTwoDimensionalArray(_array);
 }
 
@@ -64,11 +65,9 @@ void identifyCommand(token_t *_token)
     char *_fullPath;
     char **_allPath;
     char **_execAll;
-    int  _error;
     int  _index;
 
     _index = 0;
-    _error = 0;
     _cmd = _token->value;
     _allPath = ft_split(getenv("PATH"), ':');
     while (_allPath[_index] != NULL)
@@ -79,10 +78,9 @@ void identifyCommand(token_t *_token)
         {
             _execAll = getFullArgs(_token, _fullPath);
             executeCommand(_execAll, _token->envp);
-            _error = 1;
+            return ;
         }
         _index++;
     }
-    if (!_error)
-        perror("Invalid Command");
+    perror("Invalid Command");
 }
