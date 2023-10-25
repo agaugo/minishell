@@ -59,6 +59,24 @@ char **getFullArgs(token_t *_token, char *_fullPath)
     return(_returnArray);
 }
 
+int customExec(token_t *_token, char *_cmd)
+{
+    char **_execAll;
+
+    if (ft_strchr(_cmd, '/'))
+    {
+        if (access(_cmd, X_OK) != -1)
+        {
+            _execAll = getFullArgs(_token, _cmd);
+            executeCommand(_execAll, _token->envp);
+        }
+        else
+            perror("No such file or Directory");
+        return (1);
+    }
+    return (-1);
+}
+
 void identifyCommand(token_t *_token)
 {
     char *_cmd;
@@ -67,9 +85,11 @@ void identifyCommand(token_t *_token)
     char **_execAll;
     int  _index;
 
-    _index = 0;
     _cmd = _token->value;
+    if (customExec(_token, _cmd) == 1)
+        return ;
     _allPath = ft_split(getenv("PATH"), ':');
+    _index = 0;
     while (_allPath[_index] != NULL)
     {
         _allPath[_index] = ft_strjoin(_allPath[_index], "/");
