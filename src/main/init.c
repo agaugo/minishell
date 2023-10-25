@@ -12,33 +12,37 @@
 
 #include "../../includes/minishell.h"
 
-int ms_set_terminal_settings(struct termios *_oldTermios)
+int	ms_set_terminal_settings(struct termios *_oldTermios)
 {
-	struct termios _newTermios;
-	
+	struct termios	_newTermios;
+
 	if (tcgetattr(0, _oldTermios) != 0)
-        handleError(-1, "tcgetattr");
-	_newTermios = * _oldTermios;
+		ms_handle_error(-1, "tcgetattr");
+	_newTermios = *_oldTermios;
 	_newTermios.c_lflag &= ~ECHOCTL;
 	if (tcsetattr(0, TCSANOW, &_newTermios) != 0)
-        handleError(-1, "tcsetattr");
+		ms_handle_error(-1, "tcsetattr");
 	return (0);
 }
 
-char **ms_clone_envp(char **envp)
+char	**ms_clone_envp(char **envp)
 {
-    int count = 0;
-    while (envp[count]) count++;
+	int		count;
+	char	**new_envp;
 
-    char **new_envp = malloc(sizeof(char *) * (count + 1));
-    if (!new_envp)
-        handleError(EXIT_FAILURE, "Failed to allocate memory for new_envp");
-    for (int i = 0; i < count; i++) {
-        new_envp[i] = strdup(envp[i]);
-        if (!new_envp[i])
-            handleError(EXIT_FAILURE, "Failed to duplicate string for new_envp");
-    }
-    new_envp[count] = NULL;
-
-    return new_envp;
+	count = 0;
+	while (envp[count])
+		count++;
+	new_envp = malloc(sizeof(char *) * (count + 1));
+	if (!new_envp)
+		ms_handle_error(EXIT_FAILURE, "Failed to allocate memory for new_envp");
+	for (int i = 0; i < count; i++)
+	{
+		new_envp[i] = strdup(envp[i]);
+		if (!new_envp[i])
+			ms_handle_error(EXIT_FAILURE,
+				"Failed to duplicate string for new_envp");
+	}
+	new_envp[count] = NULL;
+	return (new_envp);
 }

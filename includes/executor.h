@@ -2,14 +2,13 @@
 
 // ** src/exe/redirect.c
 
-int     loadFD(token_t *_token, tokentype_t _direction);
-void    handleRedirect(token_t *_token, tokentype_t _direction); //so t_direction needs to be set from the previous node, then the node that it is redirected to should be passed here
+int		ms_load_fd(token_t *_token, tokentype_t _direction);
+void	ms_handle_redirect(token_t *_token, tokentype_t _direction);
 
 // ** src/exe/validator.c
 
-void freeTwoDimensionalArray(char **_array);
-int checkAbsolutePath(token_t *_token);
-int validateToken(token_t *_token);
-void executeCommand(char **_array, char **_envp);
-void identifyCommand(token_t *_token);
-
+void	ms_free_2d_array(char **_array);
+int		ms_check_absolute_path(token_t *_token);
+int		ms_validate_token(token_t *_token);
+void	ms_execute_command(char **_array, char **_envp);
+void	ms_identify_command(token_t *_token);

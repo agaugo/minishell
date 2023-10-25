@@ -12,13 +12,13 @@
 
 #include "../../includes/minishell.h"
 
-static int		is_whitespace(char c)
+static int	is_whitespace(char c)
 {
 	return (c == ' ' || c == '\t');
 }
 
 static token_t	*init_new_token(char *start, char *current, tokentype_t type,
-								char *envp[])
+		char *envp[])
 {
 	token_t	*new_token;
 
@@ -32,7 +32,7 @@ static token_t	*init_new_token(char *start, char *current, tokentype_t type,
 	return (new_token);
 }
 
-void			print_commands(token_t *head)
+void	print_commands(token_t *head)
 {
 	token_t	*current_token;
 	int		i;
@@ -42,9 +42,8 @@ void			print_commands(token_t *head)
 	printf("----------- lexer debug --------------------------------------\n");
 	while (current_token)
 	{
-		printf("Token %d: %s, Type: %d Validity: %d\n", i,
-				current_token->value, current_token->type,
-				validateToken(current_token));
+		printf("Token %d: %s, Type: %d Validity: %d\n", i, current_token->value,
+			current_token->type, ms_validate_token(current_token));
 		current_token = current_token->next;
 		i++;
 	}
@@ -63,7 +62,7 @@ static tokentype_t	parse_pipe_token(char **current)
 
 static tokentype_t	parse_redirect_token(char **current)
 {
-	if (*(*current + 1) != '\0' && **current == '<') 
+	if (*(*current + 1) != '\0' && **current == '<')
 	{
 		if (*(*current + 1) == '<')
 		{
@@ -137,29 +136,30 @@ static tokentype_t	parse_special_token(char **current)
 
 static tokentype_t	parse_word_token(char **current)
 {
-	char *start = *current;
+	char	*start;
 
-	if (isalnum(**current) || **current == '_')  // Checking for start of a variable name
+	start = *current;
+	if (isalnum(**current) || **current == '_')
+		// Checking for start of a variable name
 	{
 		(*current)++;
 		while (isalnum(**current) || **current == '_')
 			(*current)++;
-		if (**current == '=')  // It's an assignment
+		if (**current == '=') // It's an assignment
 		{
 			(*current)++;
-			while (isalnum(**current) || **current == '_' || **current == '/' ||
-				   **current == '.' || **current == '-')
+			while (isalnum(**current) || **current == '_' || **current == '/'
+				|| **current == '.' || **current == '-')
 				(*current)++;
-			return T_ASSIGNMENT;
+			return (T_ASSIGNMENT);
 		}
 		else
 		{
-			*current = start;  // Resetting back if not an assignment
+			*current = start; // Resetting back if not an assignment
 		}
 	}
-
-	while (isalnum(**current) || **current == '_' || **current == '/' ||
-		   **current == '.' || **current == '-')
+	while (isalnum(**current) || **current == '_' || **current == '/'
+		|| **current == '.' || **current == '-')
 		(*current)++;
 	return (T_WORD);
 }
@@ -178,22 +178,27 @@ static tokentype_t	parse_flag_token(char **current)
 
 token_t	*ms_lexer(char *_userInput, char *envp[])
 {
-	token_t *head = NULL;
-	token_t *current_token = NULL;
-	char *current = _userInput;
+	token_t		*head;
+	token_t		*current_token;
+	char		*current;
+	char		*start;
+	tokentype_t	current_token_type;
+	char		*value;
+	token_t		*new_token;
 
+	head = NULL;
+	current_token = NULL;
+	current = _userInput;
 	while (*current != '\0')
 	{
-		char *start = current;
-		tokentype_t current_token_type = T_WORD;
-
+		start = current;
+		current_token_type = T_WORD;
 		if (is_whitespace(*current))
 		{
 			while (is_whitespace(*current))
 				current++;
-			continue;
+			continue ;
 		}
-
 		if (*current == '|')
 			current_token_type = parse_pipe_token(&current);
 		else if (*current == '<' || *current == '>')
@@ -206,13 +211,11 @@ token_t	*ms_lexer(char *_userInput, char *envp[])
 			current_token_type = parse_special_token(&current);
 		else
 			current_token_type = parse_word_token(&current);
-
 		// Token creation and addition to the linked list
-		char *value = strndup(start, current - start);
-		token_t *new_token = init_new_token(value, current, current_token_type, envp);
+		value = strndup(start, current - start);
+		new_token = init_new_token(value, current, current_token_type, envp);
 		new_token->envp = envp;
 		new_token->next = NULL;
-
 		if (!head)
 		{
 			head = new_token;
@@ -225,5 +228,5 @@ token_t	*ms_lexer(char *_userInput, char *envp[])
 		}
 	}
 	print_commands(head);
-	return head;
+	return (head);
 }
