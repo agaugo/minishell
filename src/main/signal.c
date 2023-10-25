@@ -13,7 +13,7 @@
 #include "../../includes/minishell.h"
 
 // "ctrl-C"
-void ms_handle_ctrl_c(int _signalNumber)
+void	ms_handle_ctrl_c(int _signalNumber)
 {
 	(void)_signalNumber;
 	printf("\n");
@@ -23,21 +23,22 @@ void ms_handle_ctrl_c(int _signalNumber)
 }
 
 // "ctrl-D"
-void ms_handle_ctrl_d(struct termios *_oldTermios, char *_userInput)
+void	ms_handle_ctrl_d(struct termios *_oldTermios, char *_userInput)
 {
-    if (!_userInput)
-        ms_exit_shell(_oldTermios);
+	if (!_userInput)
+		ms_exit_shell(_oldTermios);
 }
 
 // "ctrl-\"
-void ms_handle_ctrl_backspace(int _signalNumber)
+void	ms_handle_ctrl_backspace(int _signalNumber)
 {
-	(void)_signalNumber; 
+	(void)_signalNumber;
 }
 
-int ms_init_signals(void)
+int	ms_init_signals(void)
 {
-	if (signal(SIGINT, ms_handle_ctrl_c) == SIG_ERR || signal(SIGQUIT, ms_handle_ctrl_backspace) == SIG_ERR)
-        handleError(-1, "sigquit");
+	if (signal(SIGINT, ms_handle_ctrl_c) == SIG_ERR || signal(SIGQUIT,
+			ms_handle_ctrl_backspace) == SIG_ERR)
+		ms_handle_error(-1, "sigquit");
 	return (0);
 }

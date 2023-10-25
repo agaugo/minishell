@@ -29,4 +29,3 @@ void	ms_exit_shell(struct termios *old_termios)
 		exit(EXIT_FAILURE);
 	exit(EXIT_SUCCESS);
 }
- 
