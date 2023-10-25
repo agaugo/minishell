@@ -12,15 +12,22 @@
 
 #include "../../includes/minishell.h"
 
-static void	cd_home(void)
+static void	cd_home(data_t data)
 {
 	char	*home_path;
+	char	*full;
+	int		index;
 
-	home_path = getenv("HOME");
+	index = find_env_index(data.envp, "HOME");
+	if (index == -1)
+	{
+		perror("Environment Variable Not Found");
+		return ;
+	}
+	full = ft_strdup(data.envp[index]);
+	home_path = ft_memmove(full, full + 5, ft_strlen(full) - 4);
 	if (home_path)
 		chdir(home_path);
-	else
-		ms_handle_error(-1, "Error: HOME environment variable not found.");
 }
 
 static void	cd_absolute_path(char *path)
@@ -34,7 +41,7 @@ void	ms_cd_command(data_t data)
 	char	*direction;
 
 	if (data.tokens->next == NULL)
-		cd_home();
+		cd_home(data);
 	else
 	{
 		direction = data.tokens->next->value;

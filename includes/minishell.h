@@ -74,6 +74,7 @@ void ms_handle_ctrl_c(int _signalNumber);
 void ms_handle_ctrl_d(data_t data);
 void ms_handle_ctrl_backspace(int _signalNumber);
 int ms_init_signals(void);
+int	find_env_index(char **envp, const char *key);
 
 token_t	*ms_lexer(data_t data);
 

@@ -12,24 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-static int	find_env_index(char **envp, const char *key)
-{
-	int	i;
-	int	key_len;
-
-	i = 0;
-	key_len = strlen(key);
-	while (envp[i])
-	{
-		if (ft_strncmp(envp[i], key, key_len) == 0 && envp[i][key_len] == '=')
-		{
-			return (i);
-		}
-		i++;
-	}
-	return (-1);
-}
-
 void ms_unset_command(data_t data) {
     if (!data.tokens->next) {
         printf("unset: missing argument\n");

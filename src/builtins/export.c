@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-static int	find_env_index(char **envp, const char *key)
+int	find_env_index(char **envp, const char *key)
 {
 	int	i;
 	int	key_len;
