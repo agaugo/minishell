@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 13:42:34 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/26 14:33:13 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/26 16:53:35 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,18 +160,6 @@ static tokentype_t	parse_word_token(char **current)
 	return (T_WORD);
 }
 
-static tokentype_t	parse_flag_token(char **current)
-{
-	if (**current == '-' && isalnum(*(*current + 1)))
-	{
-		(*current)++;
-		while (isalnum(**current) || **current == '-')
-			(*current)++;
-		return (T_FLAG);
-	}
-	return (T_WORD); // Default return
-}
-
 token_t	*ms_tokenizer(data_t data)
 {
 	token_t		*head;
@@ -199,8 +187,6 @@ token_t	*ms_tokenizer(data_t data)
 			current_token_type = parse_pipe_token(&current);
 		else if (*current == '<' || *current == '>')
 			current_token_type = parse_redirect_token(&current);
-		else if (*current == '-')
-			current_token_type = parse_flag_token(&current);
 		else if (*current == '\'' || *current == '\"')
 			current_token_type = parse_quote_token(&current);
 		else if (*current == '$')

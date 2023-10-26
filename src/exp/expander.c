@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/26 15:09:18 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/26 22:15:21 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,60 @@ char *expand_dollarsign(data_t data, char *token_value)
     return strdup(var_val);
 }
 
+char *expand_quotes(data_t data, char *token_value)
+{
+    char    *result;
+    char    *var_name;
+    char    *var_value;
+    int     i = 0, j = 0, k, var_len;
+
+    result = malloc(strlen(token_value) * 2 + 1);
+    if (!result)
+        return NULL;
+
+    while (token_value[i])
+    {
+        if (token_value[i] == '$')
+        {
+            i++;
+            k = 0;
+            var_name = malloc(strlen(token_value) + 1);
+            while (isalnum(token_value[i + k]) || token_value[i + k] == '_')
+            {
+                var_name[k] = token_value[i + k];
+                k++;
+            }
+            var_name[k] = '\0';
+
+            var_value = expand_dollarsign(data, var_name);
+
+            if (var_value != var_name)
+            {
+                var_len = strlen(var_value);
+                strcpy(result + j, var_value);
+                j += var_len;
+            }
+            else
+            {
+                strcpy(result + j, "$");
+                strcpy(result + j + 1, var_name);
+                j += k + 1;
+            }
+
+            free(var_name);
+            i += k;
+        }
+        else
+        {
+            result[j] = token_value[i];
+            i++;
+            j++;
+        }
+    }
+    result[j] = '\0';
+    return result;
+}
+
 void	ms_expander(data_t data)
 {
 	token_t	*current_token;
@@ -100,6 +154,11 @@ void	ms_expander(data_t data)
             current_token->next = current_token->next->next;
             free(temp);
             temp = NULL;
+        }
+        else if (current_token->type == T_DOUBLE_QUOTE)
+        {
+            current_token->value = expand_quotes(data, current_token->value);
+            current_token->type = T_WORD;
         }
 		current_token = current_token->next;
 	}
