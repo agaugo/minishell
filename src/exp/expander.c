@@ -6,14 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 16:38:39 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/26 15:09:18 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 /*
-
 expand_dollarsign:
 - Environment Variables: Recognize patterns like $VAR_NAME or ${VAR_NAME} and replace them with the value of the environment variable.
 - Special Variables: Shells often have special variables (e.g., $? to get the exit status of the last command).
@@ -31,29 +30,79 @@ Brace Expansion:
 - Expand expressions like {a,b,c} to a b c. Example: echo {a,b,c}d should produce the output ad bd cd.
 
 Escape Characters: Recognize the backslash \ to escape the next character, making it literal. For instance, \$ should be interpreted as a literal dollar sign, not the start of a variable expansion.
-
-
 */
 
-char *expand_dollarsign(data_t data)
+void	print_list(token_t *head)
 {
+	token_t	*current_token;
+	int		i;
 
+	current_token = head;
+	i = 0;
+	printf("----------- expander debug -----------------------------------\n");
+	while (current_token)
+	{
+		printf("Token %d: %s, Type: %d Validity: %d\n", i, current_token->value,
+			current_token->type, ms_validate_token(current_token));
+		current_token = current_token->next;
+		i++;
+	}
+	printf("--------------------------------------------------------------\n");
 }
 
-char *expand_quotes(data_t data)
+// char *expand_quotes(data_t data)
+// {
+//     // TODO: Add the logic to handle the double, single quotes and backticks.
+//     return NULL; // Placeholder return
+// }
+
+char *expand_tilde(data_t data, char *token_value)
 {
-
-}
-
-char *expand_tilde(data_t data) {
-    if (strcmp(str, "~") == 0) {
-        int index = find_env_index(envp, "HOME");
-        if (index == -1) {
-            perror("Environment Variable Not Found");
-            return str;
-        }
-        char *home_val = strchr(envp[index], '=') + 1;
-        return strdup(home_val);
+    int index = find_env_index(data.envp, "HOME");
+    if (index == -1) {
+        perror("Environment Variable Not Found");
+        return token_value;
     }
-    return str;
+    char *var_val = strchr(data.envp[index], '=') + 1;
+    return strdup(var_val);
+}
+
+char *expand_dollarsign(data_t data, char *token_value)
+{
+    int index = find_env_index(data.envp, token_value);
+    if (index == -1) {
+        perror("Environment Variable Not Found");
+        return token_value;
+    }
+    char *var_val = strchr(data.envp[index], '=') + 1;
+    return strdup(var_val);
+}
+
+void	ms_expander(data_t data)
+{
+	token_t	*current_token;
+    token_t *temp;
+    
+	current_token = data.tokens;
+    temp = NULL;
+	while (current_token)
+	{
+        if (current_token->type == T_TILDE)
+        {
+            current_token->value = expand_tilde(data, current_token->value);
+            current_token->type = T_WORD;
+        }
+        else if (current_token->type == T_ENV_VARIABLE)
+        {
+            current_token->value = expand_dollarsign(data, current_token->next->value);
+            current_token->type = T_WORD;
+            temp = current_token->next;
+            current_token->next = current_token->next->next;
+            free(temp);
+            temp = NULL;
+        }
+		current_token = current_token->next;
+	}
+
+    print_list(data.tokens);
 }

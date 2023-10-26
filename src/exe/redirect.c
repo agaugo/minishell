@@ -1,18 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   main.c                                             :+:    :+:            */
+/*   redirect.c                                         :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 00:20:21 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/26 14:39:52 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/lexer.h"
 #include "../../includes/minishell.h"
-#include <fcntl.h>
 
 int	ms_load_fd(token_t *_token, tokentype_t _direction)
 {

@@ -21,6 +21,7 @@ SRC = \
 	src/builtins/exit.c \
 	src/utils/error_handling.c \
 	src/tok/tokenizer.c \
+	src/exp/expander.c \
 	src/exe/executor.c \
 	src/exe/redirect.c \
 	src/exe/validator.c \
