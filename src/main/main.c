@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/26 14:38:02 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/27 00:01:05 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ int main(int argc, char *argv[], char *envp[]) {
 	if (ms_init_signals() == -1)
         ms_handle_error(1, "Failed to initialise signals."); //unreachable
 	data.envp = ms_clone_envp(envp);
+    data.last_exit_code = 0;
     _mainLoop = 1;
     while (_mainLoop)
     {

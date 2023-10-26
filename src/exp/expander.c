@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/26 22:15:21 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/27 00:07:32 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void	print_list(token_t *head)
 	printf("----------- expander debug -----------------------------------\n");
 	while (current_token)
 	{
-		printf("Token %d: %s, Type: %d Validity: %d\n", i, current_token->value,
-			current_token->type, ms_validate_token(current_token));
+		printf("Token %d: %s, Type: %d\n", i, current_token->value,
+			current_token->type);
 		current_token = current_token->next;
 		i++;
 	}
@@ -148,7 +148,10 @@ void	ms_expander(data_t data)
         }
         else if (current_token->type == T_ENV_VARIABLE)
         {
-            current_token->value = expand_dollarsign(data, current_token->next->value);
+            if (strcmp(data.tokens->next->value, "?") == 0)
+                current_token->value = ft_itoa(data.last_exit_code);
+            else
+                current_token->value = expand_dollarsign(data, current_token->next->value);
             current_token->type = T_WORD;
             temp = current_token->next;
             current_token->next = current_token->next->next;
