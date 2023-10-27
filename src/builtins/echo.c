@@ -18,12 +18,12 @@ void ms_echo_command(data_t data)
         printf("\n");
     else
     {
-        if (strcmp(data.tokens->next->value, "-n") == 0)
+        if (ft_strcmp(data.tokens->next->value, "-n") == 0)
         {
             if (data.tokens->next->next && data.tokens->next->next->value)
             {
                 char *value = data.tokens->next->next->value;
-                int len = strlen(value);
+                int len = ft_strlen(value);
                 
                 while (len > 0 && value[len - 1] == '\n')
                 {
