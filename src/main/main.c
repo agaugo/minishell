@@ -11,32 +11,63 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include "../../includes/redirect.h"
 
-void ms_check_command(data_t data)
+void ms_check_redirect(data_t *data)
 {
-    if (ft_strcmp(data.tokens->value, "export") == 0)
-        ms_export_command(data);
-    else if (ft_strcmp(data.tokens->value, "unset") == 0)
-        ms_unset_command(data);
-    else if (ft_strcmp(data.tokens->value, "echo") == 0)
-        ms_echo_command(data);
-	else if (ft_strcmp(data.tokens->value, "env") == 0)
-        ms_print_env_variables(data);
-    else if (ft_strcmp(data.tokens->value, "pwd") == 0)
-        printf("%s\n", ms_get_current_working_dir());
-    else if (ft_strcmp(data.tokens->value, "exit") == 0 || ft_strcmp(data.tokens->value, "EXIT") == 0)
-        ms_exit_shell();
-    else if (ft_strcmp(data.tokens->value, "cd") == 0)
-        ms_cd_command(data);
-    else
-        ms_identify_command(data.tokens);
+    token_t *token;
+
+    token = data->tokens->next;
+    while (token)
+    {
+        if (token->type == T_REDIRECT_IN || token->type == T_REDIRECT_OUT)
+        {
+            ms_redirect(data);
+            data->redirect = 1;
+        }
+        token = token->next;
+    }
+    return ;
 }
 
-void processInput(data_t data) {
-    if (!data.user_input || !*data.user_input)
+
+void ms_check_command(data_t *data)
+{
+    int std_out;
+
+    std_out = dup(1);
+    data->redirect = 0;
+    ms_check_redirect(data);
+    if (ft_strcmp(data->tokens->value, "export") == 0)
+        ms_export_command(data);
+    else if (ft_strcmp(data->tokens->value, "unset") == 0)
+        ms_unset_command(data);
+    else if (ft_strcmp(data->tokens->value, "echo") == 0)
+        ms_echo_command(data);
+	else if (ft_strcmp(data->tokens->value, "env") == 0)
+        ms_print_env_variables(data);
+    else if (ft_strcmp(data->tokens->value, "pwd") == 0)
+        printf("%s\n", ms_get_current_working_dir());
+    else if (ft_strcmp(data->tokens->value, "exit") == 0 || ft_strcmp(data->tokens->value, "EXIT") == 0)
+        ms_exit_shell();
+    else if (ft_strcmp(data->tokens->value, "cd") == 0)
+        ms_cd_command(data);
+    else
+        ms_identify_command(data->tokens);
+    if (data->redirect == 1)
+    {
+        if (dup2(std_out, 1) == -1) {
+            perror("Error restoring standard output");
+        }
+        close(std_out);
+    }
+}
+
+void processInput(data_t *data) {
+    if (!data->user_input || !*data->user_input)
         return;
     ms_check_command(data);
-    add_history(data.user_input);
+    add_history(data->user_input);
 }
 
 int main(int argc, char *argv[], char *envp[]) {
@@ -57,7 +88,7 @@ int main(int argc, char *argv[], char *envp[]) {
         ms_handle_ctrl_d(data);
         data.tokens = ms_tokenizer(data);
         ms_expander(data);
-        processInput(data);
+        processInput(&data);
         free(data.user_input);
     }
 	int i = 0;
