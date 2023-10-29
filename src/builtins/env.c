@@ -12,14 +12,14 @@
 
 #include "../../includes/minishell.h"
 
-void	ms_print_env_variables(data_t data)
+void	ms_print_env_variables(data_t *data)
 {
 	int		index;
 
 	index = 0;
-	while (data.envp[index] != NULL)
+	while (data->envp[index] != NULL)
 	{
-		printf("%s\n", data.envp[index]);
+		printf("%s\n", data->envp[index]);
 		index++;
 	}
 }
