@@ -136,9 +136,7 @@ void	ms_identify_command(token_t *_token)
 		if (access(_fullpath, X_OK) != -1)
 		{
             if (_token->next && _token->next->type == T_WORD)
-            {
                 _execall = ms_get_full_args(_token, _fullpath);
-            }
             else
                 _execall = ms_single_command_array(_fullpath);
 			ms_execute_command(_execall, _token->envp);
