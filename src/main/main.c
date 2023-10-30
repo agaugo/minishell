@@ -34,7 +34,9 @@ void ms_check_redirect(data_t *data)
 void ms_check_command(data_t *data)
 {
     int std_out;
+    int std_in;
 
+    std_in = dup(0);
     std_out = dup(1);
     data->redirect = 0;
     ms_check_redirect(data);
@@ -56,9 +58,8 @@ void ms_check_command(data_t *data)
         ms_identify_command(data->tokens);
     if (data->redirect == 1)
     {
-        if (dup2(std_out, 1) == -1) {
+        if (dup2(std_out, 1) == -1)
             perror("Error restoring standard output");
-        }
         close(std_out);
     }
 }
