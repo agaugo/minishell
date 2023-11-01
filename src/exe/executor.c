@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/01 15:20:37 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/01 15:25:53 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ void	ms_execute_command(data_t *data, char **_array)
 		wait(&status);
         int exit_status = status >> 8;
 		data->last_exit_code = exit_status;
-        printf("Command exited with status: %d\n", data->last_exit_code);
 	}
 	ms_free_2d_array(_array);
 }
