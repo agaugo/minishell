@@ -24,6 +24,7 @@ SRC = \
 	src/exp/expander.c \
 	src/exe/executor.c \
 	src/exe/redirect.c \
+	src/exe/redirect_append.c \
 	src/exe/validator.c \
 	src/builtins/pwd.c \
 	src/builtins/env.c \

@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/27 00:01:05 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/01 15:11:44 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void ms_check_redirect(data_t *data)
     token = data->tokens->next;
     while (token)
     {
-        if (token->type == T_REDIRECT_IN || token->type == T_REDIRECT_OUT)
+        if (token->type == T_REDIRECT_IN || token->type == T_REDIRECT_OUT || token->type == T_APPEND_OUT)
         {
             ms_redirect(data);
             data->redirect = 1;
@@ -34,9 +34,9 @@ void ms_check_redirect(data_t *data)
 void ms_check_command(data_t *data)
 {
     int std_out;
-    int std_in;
+    // int std_in;
 
-    std_in = dup(0);
+    // std_in = dup(0);
     std_out = dup(1);
     data->redirect = 0;
     ms_check_redirect(data);
@@ -55,7 +55,7 @@ void ms_check_command(data_t *data)
     else if (ft_strcmp(data->tokens->value, "cd") == 0)
         ms_cd_command(data);
     else
-        ms_identify_command(data->tokens);
+        ms_identify_command(data);
     if (data->redirect == 1)
     {
         if (dup2(std_out, 1) == -1)
