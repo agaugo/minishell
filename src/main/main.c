@@ -20,16 +20,37 @@ void ms_check_redirect(data_t *data)
     token = data->tokens->next;
     while (token)
     {
-        if (token->type == T_REDIRECT_IN || token->type == T_REDIRECT_OUT)
+        if (token->type == T_REDIRECT_OUT)
         {
             ms_redirect(data);
             data->redirect = 1;
+        }
+        else if (token->type == T_REDIRECT_IN)
+        {
+            ms_redirect(data);
+            data->redirect = 2;
         }
         token = token->next;
     }
     return ;
 }
 
+void ms_reset_std(data_t *data, int *std_in, int *std_out)
+{
+    if (data->redirect == 1)
+    {
+        if (dup2(*std_out, 1) == -1)
+            perror("Error restoring standard output");
+        close(*std_out);
+    }
+    if (data->redirect == 2)
+    {
+        if (dup2(*std_in, 0) == -1)
+            perror("Error restoring standard output");
+        close(*std_in);
+    }
+
+}
 
 void ms_check_command(data_t *data)
 {
@@ -56,12 +77,7 @@ void ms_check_command(data_t *data)
         ms_cd_command(data);
     else
         ms_identify_command(data->tokens);
-    if (data->redirect == 1)
-    {
-        if (dup2(std_out, 1) == -1)
-            perror("Error restoring standard output");
-        close(std_out);
-    }
+    ms_reset_std(data, &std_in, &std_out);
 }
 
 void processInput(data_t *data) {
@@ -73,7 +89,7 @@ void processInput(data_t *data) {
 
 int main(int argc, char *argv[], char *envp[]) {
     data_t  data;
-	int			    _mainLoop;
+	int	    _mainLoop;
 	
 	if (argc != 1 || argv[1]) // TO SILENCE WARNING FOR UNUSED VAR
 		ms_handle_error(1, "I DONT WANT ANY ARGS PASSED YET!!!");

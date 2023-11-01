@@ -37,7 +37,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
 	@echo "$(YELLOW)Compiling $(NAME)...$(RESET)"
-	$(CC) $(OBJS) $(LIBFT) $(LDFLAGS) -o $(NAME)
+	$(CC) $(OBJS) $(LDFLAGS) $(LIBFT) -o $(NAME)
 	@echo "$(GREEN)$(NAME) compiled successfully!$(RESET)"
 
 $(OBJS_DIR)%.o: %.c
