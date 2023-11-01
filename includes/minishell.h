@@ -37,11 +37,12 @@ typedef struct data {
     char            *executableDir;
     int             last_exit_code;
     token_t         *tokens;
+    int             redirect;
 } data_t;
 
 // Location: /src/main.c
 void executeBuiltin(struct termios *_oldTermios, token_t *_token);
-void processInput(data_t data);
+void processInput(data_t *data);
 int main(int argc, char *argv[], char *envp[]);
 
 // Location: /src/utils/
@@ -52,23 +53,23 @@ int		restoreTerminal(struct termios *_oldTermios);
 
 /******** /src/builtins ********/
 // Location: /src/builtins/env.c
-void	ms_print_env_variables(data_t data);
+void	ms_print_env_variables(data_t *data);
 // Location: /src/builtins/cd.c
-void	ms_cd_command(data_t data);
+void	ms_cd_command(data_t *data);
 // Location: /src/builtins/echo.c
-void	ms_echo_command(data_t data);
+void	ms_echo_command(data_t *data);
 // Location: /src/builtins/exit.c
 void	ms_exit_shell(void);
 // Location: /src/builtins/export.c
-void	ms_export_command(data_t data);
+void	ms_export_command(data_t *data);
 // Location: /src/builtins/pwd.c
 char	*ms_get_current_working_dir(void);
 // Location: /src/builtins/unset.c
-void	ms_unset_command(data_t data);
+void	ms_unset_command(data_t *data);
 /*******************************/
 
 // Location: /src/main/init.c
-int ms_set_terminal_settings(data_t data);
+int ms_set_terminal_settings(data_t *data);
 char **ms_clone_envp(char **envp);
 
 // Location: /src/main/signal.c

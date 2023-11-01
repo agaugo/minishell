@@ -12,18 +12,18 @@
 
 #include "../../includes/minishell.h"
 
-void ms_echo_command(data_t data)
+void ms_echo_command(data_t *data)
 {
-    if (data.tokens->next == NULL || data.tokens->next->value == NULL)
+    if (data->tokens->next == NULL || data->tokens->next->value == NULL)
         printf("\n");
     else
     {
-        if (strcmp(data.tokens->next->value, "-n") == 0)
+        if (ft_strcmp(data->tokens->next->value, "-n") == 0)
         {
-            if (data.tokens->next->next && data.tokens->next->next->value)
+            if (data->tokens->next->next && data->tokens->next->next->value)
             {
-                char *value = data.tokens->next->next->value;
-                int len = strlen(value);
+                char *value = data->tokens->next->next->value;
+                int len = ft_strlen(value);
                 
                 while (len > 0 && value[len - 1] == '\n')
                 {
@@ -35,7 +35,7 @@ void ms_echo_command(data_t data)
             }
         }
         else
-            printf("%s\n", data.tokens->next->value);
+            printf("%s\n", data->tokens->next->value);
     }
 }
 

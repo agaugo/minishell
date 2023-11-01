@@ -12,6 +12,25 @@
 
 #include "../../includes/minishell.h"
 
+char **ms_single_command_array(const char *_command)
+{
+    char **_execall;
+
+    _execall = malloc(2 * sizeof(char *));
+    if (!_execall) {
+        perror("Failed to allocate memory for command array");
+        return NULL;
+    }
+    _execall[0] = ft_strdup(_command);
+    if (!_execall[0]) {
+        perror("Failed to duplicate command string");
+        free(_execall);
+    }
+    _execall[1] = NULL;
+
+    return _execall;
+}
+
 void	ms_execute_command(char **_array, char **_envp)
 {
 	pid_t	pid;
@@ -25,7 +44,7 @@ void	ms_execute_command(char **_array, char **_envp)
 	}
 	else if (pid == 0)
 	{
-		execve(_array[0], _array, _envp);
+        execve(_array[0], _array, _envp);
 		ms_free_2d_array(_array);
 		ms_handle_error(EXIT_FAILURE, "Execve Failure");
 	}
@@ -45,7 +64,7 @@ int	ms_count_array_len(token_t *_token)
 
 	_count = 0;
 	_newtoken = _token;
-	while (_newtoken)
+	while (_newtoken && _newtoken->type == T_WORD)
 	{
 		_newtoken = _newtoken->next;
 		_count++;
@@ -62,16 +81,18 @@ char	**ms_get_full_args(token_t *_token, char *_fullpath)
 	_len = ms_count_array_len(_token);
 	_index = 0;
 	_returnarray = (char **)malloc((_len + 1) * sizeof(char *));
-	_returnarray[_len] = NULL;
 	_token = _token->next;
 	_returnarray[_index] = ft_strdup(_fullpath);
 	_index++;
 	while (_token != NULL)
 	{
+        if (_token->type != T_WORD)
+            break ;
 		_returnarray[_index] = ft_strdup(_token->value);
 		_token = _token->next;
 		_index++;
 	}
+    _returnarray[_index] = NULL;
 	return (_returnarray);
 }
 
@@ -83,7 +104,10 @@ int	ms_custom_exec(token_t *_token, char *_cmd)
 	{
 		if (access(_cmd, X_OK) != -1)
 		{
-			_execall = ms_get_full_args(_token, _cmd);
+            if (_token->next && _token->next->type == T_WORD)
+                _execall = ms_get_full_args(_token, _cmd);
+            else
+                _execall = ms_single_command_array(_cmd);
 			ms_execute_command(_execall, _token->envp);
 		}
 		else
@@ -92,6 +116,7 @@ int	ms_custom_exec(token_t *_token, char *_cmd)
 	}
 	return (-1);
 }
+
 
 void	ms_identify_command(token_t *_token)
 {
@@ -112,7 +137,10 @@ void	ms_identify_command(token_t *_token)
 		_fullpath = ft_strjoin(_allpath[_index], _cmd);
 		if (access(_fullpath, X_OK) != -1)
 		{
-			_execall = ms_get_full_args(_token, _fullpath);
+            if (_token->next && _token->next->type == T_WORD)
+                _execall = ms_get_full_args(_token, _fullpath);
+            else
+                _execall = ms_single_command_array(_fullpath);
 			ms_execute_command(_execall, _token->envp);
 			return ;
 		}

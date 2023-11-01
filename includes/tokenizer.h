@@ -86,7 +86,7 @@ typedef struct token
 	struct token	*next;
 	char			**envp;
 	char			*executableDir;
-	int				*_pipe;
+	int				fd;
 }					token_t;
 
 #endif
