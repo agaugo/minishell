@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/27 00:07:32 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/01 16:24:55 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,5 +166,5 @@ void	ms_expander(data_t data)
 		current_token = current_token->next;
 	}
 
-    print_list(data.tokens);
+    // print_list(data.tokens);
 }
