@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/01 13:50:30 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/01 15:33:41 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ void ms_redirect(data_t *data)
     {
         if (token->next->type == T_REDIRECT_OUT)
             ms_redirect_out(data);
-        if (token->next->type == T_REDIRECT_OUT)
-            ms_redirect_out(data);
+        if (token->next->type == T_APPEND_OUT)
+            ms_redirect_out_append(data);
         token = token->next;
     }
 }

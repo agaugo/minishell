@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/01 14:16:14 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/01 15:32:20 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,16 @@
 void  ms_redirect_out_append(data_t *data)
 {
     int fd;
+    token_t *token;
 
-    if (!data->tokens->next->next) {
+    token = data->tokens;
+    while (token->type != T_APPEND_OUT)
+        token = token->next;
+    if (!token->next) {
         perror("Syntax Error");
         return;
     }
-    // Changed O_TRUNC to O_APPEND
-    printf("fwsfw");
-    fd = open(data->tokens->next->next->value, O_WRONLY | O_CREAT | O_APPEND, 0666);
+    fd = open(token->next->value, O_WRONLY | O_CREAT | O_APPEND, 0666);
     if (fd == -1) {
         perror("Error opening/creating file");
         return ;
