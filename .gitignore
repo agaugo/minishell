@@ -1,6 +1,9 @@
 # Program
 minishell
 
+# Teser
+minishell_tester
+
 # Object files, which are generated when you compile C
 *.o
 *.obj

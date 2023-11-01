@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/11/01 15:19:19 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/01 16:17:22 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,5 +89,7 @@ void  ms_redirect_out_append(data_t *data);
 
 void	ms_identify_command(data_t *data);
 void	ms_execute_command(data_t *data, char **_array);
+
+void	ms_heredoc(token_t *token);
 
 #endif
