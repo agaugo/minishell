@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   main.c                                             :+:    :+:            */
+/*   executor.c                                         :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 00:20:21 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/10/26 23:54:29 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,23 +34,25 @@ char **ms_single_command_array(const char *_command)
 void	ms_execute_command(char **_array, char **_envp)
 {
 	pid_t	pid;
+    int     status;
 
-	pid = fork();  // Create a child process
-	if (pid == -1) // Fork failed
+	pid = fork();
+	if (pid == -1)
 	{
 		ms_free_2d_array(_array);
 		ms_handle_error(EXIT_FAILURE, "Fork Failure");
 	}
-	else if (pid == 0) // In child process
+	else if (pid == 0)
 	{
         execve(_array[0], _array, _envp);
 		ms_free_2d_array(_array);
 		ms_handle_error(EXIT_FAILURE, "Execve Failure");
-			// will only run if execve fails
 	}
 	else
-    {
-		wait(NULL); // Wait for child process to finish
+	{
+		wait(&status);
+        int exit_status = status >> 8; // Extract the exit status
+        printf("Command exited with status: %d\n", exit_status);
 	}
 	ms_free_2d_array(_array);
 }
