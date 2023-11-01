@@ -20,15 +20,15 @@ void ms_check_redirect(data_t *data)
     token = data->tokens->next;
     while (token)
     {
-        if (token->type == T_REDIRECT_IN || token->type == T_REDIRECT_OUT || token->type == T_APPEND_OUT)
+        if (token->type == T_REDIRECT_OUT || token->type == T_APPEND_OUT)
         {
-            ms_redirect(data);
             data->redirect = 1;
+            ms_redirect(data);
         }
         else if (token->type == T_REDIRECT_IN)
         {
-            ms_redirect(data);
             data->redirect = 2;
+            ms_redirect(data);
         }
         token = token->next;
     }
@@ -41,15 +41,12 @@ void ms_reset_std(data_t *data, int *std_in, int *std_out)
     {
         if (dup2(*std_out, 1) == -1)
             perror("Error restoring standard output");
-        close(*std_out);
-    }
-    if (data->redirect == 2)
-    {
         if (dup2(*std_in, 0) == -1)
             perror("Error restoring standard output");
+        close(*std_out);
         close(*std_in);
-    }
 
+    }
 }
 
 void ms_check_command(data_t *data)

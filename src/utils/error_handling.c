@@ -14,7 +14,6 @@
 
 void	ms_handle_error(int _exitCode, char *_errorMessage)
 {
-	printf("dasda");
 	perror(_errorMessage);
 	exit(_exitCode);
 }
