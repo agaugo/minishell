@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   lexer.h                                            :+:    :+:            */
+/*   tokenizer.h                                        :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 18:26:52 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 16:33:06 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/01 13:44:03 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@
 typedef enum e_tokentype
 {
 	T_WORD,
-	T_FLAG,
 	T_PIPE,
 	T_REDIRECT_IN,
 	T_REDIRECT_OUT,
@@ -48,11 +47,6 @@ typedef enum e_tokentype
 	T_SINGLE_QUOTE,
 	T_DOUBLE_QUOTE,
 	T_ENV_VARIABLE,
-	T_EXIT_STATUS,
-	T_NEWLINE,
-	T_WHITESPACE,
-	T_BUILTIN,
-	T_ASSIGNMENT,
 	T_TILDE
 }					tokentype_t;
 
