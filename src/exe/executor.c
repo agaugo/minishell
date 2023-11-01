@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/26 23:54:29 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/01 15:25:53 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char **ms_single_command_array(const char *_command)
     return _execall;
 }
 
-void	ms_execute_command(char **_array, char **_envp)
+void	ms_execute_command(data_t *data, char **_array)
 {
 	pid_t	pid;
     int     status;
@@ -44,26 +44,26 @@ void	ms_execute_command(char **_array, char **_envp)
 	}
 	else if (pid == 0)
 	{
-        execve(_array[0], _array, _envp);
+        execve(_array[0], _array, data->envp);
 		ms_free_2d_array(_array);
 		ms_handle_error(EXIT_FAILURE, "Execve Failure");
 	}
 	else
 	{
 		wait(&status);
-        int exit_status = status >> 8; // Extract the exit status
-        printf("Command exited with status: %d\n", exit_status);
+        int exit_status = status >> 8;
+		data->last_exit_code = exit_status;
 	}
 	ms_free_2d_array(_array);
 }
 
-int	ms_count_array_len(token_t *_token)
+int	ms_count_array_len(data_t *data)
 {
 	int		_count;
 	token_t	*_newtoken;
 
 	_count = 0;
-	_newtoken = _token;
+	_newtoken = data->tokens;
 	while (_newtoken && _newtoken->type == T_WORD)
 	{
 		_newtoken = _newtoken->next;
@@ -72,16 +72,17 @@ int	ms_count_array_len(token_t *_token)
 	return (_count);
 }
 
-char	**ms_get_full_args(token_t *_token, char *_fullpath)
+char	**ms_get_full_args(data_t *data, char *_fullpath)
 {
 	char	**_returnarray;
 	int		_index;
 	int		_len;
+	token_t *_token;
 
-	_len = ms_count_array_len(_token);
+	_len = ms_count_array_len(data);
 	_index = 0;
 	_returnarray = (char **)malloc((_len + 1) * sizeof(char *));
-	_token = _token->next;
+	_token = data->tokens->next;
 	_returnarray[_index] = ft_strdup(_fullpath);
 	_index++;
 	while (_token != NULL)
@@ -96,7 +97,7 @@ char	**ms_get_full_args(token_t *_token, char *_fullpath)
 	return (_returnarray);
 }
 
-int	ms_custom_exec(token_t *_token, char *_cmd)
+int	ms_custom_exec(data_t *data, char *_cmd)
 {
 	char	**_execall;
 
@@ -104,11 +105,11 @@ int	ms_custom_exec(token_t *_token, char *_cmd)
 	{
 		if (access(_cmd, X_OK) != -1)
 		{
-            if (_token->next && _token->next->type == T_WORD)
-                _execall = ms_get_full_args(_token, _cmd);
+            if (data->tokens->next && data->tokens->next->type == T_WORD)
+                _execall = ms_get_full_args(data, _cmd);
             else
                 _execall = ms_single_command_array(_cmd);
-			ms_execute_command(_execall, _token->envp);
+			ms_execute_command(data, _execall);
 		}
 		else
 			perror("File is a directory");
@@ -118,7 +119,7 @@ int	ms_custom_exec(token_t *_token, char *_cmd)
 }
 
 
-void	ms_identify_command(token_t *_token)
+void	ms_identify_command(data_t *data)
 {
 	char	*_cmd;
 	char	*_fullpath;
@@ -126,8 +127,8 @@ void	ms_identify_command(token_t *_token)
 	char	**_execall;
 	int		_index;
 
-	_cmd = _token->value;
-	if (ms_custom_exec(_token, _cmd) == 1)
+	_cmd = data->tokens->value;
+	if (ms_custom_exec(data, _cmd) == 1)
 		return ;
 	_allpath = ft_split(getenv("PATH"), ':');
 	_index = 0;
@@ -137,11 +138,11 @@ void	ms_identify_command(token_t *_token)
 		_fullpath = ft_strjoin(_allpath[_index], _cmd);
 		if (access(_fullpath, X_OK) != -1)
 		{
-            if (_token->next && _token->next->type == T_WORD)
-                _execall = ms_get_full_args(_token, _fullpath);
+            if (data->tokens->next && data->tokens->next->type == T_WORD)
+                _execall = ms_get_full_args(data, _fullpath);
             else
                 _execall = ms_single_command_array(_fullpath);
-			ms_execute_command(_execall, _token->envp);
+			ms_execute_command(data, _execall);
 			return ;
 		}
 		_index++;

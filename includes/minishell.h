@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/10/26 23:42:42 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/01 15:19:19 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "../libft/libft.h"
 #include "tokenizer.h"
 #include "executor.h"
+// #include "redirect.h"
 
 #include <fcntl.h>
 #include <stdio.h>
@@ -82,5 +83,11 @@ int	find_env_index(char **envp, const char *key);
 
 token_t	*ms_tokenizer(data_t data);
 void	ms_expander(data_t data);
+
+void ms_redirect(data_t *data);
+void  ms_redirect_out_append(data_t *data);
+
+void	ms_identify_command(data_t *data);
+void	ms_execute_command(data_t *data, char **_array);
 
 #endif
