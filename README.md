@@ -1,4 +1,5 @@
 to do:
 
 - expand executor logic
-- sort out redirects
+- fix builtin edgecases
+- fix other edgecases
