@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 13:42:34 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/02 10:43:23 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/02 15:32:01 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,8 +177,6 @@ token_t	*ms_tokenizer(data_t data)
 			current_token_type = parse_redirect_token(&current);
 		else if (*current == '\'' || *current == '\"')
 			current_token_type = parse_quote_token(&current);
-		else if (*current == '$')
-			current_token_type = parse_special_token(&current);
 		else if (*current == '~')
 			current_token_type = parse_special_token(&current);
 		else

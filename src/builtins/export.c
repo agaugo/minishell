@@ -6,11 +6,36 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 17:46:14 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 13:52:30 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/02 13:28:58 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+int	is_valid_identifier(const char *key)
+{
+    if (!key || (!isalpha(key[0]) && key[0] != '_')) {
+        return (0);
+    }
+    int has_equal_sign = 0;
+    int in_quotes = 0;
+    for (int i = 1; key[i]; i++) {
+        if (key[i] == '\"' || key[i] == '\'') {
+            in_quotes = !in_quotes;  // Toggle quote flag when encountering a quote
+            continue;
+        }
+        if (!in_quotes && !isalnum(key[i]) && key[i] != '_' && key[i] != '=') {
+            return (0);
+        }
+        if (key[i] == '=') {
+            if (has_equal_sign) {
+                return (0);
+            }
+            has_equal_sign = 1;
+        }
+    }
+    return (1);
+}
 
 int	find_env_index(char **envp, const char *key)
 {
@@ -37,14 +62,16 @@ void ms_export_command(data_t *data) {
             printf("%s\n", data->envp[i]);
         }
     } else {
-        char *key = data->tokens->next->value;  // Assuming value is the argument given to export
-        int index = find_env_index(data->envp, key);
+    char *key = data->tokens->next->value;
 
-        // If key is already in the environment, update it
-        if (index != -1) {
-            free(data->envp[index]);
-            data->envp[index] = ft_strdup(key);
-        } else {
+        if (!is_valid_identifier(key)) {
+            fprintf(stderr, "export: `%s': not a valid identifier\n", key);
+            // Set exit status to 1 indicating an error occurred
+            // You might have to modify this line according to your data structure
+            data->last_exit_code = 1;
+            return;
+        }
+        else {
             // Add the new key-value pair to the environment
             int size;
             for (size = 0; (data->envp)[size]; size++);
