@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/24 19:40:15 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 14:13:08 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/01 17:28:15 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void ms_unset_command(data_t *data) {
     if (!data->tokens->next) {
-        printf("unset: missing argument\n");
         return;
     }
 
@@ -22,7 +21,6 @@ void ms_unset_command(data_t *data) {
     int index = find_env_index(data->envp, key);
     
     if (index == -1) {
-        printf("unset: %s: not found\n", key);
         return;
     }
 

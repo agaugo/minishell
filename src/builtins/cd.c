@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/25 10:37:37 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 16:26:48 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/02 10:46:38 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,13 @@ static void	cd_home(data_t *data)
 		chdir(home_path);
 }
 
-static void	cd_absolute_path(char *path)
+static void	cd_absolute_path(data_t *data, char *path)
 {
 	if (!path || chdir(path) != 0)
-		perror("Error: No such file or directory.");
+	{
+		data->last_exit_code = 1;
+		ms_handle_error(1, "No such file or directory");
+	}
 }
 
 void	ms_cd_command(data_t *data)
@@ -46,8 +49,9 @@ void	ms_cd_command(data_t *data)
 	{
 		direction = data->tokens->next->value;
 		if (access(direction, F_OK) == 0)
-			cd_absolute_path(direction);
+			cd_absolute_path(data, direction);
 		else
-			cd_absolute_path(NULL);
+			cd_absolute_path(data, NULL);
 	}
+	data->last_exit_code = 0;
 }

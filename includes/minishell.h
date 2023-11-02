@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/11/01 16:17:22 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/02 09:53:20 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,9 @@ void	ms_print_env_variables(data_t *data);
 // Location: /src/builtins/cd.c
 void	ms_cd_command(data_t *data);
 // Location: /src/builtins/echo.c
-void	ms_echo_command(data_t *data);
+void	ms_echo_command(data_t *data, token_t *parsed_token);
 // Location: /src/builtins/exit.c
-void	ms_exit_shell(void);
+void    ms_exit_shell(data_t *data, token_t *parsed_token);
 // Location: /src/builtins/export.c
 void	ms_export_command(data_t *data);
 // Location: /src/builtins/pwd.c
