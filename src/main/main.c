@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/02 09:52:59 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/02 11:24:20 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ int main(int argc, char *argv[], char *envp[]) {
     while (_mainLoop)
     {
         data.user_input = readline(PROMPT);
-        ms_handle_ctrl_d(data);
+        ms_handle_ctrl_d(&data);
         data.tokens = ms_tokenizer(data);
         ms_expander(data);
         processInput(&data);
