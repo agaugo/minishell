@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/24 23:57:59 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/02 11:25:22 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/02 21:54:45 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ void	ms_handle_ctrl_c(int _signalNumber)
 }
 
 // "ctrl-D"
-void ms_handle_ctrl_d(data_t *data)
+void	ms_handle_ctrl_d(data_t *data)
 {
-    if (!data->user_input)
-        ms_exit_shell(data, NULL);
+	if (!data->user_input)
+		ms_exit_shell(data, NULL);
 }
 
 // "ctrl-\"
