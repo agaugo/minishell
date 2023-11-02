@@ -19,6 +19,8 @@ SRC = \
 	src/main/signal.c \
 	src/builtins/cd.c \
 	src/builtins/exit.c \
+	src/utils/get_dir.c \
+	src/utils/get_env.c \
 	src/utils/error_handling.c \
 	src/tok/tokenizer.c \
 	src/exp/expander.c \

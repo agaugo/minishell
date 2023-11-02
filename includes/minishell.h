@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/11/02 13:05:22 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/02 20:45:14 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void    ms_exit_shell(data_t *data, token_t *parsed_token);
 // Location: /src/builtins/export.c
 void	ms_export_command(data_t *data);
 // Location: /src/builtins/pwd.c
-char	*ms_get_current_working_dir(void);
+void	ms_pwd_command(data_t *data);
 // Location: /src/builtins/unset.c
 void	ms_unset_command(data_t *data);
 /*******************************/
@@ -91,5 +91,7 @@ void	ms_identify_command(data_t *data);
 void	ms_execute_command(data_t *data, char **_array);
 
 void	ms_heredoc(token_t *token);
+
+char	*ms_get_current_working_dir(void);
 
 #endif
