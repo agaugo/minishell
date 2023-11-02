@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/11/02 21:08:11 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/02 22:09:51 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 
 #include "../libft/libft.h"
 #include "tokenizer.h"
-#include "executor.h"
-// #include "redirect.h"
 
 #include <fcntl.h>
 #include <stdio.h>
@@ -44,7 +42,6 @@ typedef struct data {
 
 // Location: /src/main.c
 void executeBuiltin(struct termios *_oldTermios, token_t *_token);
-void processInput(data_t *data);
 int main(int argc, char *argv[], char *envp[]);
 
 // Location: /src/utils/
@@ -93,5 +90,19 @@ void	ms_execute_command(data_t *data, char **_array);
 void	ms_heredoc(token_t *token);
 
 char	*ms_get_current_working_dir(void);
+
+void ms_redirect(data_t *data);
+void  ms_redirect_out_append(data_t *data);
+
+// ** src/exe/redirect.c
+
+int		ms_load_fd(token_t *_token, tokentype_t _direction);
+void	ms_handle_redirect(token_t *_token, tokentype_t _direction);
+
+// ** src/exe/validator.c
+
+void	ms_free_2d_array(char **_array);
+int		ms_check_absolute_path(token_t *_token);
+int		ms_validate_token(token_t *_token);
 
 #endif
