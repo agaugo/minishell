@@ -23,10 +23,10 @@ void	ms_handle_ctrl_c(int _signalNumber)
 }
 
 // "ctrl-D"
-void ms_handle_ctrl_d(data_t data)
+void ms_handle_ctrl_d(data_t *data)
 {
     if (!data.user_input)
-        ms_exit_shell();
+        ms_exit_shell(data, );
 }
 
 // "ctrl-\"
