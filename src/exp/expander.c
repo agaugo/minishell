@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/02 15:30:44 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/02 21:12:37 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void    print_list(token_t *head)
 
 char *expand_tilde(data_t *data, char *token_value)
 {
-    int index = find_env_index(data->envp, "HOME");
+    int index = ms_find_env_index(data->envp, "HOME");
     if (index == -1) {
         perror("Environment Variable Not Found");
         return token_value;
@@ -63,7 +63,7 @@ char *expand_tilde(data_t *data, char *token_value)
 
 char *expand_dollarsign(data_t *data, char *token_value)
 {
-    int index = find_env_index(data->envp, token_value);
+    int index = ms_find_env_index(data->envp, token_value);
     if (index == -1) {
         return strdup("");  // Return empty string if not found
     }

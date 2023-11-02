@@ -6,19 +6,19 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 17:46:14 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/02 19:37:36 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/02 21:09:25 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int	is_valid_identifier(const char *key)
+static int	ms_is_valid_identifier(const char *key)
 {
 	int	has_equal_sign;
 	int	in_quotes;
 	int	i;
 
-	if (!key || (!isalpha(key[0]) && key[0] != '_'))
+	if (!key || (!ft_isalpha(key[0]) && key[0] != '_'))
 		return (0);
 	has_equal_sign = 0;
 	in_quotes = 0;
@@ -29,14 +29,14 @@ static int	is_valid_identifier(const char *key)
 			in_quotes = !in_quotes;
 		if (!in_quotes && key[i] == '=' && has_equal_sign++)
 			return (0);
-		if (!in_quotes && !isalnum(key[i]) && key[i] != '_' && key[i] != '=')
+		if (!in_quotes && !ft_isalnum(key[i]) && key[i] != '_' && key[i] != '=')
 			return (0);
 		i++;
 	}
 	return (1);
 }
 
-static int	get_env_size(char **envp)
+static int	ms_get_env_size(char **envp)
 {
 	int	size;
 
@@ -46,12 +46,12 @@ static int	get_env_size(char **envp)
 	return (size);
 }
 
-static void	add_to_env(data_t *data, char *key)
+static void	ms_add_to_env(data_t *data, char *key)
 {
 	char	**new_envp;
 	int		size;
 
-	size = get_env_size(data->envp);
+	size = ms_get_env_size(data->envp);
 	new_envp = realloc(data->envp, (size + 2) * sizeof(char *));
 	if (!new_envp)
 	{
@@ -77,12 +77,12 @@ void	ms_export_command(data_t *data)
 	else
 	{
 		key = data->tokens->next->value;
-		if (!is_valid_identifier(key))
+		if (!ms_is_valid_identifier(key))
 		{
 			fprintf(stderr, "export: `%s': not a valid identifier\n", key);
 			data->last_exit_code = 1;
 		}
 		else
-			add_to_env(data, key);
+			ms_add_to_env(data, key);
 	}
 }

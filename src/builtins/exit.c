@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/25 10:37:37 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/02 21:00:52 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/02 21:10:48 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	ms_str_isdigit(const char *str)
 	return (1);
 }
 
-static char	*process_quotes(char *temp_value, token_t *parsed_token)
+static char	*ms_process_quotes(char *temp_value, token_t *parsed_token)
 {
 	char	*inner_value;
 
@@ -52,7 +52,7 @@ static char	*process_quotes(char *temp_value, token_t *parsed_token)
 	return (temp_value);
 }
 
-static void	check_args_and_exit(token_t *parsed_token, char *temp_value)
+static void	ms_check_args_and_exit(token_t *parsed_token, char *temp_value)
 {
 	int	exit_code;
 
@@ -64,7 +64,7 @@ static void	check_args_and_exit(token_t *parsed_token, char *temp_value)
 			free(temp_value);
 		exit(255);
 	}
-	exit_code = atoi(temp_value);
+	exit_code = ft_atoi(temp_value);
 	if (temp_value != parsed_token->value)
 		free(temp_value);
 	printf("exit\n");
@@ -88,6 +88,6 @@ void	ms_exit_shell(data_t *data, token_t *parsed_token)
 		return ;
 	}
 	temp_value = parsed_token->value;
-	temp_value = process_quotes(temp_value, parsed_token);
-	check_args_and_exit(parsed_token, temp_value);
+	temp_value = ms_process_quotes(temp_value, parsed_token);
+	ms_check_args_and_exit(parsed_token, temp_value);
 }

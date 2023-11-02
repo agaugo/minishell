@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   utils1.c                                           :+:    :+:            */
+/*   get_env.c                                          :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/02 19:33:59 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/02 19:34:07 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/02 21:07:26 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	find_env_index(char **envp, const char *key)
+int	ms_find_env_index(char **envp, const char *key)
 {
 	int	i;
 	int	key_len;

@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 00:11:40 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/02 20:32:48 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/02 21:12:10 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@ typedef struct s_quote_vars
 	char	*cleaned_str;
 }				t_quote_vars;
 
-static void	check_quotes2(const char *str, t_quote_vars *vars)
+static void	ms_check_quotes2(const char *str, t_quote_vars *vars)
 {
 	if ((str[*vars->i] == '\'' || str[*vars->i] == '\"')
 		&& !(*vars->in_single_quote) && !(*vars->in_double_quote)
-		&& (*vars->i == 0 || *vars->i == strlen(str) - 1
+		&& (*vars->i == 0 || *vars->i == ft_strlen(str) - 1
 			|| str[*vars->i - 1] == ' ' || str[*vars->i + 1] == ' '
 			|| str[*vars->i + 1] == '\0'))
 		(*vars->i)++;
@@ -41,7 +41,7 @@ static void	check_quotes2(const char *str, t_quote_vars *vars)
 		vars->cleaned_str[(*vars->j)++] = str[(*vars->i)++];
 }
 
-static void	check_quotes(const char *str, t_quote_vars *vars)
+static void	ms_check_quotes(const char *str, t_quote_vars *vars)
 {
 	if (str[*vars->i] == '\'' && !(*vars->in_double_quote)
 		&& (*vars->i == 0 || str[*vars->i - 1] != '\\' || (*vars->i > 1
@@ -58,10 +58,10 @@ static void	check_quotes(const char *str, t_quote_vars *vars)
 		(*vars->i)++;
 	}
 	else
-		check_quotes2(str, vars);
+		ms_check_quotes2(str, vars);
 }
 
-static char	*clean_quotes(t_quote_vars *vars, const char *str)
+static char	*ms_clean_quotes(t_quote_vars *vars, const char *str)
 {
 	char			*cleaned_str;
 	size_t			i;
@@ -73,15 +73,15 @@ static char	*clean_quotes(t_quote_vars *vars, const char *str)
 	j = 0;
 	sq = 0;
 	dq = 0;
-	cleaned_str = malloc(strlen(str) + 1);
+	cleaned_str = malloc(ft_strlen(str) + 1);
 	vars = &(t_quote_vars){&i, &j, &sq, &dq, cleaned_str};
 	while (str[i])
-		check_quotes(str, vars);
+		ms_check_quotes(str, vars);
 	cleaned_str[j] = '\0';
 	return (cleaned_str);
 }
 
-static void	print_echo(data_t *data, char *str)
+static void	ms_print_echo(data_t *data, char *str)
 {
 	char	*value;
 	int		len;
@@ -115,7 +115,7 @@ void	ms_echo_command(data_t *data, token_t *parsed_token)
 	token = parsed_token;
 	while (token)
 	{
-		cleaned_str = clean_quotes(&vars, token->value);
+		cleaned_str = ms_clean_quotes(&vars, token->value);
 		if (!str)
 			str = cleaned_str;
 		else
@@ -128,6 +128,6 @@ void	ms_echo_command(data_t *data, token_t *parsed_token)
 		}
 		token = token->next;
 	}
-	print_echo(data, str);
+	ms_print_echo(data, str);
 	free(str);
 }

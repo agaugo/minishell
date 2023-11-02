@@ -6,19 +6,19 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/25 10:37:37 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/02 19:16:38 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/02 21:11:13 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void	cd_home(data_t *data)
+static void	ms_cd_home(data_t *data)
 {
 	char	*home_path;
 	char	*full;
 	int		index;
 
-	index = find_env_index(data->envp, "HOME");
+	index = ms_find_env_index(data->envp, "HOME");
 	if (index == -1)
 	{
 		perror("Environment Variable Not Found");
@@ -31,7 +31,7 @@ static void	cd_home(data_t *data)
 	free(full);
 }
 
-static void	cd_absolute_path(data_t *data, char *path)
+static void	ms_cd_absolute_path(data_t *data, char *path)
 {
 	if (!path || chdir(path) != 0)
 	{
@@ -45,14 +45,14 @@ void	ms_cd_command(data_t *data)
 	char	*direction;
 
 	if (!data->tokens->value)
-		cd_home(data);
+		ms_cd_home(data);
 	else
 	{
 		direction = data->tokens->next->value;
 		if (access(direction, F_OK) == 0)
-			cd_absolute_path(data, direction);
+			ms_cd_absolute_path(data, direction);
 		else
-			cd_absolute_path(data, NULL);
+			ms_cd_absolute_path(data, NULL);
 	}
 	data->last_exit_code = 0;
 }

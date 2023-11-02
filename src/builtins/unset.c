@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/24 19:40:15 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/02 19:31:36 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/02 21:07:17 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void	shift_env_vars(data_t *data, int index)
+static void	ms_shift_env_vars(data_t *data, int index)
 {
 	int	i;
 
@@ -24,7 +24,7 @@ static void	shift_env_vars(data_t *data, int index)
 	}
 }
 
-static int	get_env_size(char **envp)
+static int	ms_get_env_size(char **envp)
 {
 	int	size;
 
@@ -44,12 +44,12 @@ void	ms_unset_command(data_t *data)
 	if (!data->tokens->next)
 		return ;
 	key = data->tokens->next->value;
-	index = find_env_index(data->envp, key);
+	index = ms_find_env_index(data->envp, key);
 	if (index == -1)
 		return ;
 	free(data->envp[index]);
-	shift_env_vars(data, index);
-	size = get_env_size(data->envp);
+	ms_shift_env_vars(data, index);
+	size = ms_get_env_size(data->envp);
 	new_envp = realloc(data->envp, size * sizeof(char *));
 	if (!new_envp)
 	{
