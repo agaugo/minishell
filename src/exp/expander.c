@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/01 16:24:55 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/01 17:34:14 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ void	ms_expander(data_t data)
         }
         else if (current_token->type == T_ENV_VARIABLE)
         {
-            if (strcmp(data.tokens->next->value, "?") == 0)
+            if (strcmp(current_token->next->value, "?") == 0)
                 current_token->value = ft_itoa(data.last_exit_code);
             else
                 current_token->value = expand_dollarsign(data, current_token->next->value);

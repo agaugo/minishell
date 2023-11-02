@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 00:04:00 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 11:51:56 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/01 16:52:19 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,4 +22,5 @@ void	ms_print_env_variables(data_t *data)
 		printf("%s\n", data->envp[index]);
 		index++;
 	}
+	data->last_exit_code = 0;
 }

@@ -6,14 +6,28 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 00:11:40 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/10/25 11:51:31 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/02 10:52:16 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void ms_echo_command(data_t *data)
+void ms_echo_command(data_t *data, token_t *parsed_token)
 {
+    char *str;
+    token_t *token;
+
+    str = "";
+    token = parsed_token;
+    while (token)
+    {
+        // printf("READ\n");
+        str = ft_strjoin(str, token->value);
+        token = token->next;
+        if (token)
+            str = ft_strjoin(str, " ");
+    }
+    
     if (data->tokens->next == NULL || data->tokens->next->value == NULL)
         printf("\n");
     else
@@ -35,7 +49,7 @@ void ms_echo_command(data_t *data)
             }
         }
         else
-            printf("%s\n", data->tokens->next->value);
+            printf("%s\n", str);
     }
 }
 
