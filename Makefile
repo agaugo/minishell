@@ -25,7 +25,7 @@ SRC = \
 	src/tok/tokenizer.c \
 	src/exp/expander.c \
 	src/exe/executor.c \
-	src/exe/redirect.c \
+	src/red/redirect.c \
 	src/exe/heredoc.c \
 	src/exe/validator.c \
 	src/builtins/pwd.c \
