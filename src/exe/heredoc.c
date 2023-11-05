@@ -20,12 +20,12 @@ void	ms_heredoc(token_t *token)
     while (1)
     {
         input = readline("heredoc> ");
-        if (strcmp(input, delimiter) == 0)
+        if (ft_strcmp(input, delimiter) == 0)
         {
             free(input);
             break;
         }
-		if (strcmp(heredoc_content, "") != 0)
+		if (ft_strcmp(heredoc_content, "") != 0)
 			heredoc_content = ft_strjoin(heredoc_content, "\n");
 		heredoc_content = ft_strjoin(heredoc_content, input);
         free(input);
