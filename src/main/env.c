@@ -12,6 +12,23 @@
 
 #include "../../includes/minishell.h"
 
+char *ft_getenv(char **envp, char *key)
+{
+    int i;
+    int len;
+
+    i = 0;
+    len = ft_strlen(key);
+    while (envp[i] != NULL)
+    {
+        if (ft_strncmp(envp[i], key, len) == 0)
+            return (ft_strdup(envp[i] + (len + 1)));
+        i++;
+    }
+    perror("PATH Variable not set");
+    return (NULL);
+}
+
 char	**ms_clone_envp(char **envp)
 {
 	int		count;
@@ -27,7 +44,7 @@ char	**ms_clone_envp(char **envp)
 		ms_handle_error(EXIT_FAILURE, "Failed to allocate memory for new_envp");
 	while (i < count)
 	{
-		new_envp[i] = strdup(envp[i]);
+		new_envp[i] = ft_strdup(envp[i]);
 		if (!new_envp[i])
 		{
 			ms_handle_error(EXIT_FAILURE,

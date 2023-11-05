@@ -125,12 +125,14 @@ void	ms_identify_command(data_t *data)
 	char	*_fullpath;
 	char	**_allpath;
 	char	**_execall;
+    char    *_path;
 	int		_index;
 
 	_cmd = data->tokens->value;
-	if (ms_custom_exec(data, _cmd) == 1)
+    _path = ft_getenv(data->envp, "PATH");
+	if (ms_custom_exec(data, _cmd) == 1 || _path == NULL)
 		return ;
-	_allpath = ft_split(getenv("PATH"), ':');
+	_allpath = ft_split(_path, ':');
 	_index = 0;
 	while (_allpath[_index] != NULL)
 	{

@@ -104,5 +104,6 @@ void	ms_handle_redirect(token_t *_token, tokentype_t _direction);
 void	ms_free_2d_array(char **_array);
 int		ms_check_absolute_path(token_t *_token);
 int		ms_validate_token(token_t *_token);
+char *ft_getenv(char **envp, char *key);
 
 #endif

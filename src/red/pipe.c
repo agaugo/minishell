@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-void pipe(data_t *data)
-{
-
-}
+//void pipe(data_t *data)
+//{
+//
+//}

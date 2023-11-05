@@ -43,11 +43,6 @@ int	ms_validate_token(token_t *_token)
 	if (ms_check_absolute_path(_token))
 		return (1);
 	_path = getenv("PATH");
-	if (_path == NULL)
-	{
-		ms_handle_error(2, "PATH Variable not set");
-		return (0);
-	}
 	_pathDirectories = ft_split(_path, ':');
 	_index = 0;
 	while (_pathDirectories[_index] != NULL)
@@ -57,14 +52,12 @@ int	ms_validate_token(token_t *_token)
 		if (access(_fullDirectory, X_OK) != -1)
 		{
 			_token->executableDir = _fullDirectory;
-				// THIS NEEDS TO BE FREED SOMEWHERE
 			ms_free_2d_array(_pathDirectories);
 			return (1);
 		}
 		free(_fullDirectory);
 		_index++;
 	}
-	// ERROR HANDLING HERE OR IN FUNCTION CALL SYSTEM?
 	ms_free_2d_array(_pathDirectories);
 	return (0);
 }
