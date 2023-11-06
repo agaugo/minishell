@@ -90,6 +90,7 @@ void  ms_redirect_out_append_from_token(data_t *data, token_t *start_token)
     {
         perror("Error duplicating fd");
         close(fd);
+        return ;
     }
     data->tokens->fd = fd;
 }

@@ -16,11 +16,7 @@ char **ms_single_command_array(const char *_command)
 {
     char **_execall;
 
-    _execall = malloc(2 * sizeof(char *));
-    if (!_execall) {
-        perror("Failed to allocate memory for command array");
-        return NULL;
-    }
+    _execall = (char **)malloc(2 * sizeof(char *));
     _execall[0] = ft_strdup(_command);
     if (!_execall[0]) {
         perror("Failed to duplicate command string");
@@ -81,7 +77,7 @@ char	**ms_get_full_args(data_t *data, char *_fullpath)
 
 	_len = ms_count_array_len(data);
 	_index = 0;
-	_returnarray = (char **)malloc((_len + 1) * sizeof(char *));
+	_returnarray = (char **)malloc((_len + 1) * sizeof(char *)); //not sure if just casting works here
 	_token = data->tokens->next;
 	_returnarray[_index] = ft_strdup(_fullpath);
 	_index++;

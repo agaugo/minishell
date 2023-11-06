@@ -12,6 +12,32 @@
 
 #include "../../includes/minishell.h"
 
+char	*ms_get_current_working_dir(void)
+{
+    char	*current_directory;
+    size_t	buffer_size;
+    int		attempts;
+
+    buffer_size = 1024;
+    attempts = 0;
+    while (attempts < 5)
+    {
+        current_directory = allocate_memory(buffer_size);
+        if (!current_directory)
+            return (NULL);
+        if (getcwd(current_directory, buffer_size) != NULL)
+            return (current_directory);
+        free(current_directory);
+        if (errno == ERANGE)
+        {
+            buffer_size *= 2;
+            attempts++;
+        }
+    }
+    ms_handle_error(1, "Max attempts used for getcwd");
+    return (NULL);
+}
+
 void	ms_pwd_command(data_t *data)
 {
 	printf("%s\n", ms_get_current_working_dir());

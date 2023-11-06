@@ -14,25 +14,25 @@ BLUE = \033[1;34m
 RESET = \033[0m
 
 SRC = \
-	src/main/main.c \
-	src/main/env.c \
-	src/main/signal.c \
-	src/builtins/cd.c \
-	src/builtins/exit.c \
-	src/utils/get_dir.c \
-	src/utils/get_env.c \
-	src/utils/error_handling.c \
-	src/tok/tokenizer.c \
-	src/exp/expander.c \
-	src/exe/executor.c \
-	src/red/redirect.c \
-	src/exe/heredoc.c \
-	src/exe/validator.c \
-	src/builtins/pwd.c \
-	src/builtins/env.c \
-	src/builtins/echo.c \
-	src/builtins/unset.c \
-	src/builtins/export.c
+	src/builtins/cd.c		\
+	src/builtins/echo.c		\
+	src/builtins/env.c		\
+	src/builtins/exit.c		\
+	src/builtins/export.c	\
+	src/builtins/pwd.c		\
+	src/builtins/unset.c	\
+	src/exe/executor.c		\
+	src/exe/heredoc.c		\
+	src/exe/validator.c		\
+	src/exp/expander.c		\
+	src/main/env.c			\
+	src/main/main.c			\
+	src/main/signal.c		\
+	src/red/redirect.c		\
+	src/tok/tokenizer.c		\
+	src/utils/error.c		\
+	src/utils/memory.c		
+
 
 OBJS = $(addprefix $(OBJS_DIR), $(SRC:.c=.o))
 
