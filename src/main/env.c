@@ -12,6 +12,22 @@
 
 #include "../../includes/minishell.h"
 
+int	ms_find_env_index(char **envp, const char *key)
+{
+    int	i;
+    int	key_len;
+
+    i = 0;
+    key_len = ft_strlen(key);
+    while (envp[i])
+    {
+        if (ft_strncmp(envp[i], key, key_len) == 0 && envp[i][key_len] == '=')
+            return (i);
+        i++;
+    }
+    return (-1);
+}
+
 char *ft_getenv(char **envp, char *key)
 {
     int i;
@@ -39,7 +55,7 @@ char	**ms_clone_envp(char **envp)
 	count = 0;
 	while (envp[count])
 		count++;
-	new_envp = malloc(sizeof(char *) * (count + 1));
+	new_envp = (char **)malloc(sizeof(char *) * (count + 1));
 	if (!new_envp)
 		ms_handle_error(EXIT_FAILURE, "Failed to allocate memory for new_envp");
 	while (i < count)

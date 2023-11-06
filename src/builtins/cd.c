@@ -15,20 +15,15 @@
 static void	ms_cd_home(data_t *data)
 {
 	char	*home_path;
-	char	*full;
-	int		index;
 
-	index = ms_find_env_index(data->envp, "HOME");
-	if (index == -1)
+    home_path = ft_getenv(data->envp, "HOME");
+	if (home_path == NULL)
 	{
 		perror("Environment Variable Not Found");
 		return ;
 	}
-	full = ft_strdup(data->envp[index]);
-	home_path = ft_memmove(full, full + 5, ft_strlen(full) - 4);
-	if (home_path)
-		chdir(home_path);
-	free(full);
+    chdir(home_path);
+	free(home_path);
 }
 
 static void	ms_cd_absolute_path(data_t *data, char *path)
@@ -44,7 +39,7 @@ void	ms_cd_command(data_t *data)
 {
 	char	*direction;
 
-	if (!data->tokens->value)
+	if (!data->tokens->next)
 		ms_cd_home(data);
 	else
 	{

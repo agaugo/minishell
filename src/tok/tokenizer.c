@@ -21,9 +21,7 @@ static token_t	*init_new_token(char *start, char *current, tokentype_t type, dat
 {
 	token_t	*new_token;
 
-	new_token = malloc(sizeof(token_t));
-	if (!new_token)
-		return (NULL);
+	new_token = allocate_memory(sizeof(token_t));
 	new_token->value = strndup(start, current - start);
 	new_token->type = type;
 	new_token->envp = data.envp;

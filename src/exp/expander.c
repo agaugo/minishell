@@ -58,7 +58,7 @@ char *expand_quotes(data_t *data, char *token_value)
     int i = 0, j = 0, k, var_len;
     // int result_size = strlen(token_value) * 2 + 1;  // Initial allocation
 
-    result = malloc(4096);
+    result = allocate_memory(4096);
     if (!result)
         return NULL;
     
@@ -70,7 +70,7 @@ char *expand_quotes(data_t *data, char *token_value)
             size_t exit_code_len = strlen(exit_code_str);
 
             // Check if exit code fits within the string, otherwise reallocate
-            char *new_token_value = malloc(strlen(token_value) + exit_code_len + 1);
+            char *new_token_value = allocate_memory(strlen(token_value) + exit_code_len + 1);
             if (!new_token_value) {
                 // Handle memory allocation error
             }
@@ -92,8 +92,8 @@ char *expand_quotes(data_t *data, char *token_value)
         {
             i++;
             k = 0;
-            var_name = (char *)malloc(strlen(token_value) + 1);
-            memset(var_name, 0, strlen(token_value) + 1);
+            var_name = (char *)allocate_memory(strlen(token_value) + 1);
+            memset(var_name, 0, ft_strlen(token_value) + 1);
 
             while (isalnum(token_value[i + k]) || token_value[i + k] == '_' || token_value[i + k] == '?')
             {
@@ -106,10 +106,10 @@ char *expand_quotes(data_t *data, char *token_value)
             {
                 result[j++] = '$';
             }
-            else if (strcmp(var_name, "?") == 0)
+            else if (ft_strcmp(var_name, "?") == 0)
             {
                 var_value = ft_itoa(data->last_exit_code);
-                var_len = strlen(var_value);
+                var_len = ft_strlen(var_value);
                 strncpy(result + j, var_value, var_len);
                 j += var_len;
                 free(var_value);
@@ -119,7 +119,7 @@ char *expand_quotes(data_t *data, char *token_value)
                 var_value = expand_dollarsign(data, var_name);
                 if (var_value)
                 {
-                    var_len = strlen(var_value);
+                    var_len = ft_strlen(var_value);
                     strncpy(result + j, var_value, var_len);
                     j += var_len;
                     free(var_value);
@@ -136,15 +136,11 @@ char *expand_quotes(data_t *data, char *token_value)
             i += k;
         }
         else
-        {
             result[j++] = token_value[i++];
-        }
     }
     result[j] = '\0';
-
     result = realloc(result, j + 1);
-
-    return result;
+    return (result);
 }
 
 void ms_expander(data_t *data)
