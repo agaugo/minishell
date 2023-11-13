@@ -58,7 +58,8 @@ void	ms_check_command(data_t *data)
 	std_out = dup(1);
 	data->redirect = 0;
 	ms_check_redirect(data);
-	if (ft_strcmp(data->tokens->value, "export") == 0)
+//    ms_check_pipe(data);
+    if (ft_strcmp(data->tokens->value, "export") == 0)
 		ms_export_command(data);
 	else if (ft_strcmp(data->tokens->value, "unset") == 0)
 		ms_unset_command(data);
