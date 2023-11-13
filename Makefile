@@ -29,6 +29,7 @@ SRC = \
 	src/main/main.c			\
 	src/main/signal.c		\
 	src/red/redirect.c		\
+	src/red/pipe.c			\
 	src/tok/tokenizer.c		\
 	src/utils/error.c		\
 	src/utils/memory.c		

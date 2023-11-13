@@ -38,6 +38,7 @@ typedef struct data {
     int             last_exit_code;
     token_t         *tokens;
     int             redirect;
+    int             pipe[2];
 } data_t;
 
 void	*allocate_memory(size_t buffer_size);
@@ -106,6 +107,8 @@ void	ms_free_2d_array(char **_array);
 int		ms_check_absolute_path(token_t *_token);
 int		ms_validate_token(token_t *_token);
 char    *ft_getenv(char **envp, char *key);
+void ms_pipe(data_t *data);
+void ms_check_pipe(data_t *data);
 
 
 
