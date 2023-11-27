@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/11/02 22:09:51 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/27 11:10:52 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ char    *ft_getenv(char **envp, char *key);
 void ms_pipe(data_t *data);
 void ms_check_pipe(data_t *data);
 
-
-
+void    ms_execute_commands(data_t *data);
+void resolve_command_paths(data_t *data);
 
 #endif

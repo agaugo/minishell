@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/02 22:11:52 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/27 11:07:28 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	ms_check_command(data_t *data)
 	std_out = dup(1);
 	data->redirect = 0;
 	ms_check_redirect(data);
-    ms_check_pipe(data);
+    // ms_check_pipe(data);
     if (ft_strcmp(data->tokens->value, "export") == 0)
 		ms_export_command(data);
 	else if (ft_strcmp(data->tokens->value, "unset") == 0)
@@ -75,7 +75,11 @@ void	ms_check_command(data_t *data)
 	else if (ft_strcmp(data->tokens->value, "cd") == 0)
 		ms_cd_command(data);
 	else
-		ms_identify_command(data);
+	{
+		resolve_command_paths(data);
+		ms_execute_commands(data);
+	}
+		// ms_identify_command(data);
 	ms_reset_std(data, &std_in, &std_out);
 }
 
