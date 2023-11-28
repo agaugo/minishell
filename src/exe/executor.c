@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/28 12:40:11 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/28 12:56:48 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,23 +126,23 @@ char **ms_get_full_args(token_t *start_token, token_t *end_token)
     return (args);
 }
 
-static void execute_child_process(char **args, int fds[2], int in_fd, token_t *next_command, data_t *data)
-{
-    if (in_fd != 0)
-    {
-        dup2(in_fd, 0);
-        close(in_fd);
-    }
-    if (next_command != NULL)
-    {
-        dup2(fds[1], 1);
-        close(fds[0]);
-        close(fds[1]);
-    }
-    execve(args[0], args, data->envp);
-    perror("execve");
-    exit(EXIT_FAILURE);
-}
+// static void execute_child_process(char **args, int fds[2], int in_fd, token_t *next_command, data_t *data)
+// {
+//     if (in_fd != 0)
+//     {
+//         dup2(in_fd, 0);
+//         close(in_fd);
+//     }
+//     if (next_command != NULL)
+//     {
+//         dup2(fds[1], 1);
+//         close(fds[0]);
+//         close(fds[1]);
+//     }
+//     execve(args[0], args, data->envp);
+//     perror("execve");
+//     exit(EXIT_FAILURE);
+// }
 
 void ms_run_builtin(data_t *data, char **args, token_t *current)
 {
@@ -215,18 +215,41 @@ void ms_execute_commands(data_t *data)
         if (next_command != NULL)
             pipe(fds);
 
-        if (is_builtin_command(args[0]))
+        // Execute built-in commands directly if not part of a pipeline
+        if (is_builtin_command(args[0]) && next_command == NULL)
         {
-            // Execute the built-in command directly if it's not part of a pipeline
             ms_run_builtin(data, args, current);
         }
         else
         {
+            // Handle external commands or built-ins as part of a pipeline
             pid = fork();
             if (pid == 0) // Child process
             {
-                // Execute external command
-                execute_child_process(args, fds, in_fd, next_command, data);
+                if (in_fd != 0)
+                {
+                    dup2(in_fd, 0);
+                    close(in_fd);
+                }
+                if (next_command != NULL)
+                {
+                    dup2(fds[1], 1);
+                    close(fds[0]);
+                    close(fds[1]);
+                }
+                if (is_builtin_command(args[0]))
+                {
+                    // Execute the built-in command in the child process
+                    ms_run_builtin(data, args, current);
+                    exit(EXIT_SUCCESS);
+                }
+                else
+                {
+                    // Execute external command
+                    execve(args[0], args, data->envp);
+                    perror("execve");
+                    exit(EXIT_FAILURE);
+                }
             }
             else if (pid < 0)
             {
@@ -257,4 +280,3 @@ void ms_execute_commands(data_t *data)
             current = NULL;
     }
 }
-
