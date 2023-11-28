@@ -1,6 +1,5 @@
 to do:
 
-- expand executor logic
 - fix edgecases (check minishell tester for more cases)
 
 NORM:
