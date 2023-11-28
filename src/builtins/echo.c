@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 00:11:40 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/02 21:12:10 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/28 12:10:57 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,40 +81,44 @@ static char	*ms_clean_quotes(t_quote_vars *vars, const char *str)
 	return (cleaned_str);
 }
 
-static void	ms_print_echo(data_t *data, char *str)
+static void	ms_print_echo(token_t *token, char *str)
 {
-	char	*value;
-	int		len;
-
-	if (!data->tokens->next || !data->tokens->next->value)
+	if (!token->next || !token->next->value)
 		printf("\n");
-	else if (ft_strcmp(data->tokens->next->value, "-n") == 0)
+	else if (ft_strcmp(token->next->value, "-n") == 0)
 	{
-		if (data->tokens->next->next && data->tokens->next->next->value)
+		if (token->next->next && token->next->next->value)
 		{
-			value = data->tokens->next->next->value;
-			len = ft_strlen(value);
-			while (len-- > 0 && value[len] == '\n')
-				value[len] = '\0';
-			printf("%s", value);
+			printf("%s", str);
 		}
 	}
 	else
 		printf("%s\n", str);
 }
 
-void	ms_echo_command(data_t *data, token_t *parsed_token)
+void	ms_echo_command(data_t *data, token_t *token)
 {
 	char			*str;
 	char			*cleaned_str;
-	token_t			*token;
 	char			*temp;
 	t_quote_vars	vars;
+	token_t *start_token;
+	int flag = 0;
 
+	start_token = token;
 	str = NULL;
-	token = parsed_token;
+	token = token->next;
 	while (token)
 	{
+		if (token->type == T_PIPE)
+			break;
+		if (ft_strcmp(token->value, "-n") == 0 && flag == 0)
+		{
+			token = token->next;
+			continue;
+		}
+		else
+			flag = 1;
 		cleaned_str = ms_clean_quotes(&vars, token->value);
 		if (!str)
 			str = cleaned_str;
@@ -128,6 +132,7 @@ void	ms_echo_command(data_t *data, token_t *parsed_token)
 		}
 		token = token->next;
 	}
-	ms_print_echo(data, str);
+	ms_print_echo(start_token, str);
 	free(str);
+	data->last_exit_code = 0;
 }

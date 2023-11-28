@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 17:46:14 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/02 21:09:25 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/28 12:32:19 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,12 @@ static void	ms_add_to_env(data_t *data, char *key)
 	data->envp = new_envp;
 }
 
-void	ms_export_command(data_t *data)
+void	ms_export_command(data_t *data, token_t *token)
 {
 	char	*key;
 	int		i;
 
-	if (!data->tokens->next)
+	if (!token->next)
 	{
 		i = 0;
 		while (data->envp[i])
@@ -76,7 +76,7 @@ void	ms_export_command(data_t *data)
 	}
 	else
 	{
-		key = data->tokens->next->value;
+		key = token->next->value;
 		if (!ms_is_valid_identifier(key))
 		{
 			fprintf(stderr, "export: `%s': not a valid identifier\n", key);
