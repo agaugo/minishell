@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 17:46:14 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/28 12:32:19 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/28 16:34:57 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ void	ms_export_command(data_t *data, token_t *token)
 	char	*key;
 	int		i;
 
+	data->last_exit_code = 0;
 	if (!token->next)
 	{
 		i = 0;
