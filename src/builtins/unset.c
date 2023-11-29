@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/24 19:40:15 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/02 21:07:17 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/28 16:38:39 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,16 @@ static int	ms_get_env_size(char **envp)
 	return (size);
 }
 
-void	ms_unset_command(data_t *data)
+void	ms_unset_command(data_t *data, token_t *token)
 {
 	char	*key;
 	int		index;
 	char	**new_envp;
 	int		size;
 
-	if (!data->tokens->next)
+	if (!token->next)
 		return ;
-	key = data->tokens->next->value;
+	key = token->next->value;
 	index = ms_find_env_index(data->envp, key);
 	if (index == -1)
 		return ;

@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/28 12:35:20 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/28 14:35:14 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,20 +49,20 @@ void	ms_reset_std(data_t *data, int *std_in, int *std_out)
 	}
 }
 
-	void	ms_check_command(data_t *data)
-	{
-		int	std_out;
-		int	std_in;
+void	ms_check_command(data_t *data)
+{
+	int	std_out;
+	int	std_in;
 
-		std_in = dup(0);
-		std_out = dup(1);
-		data->redirect = 0;
-		ms_check_redirect(data);
+	std_in = dup(0);
+	std_out = dup(1);
+	data->redirect = 0;
+	ms_check_redirect(data);
 
-		resolve_command_paths(data);
-		ms_execute_commands(data);
-		ms_reset_std(data, &std_in, &std_out);
-	}
+	resolve_command_paths(data);
+	ms_execute_commands(data);
+	ms_reset_std(data, &std_in, &std_out);
+}
 
 void	ms_process_input(data_t *data)
 {
