@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/29 21:01:26 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/11/30 18:11:46 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,46 +83,94 @@ void resolve_command_paths(data_t *data)
     ms_free_2d_array(allpath);
 }
 
-static int count_args(token_t *start, token_t *end)
-{
-    int count;
+// static int count_args(token_t *start, token_t *end)
+// {
+//     int count;
 
-    count = 0;
-    while (start != end)
-    {
-        count++;
-        start = start->next;
+//     count = 0;
+//     while (start != end)
+//     {
+//         count++;
+//         start = start->next;
+//     }
+//     return (count);
+// }
+
+// static void fill_args_array(char **args, token_t *start, int arg_count)
+// {
+//     int i;
+
+//     i = 0;
+//     while (i < arg_count)
+//     {
+//         args[i] = ft_strdup(start->value);
+//         start = start->next;
+//         i++;
+//     }
+//     args[arg_count] = NULL;
+// }
+
+void setup_output_redirection(token_t *tokens) {
+    token_t *current = tokens;
+
+    while (current != NULL) {
+        if (current->type == T_REDIRECT_OUT) {
+            // Truncate and write to the file
+            int fd = open(current->next->value, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+            if (fd == -1) {
+                perror("open");
+                exit(EXIT_FAILURE);
+            }
+            dup2(fd, STDOUT_FILENO);
+            close(fd);
+        }
+        else if (current->type == T_APPEND_OUT) {
+            // Append to the file
+            int fd = open(current->next->value, O_WRONLY | O_CREAT | O_APPEND, 0666);
+            if (fd == -1) {
+                perror("open");
+                exit(EXIT_FAILURE);
+            }
+            dup2(fd, STDOUT_FILENO);
+            close(fd);
+        }
+        current = current->next;
     }
-    return (count);
-}
-
-static void fill_args_array(char **args, token_t *start, int arg_count)
-{
-    int i;
-
-    i = 0;
-    while (i < arg_count)
-    {
-        args[i] = ft_strdup(start->value);
-        start = start->next;
-        i++;
-    }
-    args[arg_count] = NULL;
 }
 
 char **ms_get_full_args(token_t *start_token, token_t *end_token)
 {
     int     arg_count;
     char    **args;
+    token_t *current = start_token;
 
-    arg_count = count_args(start_token, end_token);
+    // Count arguments until end_token or a redirection token is encountered
+    arg_count = 0;
+    while (current != end_token && current->type != T_REDIRECT_OUT && current->type != T_APPEND_OUT)
+    {
+        arg_count++;
+        current = current->next;
+    }
+
     args = (char **)malloc((arg_count + 1) * sizeof(char *));
     if (!args)
     {
         perror("Failed to allocate memory for arguments");
         return (NULL);
     }
-    fill_args_array(args, start_token, arg_count);
+
+    // Fill the array with arguments until a redirection token is encountered
+    current = start_token;
+    for (int i = 0; i < arg_count; i++)
+    {
+        if (current->type == T_REDIRECT_OUT) {
+            break;
+        }
+        args[i] = ft_strdup(current->value);
+        current = current->next;
+    }
+    args[arg_count] = NULL;
+
     return (args);
 }
 
@@ -212,6 +260,8 @@ void ms_execute_commands(data_t *data)
             next_command = next_command->next;
         args = ms_get_full_args(current, next_command);
 
+        setup_output_redirection(current);
+
         if (next_command != NULL)
             pipe(fds);
 
@@ -273,6 +323,8 @@ void ms_execute_commands(data_t *data)
         }
 
         ms_free_2d_array(args); // Assuming this function frees the args array
+
+        dup2(STDOUT_FILENO, 1);
 
         if (next_command != NULL)
             current = next_command->next;
