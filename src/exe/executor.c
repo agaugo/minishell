@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/30 18:11:46 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/01 11:17:35 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,8 +146,7 @@ char **ms_get_full_args(token_t *start_token, token_t *end_token)
 
     // Count arguments until end_token or a redirection token is encountered
     arg_count = 0;
-    while (current != end_token && current->type != T_REDIRECT_OUT && current->type != T_APPEND_OUT)
-    {
+    while (current != end_token && current->type != T_REDIRECT_OUT && current->type != T_APPEND_OUT && current->type != T_REDIRECT_IN) {
         arg_count++;
         current = current->next;
     }
@@ -244,6 +243,23 @@ void execute_builtin_command(char **args, data_t *data, int fd_write, token_t *c
     }
 }
 
+void setup_input_redirection(token_t *tokens) {
+    token_t *current = tokens;
+
+    while (current != NULL) {
+        if (current->type == T_REDIRECT_IN) {
+            int fd = open(current->next->value, O_RDONLY);
+            if (fd == -1) {
+                perror("open");
+                exit(EXIT_FAILURE);
+            }
+            dup2(fd, STDIN_FILENO);
+            close(fd);
+        }
+        current = current->next;
+    }
+}
+
 void ms_execute_commands(data_t *data)
 {
     int fds[2], in_fd = 0;
@@ -261,6 +277,7 @@ void ms_execute_commands(data_t *data)
         args = ms_get_full_args(current, next_command);
 
         setup_output_redirection(current);
+        setup_input_redirection(current);
 
         if (next_command != NULL)
             pipe(fds);
@@ -324,6 +341,8 @@ void ms_execute_commands(data_t *data)
 
         ms_free_2d_array(args); // Assuming this function frees the args array
 
+        // Restore STDIN and STDOUT to their original state
+        dup2(STDIN_FILENO, 0);
         dup2(STDOUT_FILENO, 1);
 
         if (next_command != NULL)
