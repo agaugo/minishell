@@ -6,29 +6,29 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/01 22:39:20 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/01 22:51:47 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void    print_list3(token_t *head)
-{
-    token_t    *current_token;
-    int        i;
+// void    print_list3(token_t *head)
+// {
+//     token_t    *current_token;
+//     int        i;
 
-    current_token = head;
-    i = 0;
-    printf("----------- expander debug -----------------------------------\n");
-    while (current_token)
-    {
-        printf("Token %d: %s, Type: %d\n", i, current_token->value,
-            current_token->type);
-        current_token = current_token->next;
-        i++;
-    }
-    printf("--------------------------------------------------------------\n");
-}
+//     current_token = head;
+//     i = 0;
+//     printf("----------- expander debug -----------------------------------\n");
+//     while (current_token)
+//     {
+//         printf("Token %d: %s, Type: %d\n", i, current_token->value,
+//             current_token->type);
+//         current_token = current_token->next;
+//         i++;
+//     }
+//     printf("--------------------------------------------------------------\n");
+// }
 
 void remove_newline(char *str) {
     if (str == NULL) return;
@@ -145,7 +145,7 @@ void	ms_check_command(data_t *data)
         data->heredoc_tmp_file = NULL;
     }
 
-	print_list3(data->tokens);
+	// print_list3(data->tokens);
 
 	resolve_command_paths(data);
 	ms_execute_commands(data);
