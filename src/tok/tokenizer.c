@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 13:42:34 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/02 15:32:01 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/01 11:41:35 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,23 +128,23 @@ static tokentype_t	parse_special_token(char **current)
 	return (T_WORD); // Default return
 }
 
-static tokentype_t	parse_word_token(char **current)
+static tokentype_t parse_word_token(char **current)
 {
-	char	*start;
+    // char *start = *current;
+    while (**current && !is_whitespace(**current) && **current != '|' && **current != '<' && **current != '>')
+        (*current)++;
 
-	start = *current;
-	if (**current && **current != ' ')
-		// Checking for start of a variable name
-	{
-		(*current)++;
-		while (**current && **current != ' ')
-			(*current)++;
-		*current = start; // Resetting back if not an assignment
-	}
-	while (**current && **current != ' ')
-		(*current)++;
-	return (T_WORD);
+    // If the next character is a redirection or pipe, return T_WORD for the current part
+    if (**current == '|' || **current == '<' || **current == '>')
+        return T_WORD;
+    
+    // If not, continue as usual
+    while (**current && !is_whitespace(**current))
+        (*current)++;
+    
+    return T_WORD;
 }
+
 
 token_t	*ms_tokenizer(data_t data)
 {
