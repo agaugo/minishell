@@ -2,6 +2,7 @@ to do:
 
 - fix ex: "ls"
 - fix edgecases (check minishell tester for more cases)
+- remove forbidden funcs
 
 NORM:
 - implement strndup
