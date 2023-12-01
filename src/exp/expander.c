@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/01 11:16:01 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/01 18:17:19 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,24 @@ char *expand_dollarsign(data_t *data, char *token_value)
     char *var_val = strchr(data->envp[index], '=') + 1;
     return strdup(var_val);
 }
+
+void remove_token(token_t **head, token_t *prev_token, token_t *current_token)
+{
+    if (!current_token) return; // Safety check
+
+    if (prev_token == NULL) {
+        // If removing the first token, update the head of the list
+        *head = current_token->next;
+    } else {
+        // Link the previous token to the next of the current one
+        prev_token->next = current_token->next;
+    }
+
+    // Free the current token
+    free(current_token->value);
+    free(current_token);
+}
+
 char *expand_quotes(data_t *data, char *token_value)
 {
     char *result;
@@ -146,8 +164,10 @@ char *expand_quotes(data_t *data, char *token_value)
 void ms_expander(data_t *data)
 {
     token_t *current_token;
+    token_t *prev_token;
 
     current_token = data->tokens;
+    prev_token = NULL;
     while (current_token)
     {
         if (current_token->type == T_TILDE)
@@ -170,6 +190,20 @@ void ms_expander(data_t *data)
                 current_token->value = expanded_value;
             }
         }
+
+        if (current_token->value && strcmp(current_token->value, "") == 0) {
+            token_t *next_token = current_token->next;
+            remove_token(&(data->tokens), prev_token, current_token);
+            
+            if (prev_token == NULL) {
+                current_token = data->tokens;
+            } else {
+                current_token = next_token;
+            }
+            continue;
+        }
+        
+        prev_token = current_token;
         current_token = current_token->next;
     }
     // print_list(data->tokens);

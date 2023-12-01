@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/11/28 17:13:18 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/01 21:27:33 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "../libft/libft.h"
 #include "tokenizer.h"
 
+#include <stdbool.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,6 +29,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
@@ -39,6 +41,7 @@ typedef struct data {
     token_t         *tokens;
     int             redirect;
     int             pipe[2];
+    char            *heredoc_tmp_file;
 } data_t;
 
 void	*allocate_memory(size_t buffer_size);
@@ -90,7 +93,7 @@ void  ms_redirect_out_append(data_t *data);
 void	ms_identify_command(data_t *data);
 void	ms_execute_command(data_t *data, char **_array);
 
-void	ms_heredoc(token_t *token);
+void ms_heredoc(data_t *data, token_t *token);
 
 char	*ms_get_current_working_dir(void);
 
@@ -115,5 +118,7 @@ void resolve_command_paths(data_t *data);
 
 // In includes/minishell.h or a similar header file
 int is_builtin_command(char *command);
+
+char *expand_quotes(data_t *data, char *token_value);
 
 #endif

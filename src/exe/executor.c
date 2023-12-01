@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/01 11:17:35 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/01 22:09:06 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,33 +83,6 @@ void resolve_command_paths(data_t *data)
     ms_free_2d_array(allpath);
 }
 
-// static int count_args(token_t *start, token_t *end)
-// {
-//     int count;
-
-//     count = 0;
-//     while (start != end)
-//     {
-//         count++;
-//         start = start->next;
-//     }
-//     return (count);
-// }
-
-// static void fill_args_array(char **args, token_t *start, int arg_count)
-// {
-//     int i;
-
-//     i = 0;
-//     while (i < arg_count)
-//     {
-//         args[i] = ft_strdup(start->value);
-//         start = start->next;
-//         i++;
-//     }
-//     args[arg_count] = NULL;
-// }
-
 void setup_output_redirection(token_t *tokens) {
     token_t *current = tokens;
 
@@ -173,23 +146,13 @@ char **ms_get_full_args(token_t *start_token, token_t *end_token)
     return (args);
 }
 
-// static void execute_child_process(char **args, int fds[2], int in_fd, token_t *next_command, data_t *data)
-// {
-//     if (in_fd != 0)
-//     {
-//         dup2(in_fd, 0);
-//         close(in_fd);
-//     }
-//     if (next_command != NULL)
-//     {
-//         dup2(fds[1], 1);
-//         close(fds[0]);
-//         close(fds[1]);
-//     }
-//     execve(args[0], args, data->envp);
-//     perror("execve");
-//     exit(EXIT_FAILURE);
-// }
+int is_directory(const char *path) {
+    struct stat statbuf;
+    if (stat(path, &statbuf) != 0) {
+        return 0; // Cannot access path, assume not a directory
+    }
+    return (statbuf.st_mode & S_IFMT) == S_IFDIR;
+}
 
 void ms_run_builtin(data_t *data, char **args, token_t *current)
 {
@@ -260,6 +223,14 @@ void setup_input_redirection(token_t *tokens) {
     }
 }
 
+int file_exists_and_executable(const char *path) {
+    struct stat statbuf;
+    if (stat(path, &statbuf) != 0) {
+        return 0; // File doesn't exist
+    }
+    return access(path, X_OK) == 0;
+}
+
 void ms_execute_commands(data_t *data)
 {
     int fds[2], in_fd = 0;
@@ -304,9 +275,9 @@ void ms_execute_commands(data_t *data)
                     close(fds[0]);
                     close(fds[1]);
                 }
+
                 if (is_builtin_command(args[0]))
                 {
-                    // Execute the built-in command in the child process
                     ms_run_builtin(data, args, current);
                     exit(EXIT_SUCCESS);
                 }
