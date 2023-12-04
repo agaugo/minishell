@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/01 22:09:06 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/04 19:15:19 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,34 +81,6 @@ void resolve_command_paths(data_t *data)
     }
 
     ms_free_2d_array(allpath);
-}
-
-void setup_output_redirection(token_t *tokens) {
-    token_t *current = tokens;
-
-    while (current != NULL) {
-        if (current->type == T_REDIRECT_OUT) {
-            // Truncate and write to the file
-            int fd = open(current->next->value, O_WRONLY | O_CREAT | O_TRUNC, 0666);
-            if (fd == -1) {
-                perror("open");
-                exit(EXIT_FAILURE);
-            }
-            dup2(fd, STDOUT_FILENO);
-            close(fd);
-        }
-        else if (current->type == T_APPEND_OUT) {
-            // Append to the file
-            int fd = open(current->next->value, O_WRONLY | O_CREAT | O_APPEND, 0666);
-            if (fd == -1) {
-                perror("open");
-                exit(EXIT_FAILURE);
-            }
-            dup2(fd, STDOUT_FILENO);
-            close(fd);
-        }
-        current = current->next;
-    }
 }
 
 char **ms_get_full_args(token_t *start_token, token_t *end_token)
@@ -206,7 +178,7 @@ void execute_builtin_command(char **args, data_t *data, int fd_write, token_t *c
     }
 }
 
-void setup_input_redirection(token_t *tokens) {
+int setup_input_redirection(token_t *tokens) {
     token_t *current = tokens;
 
     while (current != NULL) {
@@ -214,21 +186,57 @@ void setup_input_redirection(token_t *tokens) {
             int fd = open(current->next->value, O_RDONLY);
             if (fd == -1) {
                 perror("open");
-                exit(EXIT_FAILURE);
+                return -1; // Return error code
             }
             dup2(fd, STDIN_FILENO);
             close(fd);
         }
         current = current->next;
     }
+    return 0; // Success
+}
+
+int setup_output_redirection(token_t *tokens) {
+    token_t *current = tokens;
+
+    while (current != NULL) {
+        if (current->type == T_REDIRECT_OUT) {
+            // Truncate and write to the file
+            int fd = open(current->next->value, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+            if (fd == -1) {
+                perror("open");
+                return -1; // Return error code
+            }
+            dup2(fd, STDOUT_FILENO);
+            close(fd);
+        }
+        else if (current->type == T_APPEND_OUT) {
+            // Append to the file
+            int fd = open(current->next->value, O_WRONLY | O_CREAT | O_APPEND, 0666);
+            if (fd == -1) {
+                perror("open");
+                exit(EXIT_FAILURE);
+            }
+            dup2(fd, STDOUT_FILENO);
+            close(fd);
+        }
+        current = current->next;
+    }
+    return 0; // Success
 }
 
 int file_exists_and_executable(const char *path) {
     struct stat statbuf;
+
     if (stat(path, &statbuf) != 0) {
         return 0; // File doesn't exist
     }
-    return access(path, X_OK) == 0;
+
+    if (S_ISREG(statbuf.st_mode) && (access(path, X_OK) == 0)) {
+        return 1; // File exists and is executable
+    }
+
+    return 0; // File is not a regular file or not executable
 }
 
 void ms_execute_commands(data_t *data)
@@ -247,8 +255,15 @@ void ms_execute_commands(data_t *data)
             next_command = next_command->next;
         args = ms_get_full_args(current, next_command);
 
-        setup_output_redirection(current);
-        setup_input_redirection(current);
+        if (setup_output_redirection(current) == -1 || setup_input_redirection(current) == -1) {
+            data->last_exit_code = 1;
+            if (next_command != NULL)
+                current = next_command->next;
+            else
+                current = NULL;
+
+            continue; 
+        }
 
         if (next_command != NULL)
             pipe(fds);
@@ -274,6 +289,26 @@ void ms_execute_commands(data_t *data)
                     dup2(fds[1], 1);
                     close(fds[0]);
                     close(fds[1]);
+                }
+
+                struct stat statbuf;
+                if (stat(args[0], &statbuf) == 0) {
+                    if (S_ISDIR(statbuf.st_mode)) {
+                        fprintf(stderr, "%s: is a directory\n", args[0]);
+                        exit(126);
+                    } else if (access(args[0], X_OK) != 0) {
+                        perror(args[0]); // "Permission denied" error
+                        exit(126);
+                    }
+                }
+
+                if (file_exists_and_executable(args[0])) {
+                    execve(args[0], args, data->envp);
+                    perror("execve"); // Execve should not return on success
+                    exit(EXIT_FAILURE);
+                } else {
+                    fprintf(stderr, "%s: command not found\n", args[0]);
+                    exit(127);
                 }
 
                 if (is_builtin_command(args[0]))

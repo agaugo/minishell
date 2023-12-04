@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/01 15:33:41 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/02 22:49:34 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,19 +21,19 @@ void ms_redirect_in_from_token(data_t *data, token_t *start_token)
         token = token->next;
     if (!token || !token->next)
     {
-        perror("Syntax Error");
+        // perror("Syntax Error");
         return;
     }
     fd = open(token->next->value, O_RDONLY);
     if (fd == -1)
     {
-        perror("Error opening file");
+        // perror("Error opening file");
         return;
     }
 
     if (dup2(fd, 0) == -1)
     {
-        perror("Error duplicating fd");
+        // perror("Error duplicating fd");
         close(fd);
         return;
     }
@@ -49,18 +49,18 @@ void ms_redirect_out_from_token(data_t *data, token_t *start_token)
         token = token->next;
     if (!token || !token->next)
     {
-        perror("Syntax Error");
+        // perror("Syntax Error");
         return;
     }
     fd = open(token->next->value, O_WRONLY | O_CREAT | O_TRUNC, 0666);
     if (fd == -1)
     {
-        perror("Error opening/creating file");
+        // perror("Error opening/creating file");
         return;
     }
     if (dup2(fd, 1) == -1)
     {
-        perror("Error duplicating fd");
+        // perror("Error duplicating fd");
         close(fd);
         return;
     }
@@ -77,18 +77,18 @@ void  ms_redirect_out_append_from_token(data_t *data, token_t *start_token)
         token = token->next;
     if (!token || !token->next)
     {
-        perror("Syntax Error");
+        // perror("Syntax Error");
         return;
     }
     fd = open(token->next->value, O_WRONLY | O_CREAT | O_APPEND, 0666);
     if (fd == -1)
     {
-        perror("Error opening/creating file");
+        // perror("Error opening/creating file");
         return ;
     }
     if (dup2(fd, 1) == -1)
     {
-        perror("Error duplicating fd");
+        // perror("Error duplicating fd");
         close(fd);
         return ;
     }

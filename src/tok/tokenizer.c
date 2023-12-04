@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 13:42:34 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/01 18:11:54 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/04 17:47:49 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,8 @@ static tokentype_t	parse_quote_token(char **current)
 			(*current)++;
 		if (**current == '\"')
 			(*current)++;
-		return (T_DOUBLE_QUOTE);
+		return (T_WORD);
+		// return (T_DOUBLE_QUOTE);
 	}
 	return (T_WORD); // Default return
 }

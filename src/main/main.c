@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/01 22:51:47 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/04 10:07:28 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,8 @@ void	ms_process_input(data_t *data)
 	add_history(data->user_input);
 }
 
+
+
 int	main(int argc, char *argv[], char *envp[])
 {
 	data_t	data;
@@ -188,3 +190,5 @@ int	main(int argc, char *argv[], char *envp[])
 	}
 	return (0);
 }
+
+// "This is a 'test' string with multiple levels of \"nesting\", including 'quotes \"inside\" quotes', escape sequences like \n, \t, and \\, and special characters: !@#$%^&*()_+."
