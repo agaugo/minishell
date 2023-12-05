@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/04 19:15:19 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/06 00:04:02 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,26 +289,6 @@ void ms_execute_commands(data_t *data)
                     dup2(fds[1], 1);
                     close(fds[0]);
                     close(fds[1]);
-                }
-
-                struct stat statbuf;
-                if (stat(args[0], &statbuf) == 0) {
-                    if (S_ISDIR(statbuf.st_mode)) {
-                        fprintf(stderr, "%s: is a directory\n", args[0]);
-                        exit(126);
-                    } else if (access(args[0], X_OK) != 0) {
-                        perror(args[0]); // "Permission denied" error
-                        exit(126);
-                    }
-                }
-
-                if (file_exists_and_executable(args[0])) {
-                    execve(args[0], args, data->envp);
-                    perror("execve"); // Execve should not return on success
-                    exit(EXIT_FAILURE);
-                } else {
-                    fprintf(stderr, "%s: command not found\n", args[0]);
-                    exit(127);
                 }
 
                 if (is_builtin_command(args[0]))
