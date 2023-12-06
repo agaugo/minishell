@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/06 15:01:35 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/06 15:33:12 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,10 @@ void ms_check_redirect(data_t *data)
         if (token->type == T_REDIRECT_OUT || token->type == T_APPEND_OUT)
         {
             data->redirect = 1;
-            ms_redirect(data);
         }
         else if (token->type == T_REDIRECT_IN)
         {
             data->redirect = 2;
-            ms_redirect(data);
         }
         else if (token->type == T_HEREDOC)
         {
@@ -124,7 +122,6 @@ void	ms_check_command(data_t *data)
 	std_in = dup(0);
 	std_out = dup(1);
 	data->redirect = 0;
-	// ms_check_redir ect(data);
 
     // int original_stdin = dup(STDIN_FILENO);  // Save the original STDIN
 

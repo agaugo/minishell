@@ -23,16 +23,13 @@ SRC = \
 	src/builtins/unset.c	\
 	src/exe/executor.c		\
 	src/exe/heredoc.c		\
-	src/exe/validator.c		\
 	src/exp/expander.c		\
 	src/main/env.c			\
 	src/main/main.c			\
 	src/main/signal.c		\
-	src/red/redirect.c		\
-	src/red/pipe.c			\
 	src/tok/tokenizer.c		\
 	src/utils/error.c		\
-	src/utils/memory.c		
+	src/utils/memory.c
 
 
 OBJS = $(addprefix $(OBJS_DIR), $(SRC:.c=.o))
