@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 00:11:40 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/06 18:35:46 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/06 18:50:12 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,23 +31,28 @@ static void	ms_print_echo(token_t *token, char *str)
 
 void ms_echo_command(data_t *data, token_t *token)
 {
-    char *str = NULL;
-    token_t *start_token = token;
-    int flag = 0;
+    int flag_n = 0;
+    int first_word = 1;
     int stdout_backup = dup(STDOUT_FILENO); // Backup stdout
+	int not_first = 0;
 
     token = token->next; // Skip the echo token
 
-    // Check for "-n" flag and skip it
-    if (token && ft_strcmp(token->value, "-n") == 0)
-    {
-        flag = 1; // "-n" flag found
-        token = token->next; // Skip the "-n" token
-    }
-
-    // Iterate through tokens to find redirection or build the string to print
+    // Iterate through tokens
     while (token)
     {
+		if (token->type == T_PIPE)
+			break;
+        // Check for "-n" flag at the beginning
+        if (first_word && ft_strcmp(token->value, "-n") == 0)
+        {
+            flag_n = 1;
+            token = token->next;
+            continue;
+        }
+        first_word = 0;
+
+        // Handle output redirection
         if (ft_strcmp(token->value, ">") == 0 || ft_strcmp(token->value, ">>") == 0)
         {
             int flags = (ft_strcmp(token->value, ">>") == 0) ? (O_WRONLY | O_CREAT | O_APPEND) : (O_WRONLY | O_CREAT | O_TRUNC);
@@ -63,33 +68,41 @@ void ms_echo_command(data_t *data, token_t *token)
                 }
                 dup2(fd, STDOUT_FILENO); // Redirect STDOUT to the file
                 close(fd);
-                break; // Stop processing further tokens
+                token = token->next; // Move past the file name
+                continue; // Continue processing further tokens
             }
         }
-        if (ft_strcmp(token->value, "<") == 0)
+        // Skip input redirection ("<") and its associated file name
+        else if (ft_strcmp(token->value, "<") == 0)
         {
-            token = token->next->next; // Skip the "<" token and its following file name
+            token = token->next ? token->next->next : NULL; // Skip the "<" token and its following file name
             continue;
         }
-        else
+
+        // Print tokens of type T_WORD
+        if (token && token->type == T_WORD)
         {
-            // Take the first token after any flags or redirections as the string to print
-            if (!str)
+			if (not_first == 0)
+			{
+            	printf("%s", token->value);
+				not_first++;
+			}
+			else
+			    printf(" %s", token->value);
+
+            if (token->next && token->next->type == T_WORD)
             {
-                str = token->value;
+                printf(" "); // Add a space between words
             }
-            break;
         }
+
         token = token->next;
     }
-
-    // Print the string if it's not NULL
-    if (str)
+	
+    // Print newline if "-n" flag is not present
+    if (!flag_n)
     {
-        if (flag)
-            printf("%s", str); // Without newline if "-n" is present
-        else
-            printf("%s\n", str); // With newline
+        printf("\n");
     }
 
     // Restore STDOUT
