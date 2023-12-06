@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 00:11:40 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/06 17:37:39 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/06 18:35:46 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,132 +29,72 @@ static void	ms_print_echo(token_t *token, char *str)
 		printf("%s\n", str);
 }
 
-// void	ms_echo_command(data_t *data, token_t *token)
-// {
-// 	char			*str;
-// 	char			*cleaned_str;
-// 	char			*temp;
-// 	token_t *start_token;
-// 	int flag = 0;
-
-// 	start_token = token;
-// 	str = NULL;
-// 	token = token->next;
-
-// 	if (data->redirect == 2)
-//     {
-//         char buffer[1024];
-//         while (fgets(buffer, sizeof(buffer), stdin) != NULL)
-//         {
-//             fputs(buffer, stdout);
-//         }
-//     }
-//     else
-// 	{
-// 		while (token)
-// 		{
-// 			if (token->type == T_PIPE)
-// 				break;
-// 			if (ft_strcmp(token->value, "-n") == 0 && flag == 0)
-// 			{
-// 				token = token->next;
-// 				continue;
-// 			}
-// 			else
-// 				flag = 1;
-// 			cleaned_str = token->value;
-// 			if (!str)
-// 				str = cleaned_str;
-// 			else
-// 			{
-// 				temp = ft_strjoin(str, " ");
-// 				free(str);
-// 				str = ft_strjoin(temp, cleaned_str);
-// 				free(temp);
-// 			}
-// 			token = token->next;
-// 		}
-// 		ms_print_echo(start_token, str);
-// 		free(str);
-// 	}
-// 	data->last_exit_code = 0;
-// }
-
 void ms_echo_command(data_t *data, token_t *token)
 {
-    char *str;
-    char *cleaned_str;
-    token_t *start_token;
+    char *str = NULL;
+    token_t *start_token = token;
     int flag = 0;
-    int stdin_backup = dup(STDIN_FILENO);   // Backup stdin
     int stdout_backup = dup(STDOUT_FILENO); // Backup stdout
 
-    start_token = token;
-    str = NULL;
-    token = token->next;
+    token = token->next; // Skip the echo token
 
-    // Find the first non-flag token
+    // Check for "-n" flag and skip it
+    if (token && ft_strcmp(token->value, "-n") == 0)
+    {
+        flag = 1; // "-n" flag found
+        token = token->next; // Skip the "-n" token
+    }
+
+    // Iterate through tokens to find redirection or build the string to print
     while (token)
     {
-        if (token->type == T_PIPE)
-            break;
-        if (ft_strcmp(token->value, "-n") == 0 && flag == 0)
+        if (ft_strcmp(token->value, ">") == 0 || ft_strcmp(token->value, ">>") == 0)
         {
-            token = token->next;
+            int flags = (ft_strcmp(token->value, ">>") == 0) ? (O_WRONLY | O_CREAT | O_APPEND) : (O_WRONLY | O_CREAT | O_TRUNC);
+            token = token->next; // Skip the redirection token
+            if (token && token->value)
+            {
+                int fd = open(token->value, flags, 0666);
+                if (fd < 0)
+                {
+                    perror("open");
+                    data->last_exit_code = 1;
+                    return;
+                }
+                dup2(fd, STDOUT_FILENO); // Redirect STDOUT to the file
+                close(fd);
+                break; // Stop processing further tokens
+            }
+        }
+        if (ft_strcmp(token->value, "<") == 0)
+        {
+            token = token->next->next; // Skip the "<" token and its following file name
             continue;
         }
         else
-            flag = 1;
-
-        cleaned_str = token->value;
-        str = cleaned_str;
-        break; // Output only the first non-flag token
-    }
-
-    // Check if output redirection is needed
-    while (token)
-    {
-        if (ft_strcmp(token->value, ">") == 0)
         {
-            token = token->next; // Skip the ">" token
-            if (token && token->value)
+            // Take the first token after any flags or redirections as the string to print
+            if (!str)
             {
-                // Call setup_redirection to handle output redirection
-                token_t *redirect_tokens = malloc(sizeof(token_t));
-                redirect_tokens->type = T_REDIRECT_OUT;
-                redirect_tokens->next = malloc(sizeof(token_t));
-                redirect_tokens->next->type = T_WORD;
-                redirect_tokens->next->value = token->value;
-                redirect_tokens->next->next = NULL;
-
-                if (setup_redirection(redirect_tokens, 1) == -1)
-                {
-                    fprintf(stderr, "Output redirection failed\n");
-                    data->last_exit_code = 1;
-                    free(redirect_tokens->next);
-                    free(redirect_tokens);
-                    return;
-                }
-
-                free(redirect_tokens->next);
-                free(redirect_tokens);
-                break; // Exit the loop as redirection is handled
+                str = token->value;
             }
+            break;
         }
         token = token->next;
     }
 
+    // Print the string if it's not NULL
     if (str)
     {
-        printf("%s\n", str);
+        if (flag)
+            printf("%s", str); // Without newline if "-n" is present
+        else
+            printf("%s\n", str); // With newline
     }
 
-    // Reset stdin and stdout to their original state
-    dup2(stdin_backup, STDIN_FILENO);
+    // Restore STDOUT
     dup2(stdout_backup, STDOUT_FILENO);
-
-    close(stdin_backup);   // Close the backup stdin file descriptor
-    close(stdout_backup); // Close the backup stdout file descriptor
+    close(stdout_backup);
 
     data->last_exit_code = 0;
 }
