@@ -80,6 +80,13 @@ static void	ms_print_echo(token_t *token, char *str)
 // 	data->last_exit_code = 0;
 // }
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include "../../includes/minishell.h"
+
 void ms_echo_command(data_t *data, token_t *token)
 {
     char *str;
@@ -88,38 +95,67 @@ void ms_echo_command(data_t *data, token_t *token)
     int flag = 0;
     int stdin_backup = dup(STDIN_FILENO);   // Backup stdin
     int stdout_backup = dup(STDOUT_FILENO); // Backup stdout
+    int redirect_output = 0; // Flag to indicate output redirection
 
     start_token = token;
     str = NULL;
     token = token->next;
 
     // Check if output redirection is needed
-    if (setup_redirection(start_token, 1) == -1)
-    {
-        fprintf(stderr, "Output redirection failed\n");
-        data->last_exit_code = 1;
-        return;
-    }
-
-    // Find the first non-flag token
     while (token)
     {
-        if (token->type == T_PIPE)
+        if (ft_strcmp(token->value, ">") == 0)
+        {
+            redirect_output = 1;
+            token = token->next; // Skip the ">" token
+            if (token && token->value)
+            {
+                // Call setup_redirection to handle output redirection
+                token_t *redirect_tokens = malloc(sizeof(token_t));
+                redirect_tokens->type = T_REDIRECT_OUT;
+                redirect_tokens->next = malloc(sizeof(token_t));
+                redirect_tokens->next->type = T_WORD;
+                redirect_tokens->next->value = token->value;
+                redirect_tokens->next->next = NULL;
+
+                if (setup_redirection(redirect_tokens, 1) == -1)
+                {
+                    fprintf(stderr, "Output redirection failed\n");
+                    data->last_exit_code = 1;
+                    free(redirect_tokens->next);
+                    free(redirect_tokens);
+                    return;
+                }
+
+                free(redirect_tokens->next);
+                free(redirect_tokens);
+                break; // Exit the loop as redirection is handled
+            }
+        }
+        else if (token->type == T_PIPE)
+        {
             break;
-        if (ft_strcmp(token->value, "-n") == 0 && flag == 0)
+        }
+        else if (ft_strcmp(token->value, "-n") == 0 && flag == 0)
         {
             token = token->next;
             continue;
         }
         else
+        {
             flag = 1;
-
-        cleaned_str = token->value;
-        str = cleaned_str;
-        break; // Output only the first non-flag token
+            cleaned_str = token->value;
+            str = cleaned_str;
+            break; // Output only the first non-flag token
+        }
+        token = token->next;
     }
 
-    if (str)
+    if (redirect_output)
+    {
+		printf("\n");
+    }
+    else if (str)
     {
         printf("%s\n", str);
     }
@@ -133,5 +169,3 @@ void ms_echo_command(data_t *data, token_t *token)
 
     data->last_exit_code = 0;
 }
-
-
