@@ -182,9 +182,8 @@ int	main(int argc, char *argv[], char *envp[])
 		ms_handle_ctrl_d(&data);
 		data.tokens = ms_tokenizer(data);
 		ms_expander(&data);
-        if (data.tokens != NULL) {
+        if (data.tokens != NULL)
             ms_process_input(&data);
-        }
 		free(data.user_input);
 	}
 	return (0);
