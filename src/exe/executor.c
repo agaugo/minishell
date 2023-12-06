@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/06 00:04:02 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/06 12:23:28 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,31 +85,26 @@ void resolve_command_paths(data_t *data)
 
 char **ms_get_full_args(token_t *start_token, token_t *end_token)
 {
-    int     arg_count;
-    char    **args;
+    int arg_count;
+    char **args;
     token_t *current = start_token;
 
-    // Count arguments until end_token or a redirection token is encountered
+    // Count arguments until end_token is encountered
     arg_count = 0;
-    while (current != end_token && current->type != T_REDIRECT_OUT && current->type != T_APPEND_OUT && current->type != T_REDIRECT_IN) {
+    while (current != end_token) {
         arg_count++;
         current = current->next;
     }
 
     args = (char **)malloc((arg_count + 1) * sizeof(char *));
-    if (!args)
-    {
+    if (!args) {
         perror("Failed to allocate memory for arguments");
         return (NULL);
     }
 
-    // Fill the array with arguments until a redirection token is encountered
+    // Fill the array with arguments until end_token is encountered
     current = start_token;
-    for (int i = 0; i < arg_count; i++)
-    {
-        if (current->type == T_REDIRECT_OUT) {
-            break;
-        }
+    for (int i = 0; i < arg_count; i++) {
         args[i] = ft_strdup(current->value);
         current = current->next;
     }
@@ -196,34 +191,37 @@ int setup_input_redirection(token_t *tokens) {
     return 0; // Success
 }
 
-int setup_output_redirection(token_t *tokens) {
-    token_t *current = tokens;
+// int setup_output_redirection(token_t *tokens) {
+//     token_t *current = tokens;
+//     int fd = -1; // Initialize file descriptor to -1
 
-    while (current != NULL) {
-        if (current->type == T_REDIRECT_OUT) {
-            // Truncate and write to the file
-            int fd = open(current->next->value, O_WRONLY | O_CREAT | O_TRUNC, 0666);
-            if (fd == -1) {
-                perror("open");
-                return -1; // Return error code
-            }
-            dup2(fd, STDOUT_FILENO);
-            close(fd);
-        }
-        else if (current->type == T_APPEND_OUT) {
-            // Append to the file
-            int fd = open(current->next->value, O_WRONLY | O_CREAT | O_APPEND, 0666);
-            if (fd == -1) {
-                perror("open");
-                exit(EXIT_FAILURE);
-            }
-            dup2(fd, STDOUT_FILENO);
-            close(fd);
-        }
-        current = current->next;
-    }
-    return 0; // Success
-}
+//     while (current != NULL) {
+//         if (current->type == T_REDIRECT_OUT) {
+//             // Truncate and write to the file
+//             fd = open(current->next->value, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+//             if (fd == -1) {
+//                 perror("open");
+//                 return -1; // Return error code
+//             }
+//             dup2(fd, STDOUT_FILENO);
+//         }
+//         else if (current->type == T_APPEND_OUT) {
+//             // Append to the file
+//             fd = open(current->next->value, O_WRONLY | O_CREAT | O_APPEND, 0666);
+//             if (fd == -1) {
+//                 perror("open");
+//                 exit(EXIT_FAILURE);
+//             }
+//             dup2(fd, STDOUT_FILENO);
+//         }
+//         current = current->next;
+//     }
+
+//     if (fd != -1) {
+//         close(fd); // Close the file descriptor if it was opened
+//     }
+//     return 0; // Success
+// }
 
 int file_exists_and_executable(const char *path) {
     struct stat statbuf;
@@ -255,7 +253,7 @@ void ms_execute_commands(data_t *data)
             next_command = next_command->next;
         args = ms_get_full_args(current, next_command);
 
-        if (setup_output_redirection(current) == -1 || setup_input_redirection(current) == -1) {
+        if (setup_input_redirection(current) == -1) {
             data->last_exit_code = 1;
             if (next_command != NULL)
                 current = next_command->next;
@@ -264,6 +262,16 @@ void ms_execute_commands(data_t *data)
 
             continue; 
         }
+
+        // if (setup_output_redirection(current) == -1) {
+        //     data->last_exit_code = 1;
+        //     if (next_command != NULL)
+        //         current = next_command->next;
+        //     else
+        //         current = NULL;
+
+        //     continue; 
+        // }
 
         if (next_command != NULL)
             pipe(fds);
