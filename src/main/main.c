@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/06 12:24:26 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/05 23:52:31 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,5 +195,3 @@ int	main(int argc, char *argv[], char *envp[])
 	}
 	return (0);
 }
-
-// cat <includes/minishell.h>./outfile
