@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 13:42:34 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/06 15:28:31 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/06 15:35:29 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	print_commands(token_t *head)
 
 	current_token = head;
 	i = 0;
-	printf("----------- lexer debug --------------------------------------\n");
+	printf("----------- tokenizer debug ----------------------------------\n");
 	while (current_token)
 	{
 		printf("Token %d: %s, Type: %d\n", i, current_token->value,
@@ -196,6 +196,6 @@ token_t	*ms_tokenizer(data_t data)
 			current_token = new_token;
 		}
 	}
-	print_commands(head);
+	// print_commands(head);
 	return (head);
 }
