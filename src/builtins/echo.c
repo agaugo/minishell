@@ -93,14 +93,6 @@ void ms_echo_command(data_t *data, token_t *token)
     str = NULL;
     token = token->next;
 
-    // Check if output redirection is needed
-    if (setup_redirection(start_token, 1) == -1)
-    {
-        fprintf(stderr, "Output redirection failed\n");
-        data->last_exit_code = 1;
-        return;
-    }
-
     // Find the first non-flag token
     while (token)
     {
@@ -119,6 +111,39 @@ void ms_echo_command(data_t *data, token_t *token)
         break; // Output only the first non-flag token
     }
 
+    // Check if output redirection is needed
+    while (token)
+    {
+        if (ft_strcmp(token->value, ">") == 0)
+        {
+            token = token->next; // Skip the ">" token
+            if (token && token->value)
+            {
+                // Call setup_redirection to handle output redirection
+                token_t *redirect_tokens = malloc(sizeof(token_t));
+                redirect_tokens->type = T_REDIRECT_OUT;
+                redirect_tokens->next = malloc(sizeof(token_t));
+                redirect_tokens->next->type = T_WORD;
+                redirect_tokens->next->value = token->value;
+                redirect_tokens->next->next = NULL;
+
+                if (setup_redirection(redirect_tokens, 1) == -1)
+                {
+                    fprintf(stderr, "Output redirection failed\n");
+                    data->last_exit_code = 1;
+                    free(redirect_tokens->next);
+                    free(redirect_tokens);
+                    return;
+                }
+
+                free(redirect_tokens->next);
+                free(redirect_tokens);
+                break; // Exit the loop as redirection is handled
+            }
+        }
+        token = token->next;
+    }
+
     if (str)
     {
         printf("%s\n", str);
@@ -133,4 +158,3 @@ void ms_echo_command(data_t *data, token_t *token)
 
     data->last_exit_code = 0;
 }
-
