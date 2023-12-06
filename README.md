@@ -1,11 +1,5 @@
-to do:
-
-- fix edgecases (check minishell tester for more cases)
-- remove forbidden funcs
-- support big file tester
-
-NORM:
-- implement strndup
-- implement realloc
-- implement strcpy or convert strcpy to ft_strlcpy
-  
+TO DO:
+- Fix Leaks EVERYWHERE
+- Remove Forbidden Functions (Norm)
+- Norm Syntax
+- Norm Refactor
