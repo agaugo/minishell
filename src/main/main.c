@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/06 12:58:02 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/06 15:01:35 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void	ms_check_command(data_t *data)
 	std_in = dup(0);
 	std_out = dup(1);
 	data->redirect = 0;
-	ms_check_redirect(data);
+	// ms_check_redir ect(data);
 
     // int original_stdin = dup(STDIN_FILENO);  // Save the original STDIN
 
