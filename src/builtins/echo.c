@@ -104,15 +104,15 @@ void ms_echo_command(data_t *data, token_t *token)
     // Check if output redirection is needed
     while (token)
     {
-        if (ft_strcmp(token->value, ">") == 0)
+        if (token->type == T_REDIRECT_OUT || token->type == T_REDIRECT_IN || token->type == T_APPEND_OUT)
         {
             redirect_output = 1;
-            token = token->next; // Skip the ">" token
+			token_t *redirect_tokens = malloc(sizeof(token_t));
+            redirect_tokens->type = token->type;
+			token = token->next; // Skip the ">" token
             if (token && token->value)
             {
                 // Call setup_redirection to handle output redirection
-                token_t *redirect_tokens = malloc(sizeof(token_t));
-                redirect_tokens->type = T_REDIRECT_OUT;
                 redirect_tokens->next = malloc(sizeof(token_t));
                 redirect_tokens->next->type = T_WORD;
                 redirect_tokens->next->value = token->value;
