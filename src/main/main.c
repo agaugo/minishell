@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/05 23:52:31 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/06 12:58:02 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,15 +108,12 @@ void ms_check_redirect(data_t *data)
 
 void	ms_reset_std(data_t *data, int *std_in, int *std_out)
 {
-	if (data->redirect == 1)
-	{
-		if (dup2(*std_out, 1) == -1)
-			perror("Error restoring standard output");
-		if (dup2(*std_in, 0) == -1)
-			perror("Error restoring standard output");
-		close(*std_out);
-		close(*std_in);
-	}
+	if (dup2(*std_out, 1) == -1)
+		perror("Error restoring standard output");
+	if (dup2(*std_in, 0) == -1)
+		perror("Error restoring standard output");
+	close(*std_out);
+	close(*std_in);
 }
 
 void	ms_check_command(data_t *data)
@@ -129,7 +126,7 @@ void	ms_check_command(data_t *data)
 	data->redirect = 0;
 	ms_check_redirect(data);
 
-    int original_stdin = dup(STDIN_FILENO);  // Save the original STDIN
+    // int original_stdin = dup(STDIN_FILENO);  // Save the original STDIN
 
     if (data->heredoc_tmp_file != NULL) {
         char *heredoc_content = read_file_content(data->heredoc_tmp_file);
@@ -153,10 +150,10 @@ void	ms_check_command(data_t *data)
 	ms_execute_commands(data);
 
 
-    dup2(original_stdin, STDIN_FILENO);  // Restore the original STDIN
-    close(original_stdin);  // Close the duplicate file descriptor
+    // dup2(original_stdin, STDIN_FILENO);  // Restore the original STDIN
+    // close(original_stdin);  // Close the duplicate file descriptor
     
-	// ms_reset_std(data, &std_in, &std_out);
+	ms_reset_std(data, &std_in, &std_out);
 }
 
 void	ms_process_input(data_t *data)
