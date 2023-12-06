@@ -86,6 +86,8 @@ void ms_echo_command(data_t *data, token_t *token)
     char *cleaned_str;
     token_t *start_token;
     int flag = 0;
+    int stdin_backup = dup(STDIN_FILENO);   // Backup stdin
+    int stdout_backup = dup(STDOUT_FILENO); // Backup stdout
 
     start_token = token;
     str = NULL;
@@ -111,7 +113,7 @@ void ms_echo_command(data_t *data, token_t *token)
         }
         else
             flag = 1;
-        
+
         cleaned_str = token->value;
         str = cleaned_str;
         break; // Output only the first non-flag token
@@ -122,6 +124,14 @@ void ms_echo_command(data_t *data, token_t *token)
         printf("%s\n", str);
     }
 
+    // Reset stdin and stdout to their original state
+    dup2(stdin_backup, STDIN_FILENO);
+    dup2(stdout_backup, STDOUT_FILENO);
+
+    close(stdin_backup);   // Close the backup stdin file descriptor
+    close(stdout_backup); // Close the backup stdout file descriptor
+
     data->last_exit_code = 0;
 }
+
 
