@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/01 21:27:33 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/06 15:32:03 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,8 +97,6 @@ void ms_heredoc(data_t *data, token_t *token);
 
 char	*ms_get_current_working_dir(void);
 
-void ms_redirect(data_t *data);
-
 // ** src/exe/redirect.c
 
 int		ms_load_fd(token_t *_token, tokentype_t _direction);
@@ -107,10 +105,7 @@ void	ms_handle_redirect(token_t *_token, tokentype_t _direction);
 // ** src/exe/validator.c
 
 void	ms_free_2d_array(char **_array);
-int		ms_check_absolute_path(token_t *_token);
-int		ms_validate_token(token_t *_token);
 char    *ft_getenv(char **envp, char *key);
-void ms_pipe(data_t *data);
 void ms_check_pipe(data_t *data);
 
 void    ms_execute_commands(data_t *data);
