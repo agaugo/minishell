@@ -12,6 +12,8 @@
 
 #include "../../includes/minishell.h"
 
+
+
 static void	ms_print_echo(token_t *token, char *str)
 {
 	if (!token->next || !token->next->value)
@@ -27,53 +29,99 @@ static void	ms_print_echo(token_t *token, char *str)
 		printf("%s\n", str);
 }
 
-void	ms_echo_command(data_t *data, token_t *token)
+// void	ms_echo_command(data_t *data, token_t *token)
+// {
+// 	char			*str;
+// 	char			*cleaned_str;
+// 	char			*temp;
+// 	token_t *start_token;
+// 	int flag = 0;
+
+// 	start_token = token;
+// 	str = NULL;
+// 	token = token->next;
+
+// 	if (data->redirect == 2)
+//     {
+//         char buffer[1024];
+//         while (fgets(buffer, sizeof(buffer), stdin) != NULL)
+//         {
+//             fputs(buffer, stdout);
+//         }
+//     }
+//     else
+// 	{
+// 		while (token)
+// 		{
+// 			if (token->type == T_PIPE)
+// 				break;
+// 			if (ft_strcmp(token->value, "-n") == 0 && flag == 0)
+// 			{
+// 				token = token->next;
+// 				continue;
+// 			}
+// 			else
+// 				flag = 1;
+// 			cleaned_str = token->value;
+// 			if (!str)
+// 				str = cleaned_str;
+// 			else
+// 			{
+// 				temp = ft_strjoin(str, " ");
+// 				free(str);
+// 				str = ft_strjoin(temp, cleaned_str);
+// 				free(temp);
+// 			}
+// 			token = token->next;
+// 		}
+// 		ms_print_echo(start_token, str);
+// 		free(str);
+// 	}
+// 	data->last_exit_code = 0;
+// }
+
+void ms_echo_command(data_t *data, token_t *token)
 {
-	char			*str;
-	char			*cleaned_str;
-	char			*temp;
-	token_t *start_token;
-	int flag = 0;
+    char *str;
+    char *cleaned_str;
+    token_t *start_token;
+    int flag = 0;
 
-	start_token = token;
-	str = NULL;
-	token = token->next;
+    start_token = token;
+    str = NULL;
+    token = token->next;
 
-	if (data->redirect == 2)
+    // Check if output redirection is needed
+    if (setup_redirection(start_token, 1) == -1)
     {
-        char buffer[1024];
-        while (fgets(buffer, sizeof(buffer), stdin) != NULL)
-        {
-            fputs(buffer, stdout);
-        }
+        fprintf(stderr, "Output redirection failed\n");
+        data->last_exit_code = 1;
+        return;
     }
-    else
-	{
-		while (token)
-		{
-			if (token->type == T_PIPE)
-				break;
-			if (ft_strcmp(token->value, "-n") == 0 && flag == 0)
-			{
-				token = token->next;
-				continue;
-			}
-			else
-				flag = 1;
-			cleaned_str = token->value;
-			if (!str)
-				str = cleaned_str;
-			else
-			{
-				temp = ft_strjoin(str, " ");
-				free(str);
-				str = ft_strjoin(temp, cleaned_str);
-				free(temp);
-			}
-			token = token->next;
-		}
-		ms_print_echo(start_token, str);
-		free(str);
-	}
-	data->last_exit_code = 0;
+
+    // Find the first non-flag token
+    while (token)
+    {
+        if (token->type == T_PIPE)
+            break;
+        if (ft_strcmp(token->value, "-n") == 0 && flag == 0)
+        {
+            token = token->next;
+            continue;
+        }
+        else
+            flag = 1;
+        
+        cleaned_str = token->value;
+        str = cleaned_str;
+        break; // Output only the first non-flag token
+    }
+
+    if (str)
+    {
+        printf("%s\n", str);
+    }
+
+    data->last_exit_code = 0;
 }
+
