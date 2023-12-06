@@ -120,5 +120,7 @@ void resolve_command_paths(data_t *data);
 int is_builtin_command(char *command);
 
 char *expand_quotes(data_t *data, char *token_value);
+int setup_redirection(token_t *tokens, int direction);
+
 
 #endif
