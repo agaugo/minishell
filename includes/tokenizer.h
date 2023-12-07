@@ -6,12 +6,12 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 18:26:52 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/07 21:16:27 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/07 21:17:44 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LEXER_H
-# define LEXER_H
+#ifndef TOKENIZER_H
+# define TOKENIZER_H
 
 /*
 ** tokentype_t:
@@ -82,6 +82,7 @@ typedef struct token
 	char			*executableDir;
 	int				fd;
 	int				status;
+	int				connect;
 }					token_t;
 
 #endif

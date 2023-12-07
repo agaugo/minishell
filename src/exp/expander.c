@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/07 01:53:15 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/08 00:35:15 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,6 +309,50 @@ char *combine_token_values(char *value1, char *value2) {
     return combined_value;
 }
 
+void merge_connected_tokens(data_t *data)
+{
+    if (data == NULL || data->tokens == NULL)
+        return;
+
+    token_t *current = data->tokens;
+    while (current != NULL && current->next != NULL)
+    {
+        if (current->connect == 1)
+        {
+            // Calculating the length for the merged string
+            size_t merged_length = strlen(current->value) + strlen(current->next->value);
+            char *merged_value = (char *)malloc(merged_length + 1); // +1 for the null terminator
+            if (merged_value == NULL)
+            {
+                // Handle memory allocation failure
+                perror("Memory allocation failed");
+                return;
+            }
+
+            // Merging current token with the next
+            strcpy(merged_value, current->value);
+            strcat(merged_value, current->next->value);
+
+            // Update the current token value
+            free(current->value);
+            current->value = merged_value;
+
+            // Remove the next token and link the list
+            token_t *to_remove = current->next;
+            current->next = current->next->next;
+            current->connect = to_remove->connect; // Transfer connect flag from the next token
+
+            // Free the removed token
+            free(to_remove->value);
+            free(to_remove);
+        }
+        else
+        {
+            current = current->next;
+        }
+    }
+}
+
 void ms_expander(data_t *data)
 {
     token_t *current_token;
@@ -365,5 +409,7 @@ void ms_expander(data_t *data)
         prev_token = current_token;
         current_token = current_token->next;
     }
+    merge_connected_tokens(data);
+
     // print_list(data->tokens);
 }
