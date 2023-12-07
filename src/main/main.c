@@ -6,29 +6,29 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/07 11:37:29 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/07 19:37:07 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-// void    print_list3(token_t *head)
-// {
-//     token_t    *current_token;
-//     int        i;
+void    print_list3(token_t *head)
+{
+    token_t    *current_token;
+    int        i;
 
-//     current_token = head;
-//     i = 0;
-//     printf("----------- expander debug -----------------------------------\n");
-//     while (current_token)
-//     {
-//         printf("Token %d: %s, Type: %d\n", i, current_token->value,
-//             current_token->type);
-//         current_token = current_token->next;
-//         i++;
-//     }
-//     printf("--------------------------------------------------------------\n");
-// }
+    current_token = head;
+    i = 0;
+    printf("----------- expander debug -----------------------------------\n");
+    while (current_token)
+    {
+        printf("Token %d: %s, Type: %d\n", i, current_token->value,
+            current_token->type);
+        current_token = current_token->next;
+        i++;
+    }
+    printf("--------------------------------------------------------------\n");
+}
 
 void remove_newline(char *str) {
     if (str == NULL) return;
@@ -114,6 +114,86 @@ void	ms_reset_std(data_t *data, int *std_in, int *std_out)
 	close(*std_in);
 }
 
+int is_directory2(const char *path)
+{
+    struct stat statbuf;
+    if (stat(path, &statbuf) != 0)
+    {
+        return 0; // Cannot access path, assume not a directory
+    }
+    return S_ISDIR(statbuf.st_mode);
+}
+
+int	is_builtin_command2(char *command)
+{
+	const char *builtins[] = {"echo", "cd", "export", "unset", "env", "exit",
+		"pwd", NULL};
+	for (int i = 0; builtins[i] != NULL; i++)
+	{
+		if (ft_strcmp(command, builtins[i]) == 0)
+		{
+			return (1);
+		}
+	}
+	return (0);
+}
+
+void remove_intermediate_input_redirections(data_t *data) {
+    if (data == NULL || data->tokens == NULL) {
+        return;
+    }
+
+    token_t *current = data->tokens;
+    token_t *prev = NULL;
+    int first = 0;
+    int skip = 0;
+
+    while (current != NULL) {
+        if (current->type == T_PIPE)
+            skip = 0;
+        
+        if (skip == 1)
+        {
+            prev = current;
+            current = current->next;
+            continue;
+        }
+
+        if (is_builtin_command2(current->value) == 1)
+        {
+            prev = current;
+            current = current->next;
+            skip = 1;
+            continue;
+        }
+            
+        if (current->type == T_REDIRECT_IN) {
+            // Found a redirection, now find the last file in the sequence
+            token_t *last_file = current;
+            while (last_file->next && last_file->next->type == T_WORD) {
+                last_file = last_file->next;
+            }
+
+            // Remove intermediate files if there are more than one
+            if (current->next != last_file) {
+                token_t *temp = current->next;
+                current->next = last_file;
+                while (temp != last_file) {
+                    token_t *next_temp = temp->next;
+                    free(temp); // Assuming you need to free the removed nodes
+                    temp = next_temp;
+                }
+            }
+
+            prev = current;
+            current = last_file->next;
+        } else {
+            prev = current;
+            current = current->next;
+        }
+    }
+}
+
 void	ms_check_command(data_t *data)
 {
 	int	std_out;
@@ -144,8 +224,9 @@ void	ms_check_command(data_t *data)
 	// print_list3(data->tokens);
 
     resolve_command_paths(data);
+    remove_intermediate_input_redirections(data);
+    // print_list3(data->tokens);
 	ms_execute_commands(data);
-
 
     // dup2(original_stdin, STDIN_FILENO);  // Restore the original STDIN
     // close(original_stdin);  // Close the duplicate file descriptor
@@ -176,6 +257,7 @@ int	main(int argc, char *argv[], char *envp[])
 	data.envp = ms_clone_envp(envp);
 	data.last_exit_code = 0;
 	data.heredoc_tmp_file = NULL;
+    data.last_path = ms_get_current_working_dir();
 	while (1)
 	{
 		data.user_input = readline(PROMPT);
