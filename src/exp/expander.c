@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/04 17:47:10 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/07 01:53:15 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,13 +136,29 @@ void    print_list(token_t *head)
 
 char *expand_tilde(data_t *data, char *token_value)
 {
-    int index = ms_find_env_index(data->envp, "HOME");
-    if (index == -1) {
-        perror("Environment Variable Not Found");
-        return token_value;
+    // Check if token starts with tilde and is followed by a slash or end of string
+    if (token_value[0] == '~' && (token_value[1] == '/' || token_value[1] == '\0')) {
+        int home_index = ms_find_env_index(data->envp, "HOME");
+        if (home_index == -1) {
+            perror("Environment Variable HOME Not Found");
+            return strdup(token_value); // Return the original token if HOME not found
+        }
+
+        char *home_path = strchr(data->envp[home_index], '=') + 1;
+        size_t new_size = strlen(home_path) + strlen(token_value);
+        char *new_token_value = (char *)malloc(new_size);
+        if (new_token_value == NULL) {
+            perror("Memory Allocation Failed");
+            return strdup(token_value); // Return the original token if allocation fails
+        }
+
+        strcpy(new_token_value, home_path); // Copy home directory
+        strcat(new_token_value, token_value + 1); // Append the rest of the original token after tilde
+
+        free(token_value); // Free the original token value
+        return new_token_value; // Return the new token value
     }
-    char *var_val = strchr(data->envp[index], '=') + 1;
-    return strdup(var_val);
+    return strdup(token_value); // Return the original token if it doesn't start with tilde
 }
 
 char *expand_dollarsign(data_t *data, char *token_value)
@@ -265,6 +281,34 @@ char *expand_quotes(data_t *data, char *token_value)
     return (result);
 }
 
+int should_combine_tokens(token_t *current_token, token_t *next_token) {
+    if (!current_token || !next_token) {
+        return 0; // Safety check
+    }
+
+    // Logic to decide if tokens should be combined
+    if ((current_token->type == T_SINGLE_QUOTE || current_token->type == T_DOUBLE_QUOTE) &&
+        (next_token->type == T_SINGLE_QUOTE || next_token->type == T_DOUBLE_QUOTE)) {
+        return 1;
+    }
+
+    return 0;
+}
+
+char *combine_token_values(char *value1, char *value2) {
+    size_t new_size = strlen(value1) + strlen(value2) + 1;
+    char *combined_value = (char *)malloc(new_size);
+    if (!combined_value) {
+        perror("Memory Allocation Failed");
+        return NULL;
+    }
+
+    strcpy(combined_value, value1);
+    strcat(combined_value, value2);
+
+    return combined_value;
+}
+
 void ms_expander(data_t *data)
 {
     token_t *current_token;
@@ -279,14 +323,22 @@ void ms_expander(data_t *data)
     {
         current_token->value = ms_clean_quotes(&vars, current_token->value);
         
-        if (current_token->type == T_TILDE)
-        {
-            current_token->value = expand_tilde(data, current_token->value);
-            current_token->type = T_WORD;
-        }
-        else if (current_token->type == T_WORD)
-        {
+        // if (current_token->type == T_TILDE)
+        // {
+        //     current_token->value = expand_tilde(data, current_token->value);
+        //     current_token->type = T_WORD;
+        // }
+        if (current_token->type == T_WORD || current_token->type == T_DOUBLE_QUOTE)
+        {            
             char *expanded_value = NULL;
+
+            if (current_token->type == T_WORD)
+            {
+                if (strchr(current_token->value, '~'))
+                {
+                    current_token->value = expand_tilde(data, current_token->value);
+                } 
+            }
 
             if (strchr(current_token->value, '$'))
             {
@@ -306,6 +358,9 @@ void ms_expander(data_t *data)
             }
             continue;
         }
+
+        if (current_token->type == T_SINGLE_QUOTE || current_token->type == T_DOUBLE_QUOTE)
+            current_token->type = T_WORD;
         
         prev_token = current_token;
         current_token = current_token->next;

@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 13:42:34 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/06 15:35:29 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/07 01:53:24 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ static tokentype_t	parse_quote_token(char **current)
 			(*current)++;
 		if (**current == '\'')
 			(*current)++;
-		return (T_WORD);
+		return (T_SINGLE_QUOTE);
 	}
 	else if (**current == '\"')
 	{
@@ -106,20 +106,19 @@ static tokentype_t	parse_quote_token(char **current)
 			(*current)++;
 		if (**current == '\"')
 			(*current)++;
-		return (T_WORD);
-		// return (T_DOUBLE_QUOTE);
+		return (T_DOUBLE_QUOTE);
 	}
 	return (T_WORD); // Default return
 }
 
 static tokentype_t	parse_special_token(char **current)
 {
-	if (**current == '$')
-	{
-		if (**current+1 != '\0' && **current+1 != ' '  && **current+1 != '\t')
-			(*current)++;
-		return (T_ENV_VARIABLE);
-	}
+	// if (**current == '$')
+	// {
+	// 	if (**current+1 != '\0' && **current+1 != ' '  && **current+1 != '\t')
+	// 		(*current)++;
+	// 	return (T_ENV_VARIABLE);
+	// }
 	if (**current == '~')
 	{
 		if (**current+1 != '\0' && **current+1 != ' '  && **current+1 != '\t')
@@ -131,9 +130,28 @@ static tokentype_t	parse_special_token(char **current)
 
 static tokentype_t parse_word_token(char **current)
 {
-    // char *start = *current;
-    while (**current && !is_whitespace(**current) && **current != '|' && **current != '<' && **current != '>')
-        (*current)++;
+    char *start = *current;
+    
+    // Check for quotes
+    if (**current == '\'' || **current == '\"')
+    {
+        char quote = **current;
+        (*current)++; // Move past the opening quote
+        
+        // Find the closing quote or end of string
+        while (**current && **current != quote)
+            (*current)++;
+        
+        // If we found the closing quote, move past it
+        if (**current == quote)
+            (*current)++;
+    }
+    else
+    {
+        // Not inside quotes, treat as a regular word
+        while (**current && !is_whitespace(**current) && **current != '|' && **current != '<' && **current != '>')
+            (*current)++;
+    }
 
     // If the next character is a redirection or pipe, return T_WORD for the current part
     if (**current == '|' || **current == '<' || **current == '>')
@@ -145,7 +163,6 @@ static tokentype_t parse_word_token(char **current)
     
     return T_WORD;
 }
-
 
 token_t	*ms_tokenizer(data_t data)
 {
@@ -174,10 +191,10 @@ token_t	*ms_tokenizer(data_t data)
 			current_token_type = parse_pipe_token(&current);
 		else if (*current == '<' || *current == '>')
 			current_token_type = parse_redirect_token(&current);
-		// else if (*current == '\'' || *current == '\"')
-		// 	current_token_type = parse_quote_token(&current);
-		else if (*current == '~')
-			current_token_type = parse_special_token(&current);
+		else if (*current == '\'' || *current == '\"')
+			current_token_type = parse_quote_token(&current);
+		// else if (*current == '~')
+		// 	current_token_type = parse_special_token(&current);
 		else
 			current_token_type = parse_word_token(&current);
 
