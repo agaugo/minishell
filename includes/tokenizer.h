@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 18:26:52 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/27 20:46:27 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/07 11:31:51 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ typedef struct token
 	char			**envp;
 	char			*executableDir;
 	int				fd;
+	int				status;
 }					token_t;
 
 #endif
