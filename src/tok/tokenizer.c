@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 13:42:34 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/07 01:53:24 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/07 11:37:18 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,6 +202,7 @@ token_t	*ms_tokenizer(data_t data)
 		new_token = init_new_token(value, current, current_token_type, data);
 		new_token->envp = data.envp;
 		new_token->next = NULL;
+		new_token->status = 0;
 		if (!head)
 		{
 			head = new_token;

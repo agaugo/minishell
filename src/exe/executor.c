@@ -6,26 +6,27 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/06 13:03:28 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/07 12:42:16 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void	set_command_path(char **allpath, token_t *current)
+int	set_command_path(char **allpath, token_t *current)
 {
 	char	*fullpath;
 	char	*temp;
 	int		i;
 
-	i = 0;
-	while (allpath[i])
+    int found = 0;
+    while (allpath[i])
 	{
 		temp = ft_strjoin(allpath[i], "/");
 		fullpath = ft_strjoin(temp, current->value);
 		free(temp);
-		if (access(fullpath, X_OK) != -1)
-		{
+        if (access(fullpath, X_OK) != -1)
+        {
+            found = 1;
 			free(current->value);
 			current->value = fullpath;
 			break ;
@@ -33,6 +34,24 @@ static void	set_command_path(char **allpath, token_t *current)
 		free(fullpath);
 		i++;
 	}
+    return found; // Return 1 if found, 0 otherwise
+}
+
+#include <sys/stat.h>
+#include <unistd.h>
+
+int file_exists_and_executable(const char *path)
+{
+    struct stat statbuf;
+
+    // Use stat to get information about the file
+    if (stat(path, &statbuf) != 0)
+    {
+        return 0; // File doesn't exist or stat failed
+    }
+
+    // Check if the file is a regular file and if it's executable
+    return S_ISREG(statbuf.st_mode) && (access(path, X_OK) == 0);
 }
 
 int	is_builtin_command(char *command)
@@ -47,6 +66,16 @@ int	is_builtin_command(char *command)
 		}
 	}
 	return (0);
+}
+
+int is_directory(const char *path)
+{
+    struct stat statbuf;
+    if (stat(path, &statbuf) != 0)
+    {
+        return 0; // Cannot access path, assume not a directory
+    }
+    return S_ISDIR(statbuf.st_mode);
 }
 
 void	resolve_command_paths(data_t *data)
@@ -71,7 +100,28 @@ void	resolve_command_paths(data_t *data)
 		if (current->type == T_WORD && is_command
 			&& !is_builtin_command(current->value))
 		{
-			set_command_path(allpath, current);
+            if (strchr(current->value, '/') != NULL)
+            {
+                if (is_directory(current->value))
+                {
+                    data->last_exit_code = 126; // Typical exit code for "is a directory"
+                    current->status = 126;
+                }    
+            }
+            // else if (!file_exists_and_executable(current->value))
+            // {
+            //     fprintf(stderr, "%s: No such file or directory2\n", current->value);
+            //     data->last_exit_code = 127;
+            //     current->status = 127;
+            // }
+            else
+            {
+             	if (!set_command_path(allpath, current))
+                {
+                    data->last_exit_code = 127; // Typical exit code for command not found
+                    current->status = 127;
+                }   
+            }
 		}
 		// Reset is_command for the next command in the pipeline
 		if (current->type == T_PIPE)
@@ -117,17 +167,6 @@ char	**ms_get_full_args(token_t *start_token, token_t *end_token)
 	}
 	args[arg_count] = NULL;
 	return (args);
-}
-
-int	is_directory(const char *path)
-{
-	struct stat	statbuf;
-
-	if (stat(path, &statbuf) != 0)
-	{
-		return (0); // Cannot access path, assume not a directory
-	}
-	return ((statbuf.st_mode & S_IFMT) == S_IFDIR);
 }
 
 void	ms_run_builtin(data_t *data, char **args, token_t *current)
@@ -202,20 +241,6 @@ int setup_redirection(token_t *tokens, int direction)
         current = current->next;
     }
     return 0; // Success
-}
-
-
-//-----------------------
-
-int	file_exists_and_executable(const char *path)
-{
-	struct stat	statbuf;
-
-	if (stat(path, &statbuf) != 0)
-		return (0); // File doesn't exist
-	if (S_ISREG(statbuf.st_mode) && (access(path, X_OK) == 0))
-		return (1); // File exists and is executable
-	return (0); // File is not a regular file or not executable
 }
 
 void ms_execute_commands(data_t *data)
@@ -300,9 +325,41 @@ void ms_execute_commands(data_t *data)
                 else
                 {
                     // Execute external command
+                    if (current->status == 126)
+                    {
+                        fprintf(stderr, "%s: is a directory\n", current->value);
+                        data->last_exit_code = 126;
+                        exit(126);
+                    }
+
+                    if (current->status == 127)
+                    {
+                        fprintf(stderr, "%s: command not found\n", current->value);
+                        data->last_exit_code = 127;
+                        exit(127);
+                    }
+                    
                     execve(args[0], args, data->envp);
-                    perror("execve");
-                    exit(EXIT_FAILURE);
+
+                    // If execve returns, it means there was an error
+                    if (errno == ENOENT)
+                    {
+                        // No such file or directory
+                        perror("execve");
+                        exit(127);
+                    }
+                    else if (errno == EACCES)
+                    {
+                        // Permission denied
+                        perror("execve");
+                        exit(126);
+                    }
+                    else
+                    {
+                        // Other errors
+                        perror("execve");
+                        exit(EXIT_FAILURE);
+                    }
                 }
             }
             else if (pid < 0)

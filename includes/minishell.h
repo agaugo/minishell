@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/07 01:42:54 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/07 11:35:22 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ char    *ft_getenv(char **envp, char *key);
 void ms_check_pipe(data_t *data);
 
 void    ms_execute_commands(data_t *data);
-void resolve_command_paths(data_t *data);
+void    resolve_command_paths(data_t *data);
 
 // In includes/minishell.h or a similar header file
 int is_builtin_command(char *command);

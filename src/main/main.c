@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/06 15:33:12 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/07 11:37:29 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void	ms_check_command(data_t *data)
 
 	// print_list3(data->tokens);
 
-	resolve_command_paths(data);
+    resolve_command_paths(data);
 	ms_execute_commands(data);
 
 
