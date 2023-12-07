@@ -6,13 +6,11 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 00:11:40 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/06 18:50:12 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/06 23:16:18 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-
 
 static void	ms_print_echo(token_t *token, char *str)
 {
@@ -35,6 +33,7 @@ void ms_echo_command(data_t *data, token_t *token)
     int first_word = 1;
     int stdout_backup = dup(STDOUT_FILENO); // Backup stdout
 	int not_first = 0;
+	int has_redirect = 0;
 
     token = token->next; // Skip the echo token
 
@@ -53,9 +52,9 @@ void ms_echo_command(data_t *data, token_t *token)
         first_word = 0;
 
         // Handle output redirection
-        if (ft_strcmp(token->value, ">") == 0 || ft_strcmp(token->value, ">>") == 0)
+        if (token->type == T_REDIRECT_OUT || token->type == T_APPEND_OUT)
         {
-            int flags = (ft_strcmp(token->value, ">>") == 0) ? (O_WRONLY | O_CREAT | O_APPEND) : (O_WRONLY | O_CREAT | O_TRUNC);
+            int flags = (token->type == T_APPEND_OUT) ? (O_WRONLY | O_CREAT | O_APPEND) : (O_WRONLY | O_CREAT | O_TRUNC);
             token = token->next; // Skip the redirection token
             if (token && token->value)
             {
@@ -73,8 +72,9 @@ void ms_echo_command(data_t *data, token_t *token)
             }
         }
         // Skip input redirection ("<") and its associated file name
-        else if (ft_strcmp(token->value, "<") == 0)
+        else if (token->type == T_REDIRECT_IN)
         {
+			has_redirect = 1;
             token = token->next ? token->next->next : NULL; // Skip the "<" token and its following file name
             continue;
         }
@@ -88,7 +88,15 @@ void ms_echo_command(data_t *data, token_t *token)
 				not_first++;
 			}
 			else
-			    printf(" %s", token->value);
+			{
+				if (has_redirect == 1)
+				{
+					has_redirect = 0;
+					printf(" %s", token->value);
+				}
+				else
+					printf("%s", token->value);
+			}
 
             if (token->next && token->next->type == T_WORD)
             {
