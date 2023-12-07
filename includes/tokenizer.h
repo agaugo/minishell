@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 18:26:52 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/07 11:31:51 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/07 19:58:18 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,19 +36,22 @@
 ** T_ASSIGNMENT: Represents assignment operations,
 	usually in the format VAR=VALUE.
 */
-typedef enum e_tokentype
+typedef struct s_sub_token
 {
-	T_WORD,
-	T_PIPE,
-	T_REDIRECT_IN,
-	T_REDIRECT_OUT,
-	T_APPEND_OUT,
-	T_HEREDOC,
-	T_SINGLE_QUOTE,
-	T_DOUBLE_QUOTE,
-	T_ENV_VARIABLE,
-	T_TILDE
-}					tokentype_t;
+    tokentype_t     type;
+    char            *value;
+    struct s_sub_token *next;
+} sub_token_t;
+
+typedef struct s_token
+{
+    char            *value;
+    tokentype_t     type;
+    struct s_token  *next;
+    char            **envp;
+    sub_token_t     *merge; // New field for merged tokens
+} token_t;
+
 
 /*
 ** token_t:

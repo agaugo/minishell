@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/07 11:35:22 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/07 19:15:23 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct data {
     int             redirect;
     int             pipe[2];
     char            *heredoc_tmp_file;
+    char            *last_path;
 } data_t;
 
 void	*allocate_memory(size_t buffer_size);
