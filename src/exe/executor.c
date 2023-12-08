@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/08 18:51:59 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/08 23:57:52 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,6 @@ char	**ms_get_full_args(token_t *start_token, token_t *end_token)
 
 void	ms_run_builtin(data_t *data, char **args, token_t *current)
 {
-
 	if (ft_strcmp(args[0], "export") == 0)
 		ms_export_command(data, current);
 	else if (ft_strcmp(args[0], "unset") == 0)
@@ -243,8 +242,7 @@ int setup_redirection(token_t *tokens, int direction)
     return 0; // Success
 }
 
-void ms_execute_commands(data_t *data)
-{
+void ms_execute_commands(data_t *data) {
     pid_t pid;
     token_t *current;
     token_t *next_command;
@@ -252,81 +250,60 @@ void ms_execute_commands(data_t *data)
     char **args;
 
     int fds[2];
-    int in_fd = 0;
-
-    current = data->tokens;
-    int is_redirect_before_pipe = 0;
-
-    int stdin_backup = dup(STDIN_FILENO); // Backup stdin
+    int in_fd = 0; // Initial input file descriptor
+    int stdin_backup = dup(STDIN_FILENO);  // Backup stdin
     int stdout_backup = dup(STDOUT_FILENO); // Backup stdout
 
     current = data->tokens;
-    while (current != NULL)
-    {
+    while (current != NULL) {
         next_command = current;
 
-        // Determine if there is a redirection before a pipe
-        int is_redirect_before_pipe = 0;
-        while (next_command != NULL && next_command->type != T_PIPE)
-        {
+        // Find the next pipe or end of command list
+        int is_pipe = 0;
+        int is_redirect = 0;
+        while (next_command != NULL) {
+            if (next_command->type == T_PIPE) {
+                is_pipe = 1;
+                break;
+            }
             if (next_command->type == T_REDIRECT_OUT || next_command->type == T_APPEND_OUT ||
-                next_command->type == T_REDIRECT_IN)
-                is_redirect_before_pipe = 1;
+                next_command->type == T_REDIRECT_IN) {
+                is_redirect = 1;
+            }
             next_command = next_command->next;
         }
 
-        // Get arguments for the current command
+        if (is_pipe) {
+            pipe(fds);
+        }
+
         args = ms_get_full_args(current, next_command);
 
-        // Setup redirection
-        if (is_redirect_before_pipe)
-        {
-            if (setup_redirection(current, 1) == -1 || setup_redirection(current, 0) == -1) // Handle output and input redirection
-            {
-                data->last_exit_code = 1;
-                current = next_command ? next_command->next : NULL;
-                continue;
+        // Fork and execute commands
+        pid = fork();
+        if (pid == 0) { // Child process
+            if (in_fd != 0) {
+                dup2(in_fd, STDIN_FILENO);
+                close(in_fd);
             }
-        }
-
-        // If redirection is found before a pipe, skip setting up the pipe
-        if (next_command != NULL && !is_redirect_before_pipe)
-            pipe(fds);
-
-        // Execute built-in commands directly if not part of a pipeline or there's a redirection before a pipe
-        if (is_builtin_command(args[0]) && (next_command == NULL || is_redirect_before_pipe))
-        {
-            if (!is_redirect_before_pipe && next_command == NULL)
-            {
-                dup2(stdout_backup, STDOUT_FILENO);
+            if (is_pipe) {
+                dup2(fds[1], STDOUT_FILENO);
+                close(fds[0]);
+                close(fds[1]);
             }
-            ms_run_builtin(data, args, current);
-        }
-        else
-        {
-            // Handle external commands or built-ins as part of a pipeline
-            pid = fork();
-            if (pid == 0) // Child process
-            {
-                if (in_fd != 0)
-                {
-                    dup2(in_fd, STDIN_FILENO);
-                    close(in_fd);
-                }
-                if (next_command != NULL && !is_redirect_before_pipe)
-                {
-                    dup2(fds[1], STDOUT_FILENO);
-                    close(fds[0]);
-                    close(fds[1]);
-                }
 
-                if (is_builtin_command(args[0]))
-                {
-                    ms_run_builtin(data, args, current);
-                    exit(EXIT_SUCCESS);
+            // Setup redirections here, specific to this command
+            if (is_redirect) {
+                if (setup_redirection(current, 1) == -1 || setup_redirection(current, 0) == -1) {
+                    exit(EXIT_FAILURE); // Exit if redirection setup fails
                 }
-                else
-                {
+            }
+
+            // Execute command
+            if (is_builtin_command(args[0])) {
+                ms_run_builtin(data, args, current);
+                exit(EXIT_SUCCESS); // Exit after executing built-in command
+            } else {
                     // Execute external command
                     if (current->status == 126)
                     {
@@ -363,37 +340,26 @@ void ms_execute_commands(data_t *data)
                         perror("execve");
                         exit(EXIT_FAILURE);
                     }
-                }
             }
-            else if (pid < 0)
-            {
-                perror("fork");
-                exit(EXIT_FAILURE);
-            }
-
-            // Parent process
-            if (in_fd != 0)
-                close(in_fd);
-            if (next_command != NULL && !is_redirect_before_pipe)
-            {
-                close(fds[1]);
-                in_fd = fds[0];
-            }
-            else
-            {
-                in_fd = 0;
-            }
-            waitpid(pid, &status, 0); // Wait for the child process to finish
-            data->last_exit_code = WEXITSTATUS(status);
+        } else if (pid < 0) {
+            perror("fork");
+            exit(EXIT_FAILURE);
         }
 
-        // Check if the next command is a pipe and restore standard output/input if it is
-        if (next_command != NULL && next_command->type == T_PIPE)
-        {
-            dup2(stdout_backup, STDOUT_FILENO); // Restore stdout
-            dup2(stdin_backup, STDIN_FILENO);   // Restore stdin
+        // Parent process
+        if (in_fd != 0) {
+            close(in_fd);
         }
-        
+        if (is_pipe) {
+            close(fds[1]);
+            in_fd = fds[0];
+        } else {
+            in_fd = 0;
+        }
+
+        waitpid(pid, &status, 0); // Wait for the child process to finish
+        data->last_exit_code = WEXITSTATUS(status);
+
         // Move to the next command
         current = next_command ? next_command->next : NULL;
     }
@@ -404,5 +370,3 @@ void ms_execute_commands(data_t *data)
     dup2(stdin_backup, STDIN_FILENO);
     close(stdin_backup);
 }
-
-
