@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/25 10:37:37 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/07 19:17:52 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/08 12:39:11 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,10 @@ void	ms_cd_command(data_t *data, token_t *token)
 		direction = token->next->value;
 
 		if (ft_strcmp(direction, "-") == 0)
+		{
 			ms_cd_absolute_path(data, data->last_path);
+			printf("%s\n", data->last_path);
+		}
 		else
 		{
 			if (access(direction, F_OK) == 0)
