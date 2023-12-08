@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/07 19:24:44 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/08 09:57:21 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -291,11 +291,9 @@ void ms_execute_commands(data_t *data)
         // Execute built-in commands directly if not part of a pipeline or there's a redirection before a pipe
         if (is_builtin_command(args[0]) && (next_command == NULL || is_redirect_before_pipe))
         {
-            if (is_redirect_before_pipe == 1)
+            if (!is_redirect_before_pipe && next_command == NULL)
             {
-                // Reset stdout to its original state
                 dup2(stdout_backup, STDOUT_FILENO);
-                close(stdout_backup);
             }
             ms_run_builtin(data, args, current);
         }
