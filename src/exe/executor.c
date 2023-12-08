@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/08 09:57:21 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/08 18:51:59 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,35 +253,40 @@ void ms_execute_commands(data_t *data)
 
     int fds[2];
     int in_fd = 0;
-    int stdout_backup = dup(STDOUT_FILENO); // Backup stdout
 
     current = data->tokens;
     int is_redirect_before_pipe = 0;
 
+    int stdin_backup = dup(STDIN_FILENO); // Backup stdin
+    int stdout_backup = dup(STDOUT_FILENO); // Backup stdout
+
+    current = data->tokens;
     while (current != NULL)
     {
         next_command = current;
 
-        // Find the next pipe or end of command list
+        // Determine if there is a redirection before a pipe
+        int is_redirect_before_pipe = 0;
         while (next_command != NULL && next_command->type != T_PIPE)
         {
-            if (next_command->type == T_REDIRECT_OUT || next_command->type == T_APPEND_OUT)
-            {
+            if (next_command->type == T_REDIRECT_OUT || next_command->type == T_APPEND_OUT ||
+                next_command->type == T_REDIRECT_IN)
                 is_redirect_before_pipe = 1;
-            }
             next_command = next_command->next;
         }
 
+        // Get arguments for the current command
         args = ms_get_full_args(current, next_command);
 
-        if (setup_redirection(current, 1) == -1 || setup_redirection(current, 0) == -1)
+        // Setup redirection
+        if (is_redirect_before_pipe)
         {
-            data->last_exit_code = 1;
-            if (next_command != NULL)
-                current = next_command->next;
-            else
-                current = NULL;
-            continue;
+            if (setup_redirection(current, 1) == -1 || setup_redirection(current, 0) == -1) // Handle output and input redirection
+            {
+                data->last_exit_code = 1;
+                current = next_command ? next_command->next : NULL;
+                continue;
+            }
         }
 
         // If redirection is found before a pipe, skip setting up the pipe
@@ -382,20 +387,22 @@ void ms_execute_commands(data_t *data)
             data->last_exit_code = WEXITSTATUS(status);
         }
 
-        ms_free_2d_array(args); // Assuming this function frees the args array
-
-        // Restore STDIN and STDOUT to their original state
-        dup2(STDIN_FILENO, 0);
-
-        if (next_command != NULL)
-            current = next_command->next;
-        else
-            current = NULL;
+        // Check if the next command is a pipe and restore standard output/input if it is
+        if (next_command != NULL && next_command->type == T_PIPE)
+        {
+            dup2(stdout_backup, STDOUT_FILENO); // Restore stdout
+            dup2(stdin_backup, STDIN_FILENO);   // Restore stdin
+        }
+        
+        // Move to the next command
+        current = next_command ? next_command->next : NULL;
     }
 
-    // Restore stdout to its original state at the end
+    // Restore stdin and stdout to their original states at the end
     dup2(stdout_backup, STDOUT_FILENO);
     close(stdout_backup);
+    dup2(stdin_backup, STDIN_FILENO);
+    close(stdin_backup);
 }
 
 
