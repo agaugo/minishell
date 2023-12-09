@@ -6,34 +6,33 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 17:46:14 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/28 16:34:57 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/09 16:53:35 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int	ms_is_valid_identifier(const char *key)
+static int ms_is_valid_identifier(const char *key)
 {
-	int	has_equal_sign;
-	int	in_quotes;
-	int	i;
+    int i = 0;
 
-	if (!key || (!ft_isalpha(key[0]) && key[0] != '_'))
-		return (0);
-	has_equal_sign = 0;
-	in_quotes = 0;
-	i = 1;
-	while (key[i])
-	{
-		if (key[i] == '\"' || key[i] == '\'')
-			in_quotes = !in_quotes;
-		if (!in_quotes && key[i] == '=' && has_equal_sign++)
-			return (0);
-		if (!in_quotes && !ft_isalnum(key[i]) && key[i] != '_' && key[i] != '=')
-			return (0);
-		i++;
-	}
-	return (1);
+    // Check the key part before the '='
+    if (!key || (!ft_isalpha(key[0]) && key[0] != '_'))
+        return (0);
+
+    while (key[i] && key[i] != '=')
+    {
+        if (!ft_isalnum(key[i]) && key[i] != '_')
+            return (0);
+        i++;
+    }
+
+    // If there's no '=', then it's a standalone identifier which is valid
+    if (key[i] != '=')
+        return (1);
+
+    // If there is an '=', it's a key=value pair, and the key part is valid
+    return (1);
 }
 
 static int	ms_get_env_size(char **envp)
@@ -63,27 +62,105 @@ static void	ms_add_to_env(data_t *data, char *key)
 	data->envp = new_envp;
 }
 
-void	ms_export_command(data_t *data, token_t *token)
+void ms_export_command(data_t *data, token_t *token)
 {
-	char	*key;
-	int		i;
+    token_t *current_token = token->next;
+    char *key;
+    char *value;
+    char *new_assignment;
+    int i, equals_index;
 
-	data->last_exit_code = 0;
-	if (!token->next)
-	{
-		i = 0;
-		while (data->envp[i])
-			printf("%s\n", data->envp[i++]);
-	}
-	else
-	{
-		key = token->next->value;
-		if (!ms_is_valid_identifier(key))
-		{
-			fprintf(stderr, "export: `%s': not a valid identifier\n", key);
-			data->last_exit_code = 1;
-		}
-		else
-			ms_add_to_env(data, key);
-	}
+    data->last_exit_code = 0; // Default to success
+
+    if (!current_token) // No arguments to export command
+    {
+        for (i = 0; data->envp[i]; i++)
+            printf("%s\n", data->envp[i]);
+        return;
+    }
+
+    while (current_token != NULL)
+    {
+        key = current_token->value;
+
+		if (current_token->type == T_PIPE)
+			break;
+
+        // Validate the key first
+        if (!ms_is_valid_identifier(key))
+        {
+            fprintf(stderr, "export: `%s': not a valid identifier\n", key);
+            data->last_exit_code = 1;
+            current_token = current_token->next;
+            continue;
+        }
+
+        equals_index = -1;
+        for (i = 0; key[i]; i++) // Find '=' character
+        {
+            if (key[i] == '=')
+            {
+                equals_index = i;
+                break;
+            }
+        }
+
+        if (equals_index != -1) // '=' found
+        {
+            key[equals_index] = '\0'; // Split key and value
+            value = key + equals_index + 1;
+
+            // Check if the value needs quoting
+            if (strchr(value, ' ') || strchr(value, '\t') || strchr(value, '\"') || strchr(value, '\''))
+            {
+                // Create new key-value assignment string with quotes
+                new_assignment = malloc(strlen(key) + strlen(value) + 4); // Space for key, '=', quotes, and null terminator
+                if (!new_assignment)
+                {
+                    perror("Failed to allocate memory for new_assignment");
+                    exit(EXIT_FAILURE);
+                }
+
+                sprintf(new_assignment, "%s=\"%s\"", key, value); 
+            }
+            else
+            {
+                // Create new key-value assignment string without quotes
+                new_assignment = malloc(strlen(key) + strlen(value) + 2); // Space for key, '=', and null terminator
+                if (!new_assignment)
+                {
+                    perror("Failed to allocate memory for new_assignment");
+                    exit(EXIT_FAILURE);
+                }
+
+                sprintf(new_assignment, "%s=%s", key, value); 
+            }
+
+            // Check if the variable already exists, and if so, update its value
+            for (i = 0; data->envp[i]; i++)
+            {
+                if (strncmp(data->envp[i], key, strlen(key)) == 0 && data->envp[i][strlen(key)] == '=')
+                {
+                    // Update the existing environment variable with the new value
+                    free(data->envp[i]);
+                    data->envp[i] = strdup(new_assignment);
+                    break;
+                }
+            }
+
+            // If the variable didn't exist, add the new assignment to the environment
+            if (data->envp[i] == NULL)
+                ms_add_to_env(data, new_assignment);
+            
+            free(new_assignment);
+            current_token = current_token->next;
+            continue;
+        }
+
+        // Handle the case where there's no '=' sign
+        // You can choose to implement this part according to your requirements.
+        // For example, you can set the variable to an empty string or ignore it.
+
+        current_token = current_token->next;
+    }
 }
