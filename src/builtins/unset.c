@@ -6,23 +6,11 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/24 19:40:15 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/09 16:55:03 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/09 21:41:29 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-static void	ms_shift_env_vars(data_t *data, int index)
-{
-	int	i;
-
-	i = index;
-	while (data->envp[i])
-	{
-		data->envp[i] = data->envp[i + 1];
-		i++;
-	}
-}
 
 static int	ms_get_env_size(char **envp)
 {
@@ -36,11 +24,6 @@ static int	ms_get_env_size(char **envp)
 
 void	ms_unset_command(data_t *data, token_t *token)
 {
-	char	*key;
-	int		index;
-	char	**new_envp;
-	int		size;
-
 	if (!token->next)
 		return ;
 	

@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/07 19:15:23 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/09 22:27:08 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,6 @@ void    resolve_command_paths(data_t *data);
 int is_builtin_command(char *command);
 
 char *expand_quotes(data_t *data, char *token_value);
-int setup_redirection(token_t *tokens, int direction);
+int setup_redirection(token_t *tokens);
 
 #endif

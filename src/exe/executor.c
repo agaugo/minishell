@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/09 17:20:05 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/09 22:32:58 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	set_command_path(char **allpath, token_t *current)
 {
 	char	*fullpath;
 	char	*temp;
-	int		i;
+	int		i = 0;
 
     int found = 0;
     while (allpath[i])
@@ -37,9 +37,6 @@ int	set_command_path(char **allpath, token_t *current)
     return found; // Return 1 if found, 0 otherwise
 }
 
-#include <sys/stat.h>
-#include <unistd.h>
-
 int file_exists_and_executable(const char *path)
 {
     struct stat statbuf;
@@ -56,6 +53,8 @@ int file_exists_and_executable(const char *path)
 
 int	is_builtin_command(char *command)
 {
+    if (command == NULL)
+        return (1);
 	const char *builtins[] = {"echo", "cd", "export", "unset", "env", "exit",
 		"pwd", NULL};
 	for (int i = 0; builtins[i] != NULL; i++)
@@ -107,12 +106,6 @@ void	resolve_command_paths(data_t *data)
                     current->status = 126;
                 }    
             }
-            // else if (!file_exists_and_executable(current->value))
-            // {
-            //     fprintf(stderr, "%s: No such file or directory2\n", current->value);
-            //     data->last_exit_code = 127;
-            //     current->status = 127;
-            // }
             else
             {
              	if (!set_command_path(allpath, current))
@@ -207,7 +200,7 @@ void execute_builtin_command(char **args, data_t *data, int fd_write, token_t *c
         exit(EXIT_SUCCESS);
 }
 
-int setup_redirection(token_t *tokens, int direction)
+int setup_redirection(token_t *tokens)
 {
     token_t *current;
     int fd;
@@ -298,7 +291,7 @@ void ms_execute_commands(data_t *data) {
 
                 // Setup redirections
                 if (is_redirect) {
-                    if (setup_redirection(current, 1) == -1 || setup_redirection(current, 0) == -1) {
+                    if (setup_redirection(current) == -1) {
                         exit(EXIT_FAILURE); 
                     }
                 }

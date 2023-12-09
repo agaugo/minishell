@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/07 19:37:07 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/09 21:47:51 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ void ms_check_redirect(data_t *data)
     }
 }
 
-void	ms_reset_std(data_t *data, int *std_in, int *std_out)
+void	ms_reset_std(int *std_in, int *std_out)
 {
 	if (dup2(*std_out, 1) == -1)
 		perror("Error restoring standard output");
@@ -144,8 +144,6 @@ void remove_intermediate_input_redirections(data_t *data) {
     }
 
     token_t *current = data->tokens;
-    token_t *prev = NULL;
-    int first = 0;
     int skip = 0;
 
     while (current != NULL) {
@@ -154,14 +152,12 @@ void remove_intermediate_input_redirections(data_t *data) {
         
         if (skip == 1)
         {
-            prev = current;
             current = current->next;
             continue;
         }
 
         if (is_builtin_command2(current->value) == 1)
         {
-            prev = current;
             current = current->next;
             skip = 1;
             continue;
@@ -185,10 +181,8 @@ void remove_intermediate_input_redirections(data_t *data) {
                 }
             }
 
-            prev = current;
             current = last_file->next;
         } else {
-            prev = current;
             current = current->next;
         }
     }
@@ -231,7 +225,7 @@ void	ms_check_command(data_t *data)
     // dup2(original_stdin, STDIN_FILENO);  // Restore the original STDIN
     // close(original_stdin);  // Close the duplicate file descriptor
     
-	ms_reset_std(data, &std_in, &std_out);
+	ms_reset_std(&std_in, &std_out);
 }
 
 void	ms_process_input(data_t *data)

@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 00:11:40 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/09 01:53:35 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/09 21:26:03 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,12 @@
 
 #include "../../includes/minishell.h"
 
-static void ms_print_echo(token_t *token, char *str)
-{
-    if (!token->next || !token->next->value)
-        printf("\n");
-    else if (ft_strcmp(token->next->value, "-n") == 0)
-    {
-        if (token->next->next && token->next->next->value)
-        {
-            printf("%s", str);
-        }
-    }
-    else
-        printf("%s\n", str);
-}
 void ms_echo_command(data_t *data, token_t *token)
 {
     int flag_n = 0;
     int first_word = 1;
     int stdout_backup = dup(STDOUT_FILENO); // Backup stdout
     int should_print_space = 0; // Flag to control space printing
-    int after_output_redirect = 0; // Flag for output redirection
 
     token = token->next; // Skip the echo token
 
@@ -70,7 +55,6 @@ void ms_echo_command(data_t *data, token_t *token)
                 dup2(fd, STDOUT_FILENO); // Redirect STDOUT to the file
                 close(fd);
                 token = token->next; // Move past the file name
-                after_output_redirect = 1; // Set the flag since we are after output redirection
                 continue; // Continue processing further tokens
             }
         }
@@ -92,8 +76,6 @@ void ms_echo_command(data_t *data, token_t *token)
 
             printf("%s", token->value);
             should_print_space = 1; // Set flag to print space before the next word
-
-            after_output_redirect = 0; // Reset the output redirect flag
         }
 
         token = token->next;

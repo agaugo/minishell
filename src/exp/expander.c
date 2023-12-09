@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/08 00:35:15 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/09 21:46:40 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void handle_quotes(const char *input) {
     int in_single_quote = 0, in_double_quote = 0;
     char current_char;
 
-    for (int i = 0; i < strlen(input); i++) {
+    for (size_t i = 0; i < ft_strlen(input); i++) {
         current_char = input[i];
 
         // Handle single quote

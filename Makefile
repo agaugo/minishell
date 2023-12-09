@@ -3,7 +3,7 @@ LIBFT = libft/libft.a
 FT_PRINTF = ft_printf/libftprintf.a
 
 CC = gcc
-CFLAGS = -Iincludes/ -Ilibft/ -Ift_printf/
+CFLAGS = -Wall -Wextra -Werror -Iincludes/ -Ilibft/ -Ift_printf/
 LDFLAGS = -lreadline
 OBJS_DIR = objs/
 
