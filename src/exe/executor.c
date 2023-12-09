@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/09 01:34:15 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/09 14:05:25 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,31 +216,34 @@ int setup_redirection(token_t *tokens, int direction)
 
     current = tokens;
     while (current != NULL) {
-        if ((direction == 0 && current->type == T_REDIRECT_IN) ||
-            (direction == 1 && current->type == T_REDIRECT_OUT) ||
-            (direction == 1 && current->type == T_APPEND_OUT)) {
-            if (current->type == T_APPEND_OUT) 
-                flags = O_WRONLY | O_CREAT | O_APPEND;
-            else 
-                flags = O_WRONLY | O_CREAT | O_TRUNC;
-            if (direction == 0) 
-                flags = O_RDONLY;
-            fd = open(current->next->value, flags, 0666);
-            if (fd == -1) 
-            {
-                perror("open");
-                return -1; // Return error code
+        if (current->type == T_REDIRECT_IN) {
+            if (access(current->next->value, F_OK) == -1) {
+                fprintf(stderr, "bash: %s: No such file or directory\n", current->next->value);
+                return -1; // Return error code for missing input file
             }
-            if (direction == 0) 
-                dup2(fd, STDIN_FILENO);
-            else
-                dup2(fd, STDOUT_FILENO);
+            flags = O_RDONLY;
+            fd = open(current->next->value, flags);
+            if (fd == -1) {
+                perror("open");
+                return -1;
+            }
+            dup2(fd, STDIN_FILENO);
+            close(fd);
+        } else if (current->type == T_REDIRECT_OUT || current->type == T_APPEND_OUT) {
+            flags = (current->type == T_APPEND_OUT) ? (O_WRONLY | O_CREAT | O_APPEND) : (O_WRONLY | O_CREAT | O_TRUNC);
+            fd = open(current->next->value, flags, 0666);
+            if (fd == -1) {
+                perror("open");
+                return -1;
+            }
+            dup2(fd, STDOUT_FILENO);
             close(fd);
         }
         current = current->next;
     }
     return 0; // Success
 }
+
 
 void ms_execute_commands(data_t *data) {
     pid_t pid;
