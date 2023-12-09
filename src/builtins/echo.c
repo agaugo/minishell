@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 00:11:40 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/08 13:03:11 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/09 01:53:35 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,12 @@ static void ms_print_echo(token_t *token, char *str)
     else
         printf("%s\n", str);
 }
-
 void ms_echo_command(data_t *data, token_t *token)
 {
     int flag_n = 0;
     int first_word = 1;
     int stdout_backup = dup(STDOUT_FILENO); // Backup stdout
-    int word_printed = 0;
+    int should_print_space = 0; // Flag to control space printing
     int after_output_redirect = 0; // Flag for output redirection
 
     token = token->next; // Skip the echo token
@@ -86,13 +85,13 @@ void ms_echo_command(data_t *data, token_t *token)
         // Print tokens of type T_WORD
         if (token && token->type == T_WORD)
         {
-            if (word_printed > 0 || after_output_redirect)
+            if (should_print_space)
             {
-                printf(" "); // Add a space if this is not the first word or after output redirection
+                printf(" ");
             }
 
             printf("%s", token->value);
-            word_printed++;
+            should_print_space = 1; // Set flag to print space before the next word
 
             after_output_redirect = 0; // Reset the output redirect flag
         }
