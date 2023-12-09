@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/09 14:05:25 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/09 17:20:05 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,6 @@ void	resolve_command_paths(data_t *data)
 	is_command = 1;
 	if (!path)
 	{
-		perror("PATH not set");
 		return ;
 	}
 	allpath = ft_split(path, ':');

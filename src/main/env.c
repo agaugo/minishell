@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   init.c                                             :+:    :+:            */
+/*   env.c                                              :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/24 23:38:22 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/02 21:56:00 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/09 17:19:58 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ char *ft_getenv(char **envp, char *key)
             return (ft_strdup(envp[i] + (len + 1)));
         i++;
     }
-    perror("PATH Variable not set");
     return (NULL);
 }
 
