@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/25 10:37:37 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/08 12:39:11 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/09 16:54:24 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,9 @@ void	ms_cd_command(data_t *data, token_t *token)
 		ms_cd_home(data);
 	else
 	{
+		if (token->next->type == T_PIPE)
+			return ;
+		
 		direction = token->next->value;
 
 		if (ft_strcmp(direction, "-") == 0)
