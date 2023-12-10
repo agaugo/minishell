@@ -261,6 +261,7 @@ int	main(int argc, char *argv[], char *envp[])
         if (data.tokens != NULL)
             ms_process_input(&data);
 		free(data.user_input);
+		system("leaks minishell");
 	}
 	return (0);
 }

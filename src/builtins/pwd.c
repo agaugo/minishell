@@ -40,6 +40,10 @@ char	*ms_get_current_working_dir(void)
 
 void	ms_pwd_command(data_t *data)
 {
-	printf("%s\n", ms_get_current_working_dir());
+	char *current_directory;
+
+	current_directory = ms_get_current_working_dir();
+	printf("%s\n", current_directory);
+	free(current_directory);
 	data->last_exit_code = 0;
 }
