@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/10 14:37:56 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/10 15:25:10 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,7 @@ char *expand_tilde(data_t *data, char *token_value)
 
 char *expand_dollarsign(data_t *data, char *token_value)
 {
+    data->last_exit_code = 0;
     int index = ms_find_env_index(data->envp, token_value);
     if (index == -1) {
         return strdup("");  // Return empty string if not found
