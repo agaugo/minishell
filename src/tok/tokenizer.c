@@ -146,7 +146,7 @@ token_t *ms_tokenizer(data_t data)
 
             char *value = strndup(start, current - start);
             token_t *new_token = init_new_token(value, current, current_token_type, data);
-
+			free(value);
             if (!head)
                 head = new_token;
             else
@@ -161,20 +161,15 @@ token_t *ms_tokenizer(data_t data)
 
         // Parse other types of tokens
         if (*current == '\'' || *current == '\"')
-        {
             current_token_type = parse_quote_token(&current);
-        }
         else
-        {
             current_token_type = parse_word_token(&current);
-        }
-
         // Create a token for the parsed word or quote
         if (current != start)
         {
             char *value = strndup(start, current - start);
             token_t *new_token = init_new_token(value, current, current_token_type, data);
-
+			free(value);
             if (!head)
                 head = new_token;
             else

@@ -260,8 +260,8 @@ int	main(int argc, char *argv[], char *envp[])
 		ms_expander(&data);
         if (data.tokens != NULL)
             ms_process_input(&data);
+		// free_token_list(data.tokens);
 		free(data.user_input);
-		system("leaks minishell");
 	}
 	return (0);
 }

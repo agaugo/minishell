@@ -117,5 +117,7 @@ int is_builtin_command(char *command);
 
 char *expand_quotes(data_t *data, char *token_value);
 int setup_redirection(token_t *tokens);
+void free_token_list(token_t *head);
+void wipe_data_struct(data_t *data);
 
 #endif

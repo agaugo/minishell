@@ -52,7 +52,7 @@ static char	*ms_process_quotes(char *temp_value, token_t *token)
 	return (temp_value);
 }
 
-static void	ms_check_args_and_exit(token_t *token, char *temp_value)
+static void	ms_check_args_and_exit(data_t *data, token_t *token, char *temp_value)
 {
 	int	exit_code;
 
@@ -68,7 +68,9 @@ static void	ms_check_args_and_exit(token_t *token, char *temp_value)
 	if (temp_value != token->value)
 		free(temp_value);
 	printf("exit\n");
+	wipe_data_struct(data);
 	exit(exit_code % 256);
+
 }
 
 void	ms_exit_shell(data_t *data, token_t *token)
@@ -78,6 +80,7 @@ void	ms_exit_shell(data_t *data, token_t *token)
 	if (!token)
 	{
 		printf("exit\n");
+		wipe_data_struct(data);
 		exit(0);
 	}
 	if (token->type == T_WORD && token->next
@@ -89,5 +92,5 @@ void	ms_exit_shell(data_t *data, token_t *token)
 	}
 	temp_value = token->value;
 	temp_value = ms_process_quotes(temp_value, token);
-	ms_check_args_and_exit(token, temp_value);
+	ms_check_args_and_exit(data, token, temp_value);
 }
