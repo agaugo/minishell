@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/09 22:32:58 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/10 14:20:30 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,6 +249,26 @@ void ms_execute_commands(data_t *data) {
 
     current = data->tokens;
     while (current != NULL) {
+        token_t *temp = current;
+        while (temp != NULL) {
+            if (temp->type == T_HEREDOC) {
+                ms_heredoc(data, temp);
+                
+                temp->type = T_REDIRECT_IN;
+                temp->value = "<";
+
+                if (temp->next)
+                {
+                    temp->next->type = T_WORD;
+                    temp->next->value = strdup(data->heredoc_tmp_file);
+                }     
+                
+                free(data->heredoc_tmp_file);
+                data->heredoc_tmp_file = NULL;
+            }
+            temp = temp->next;
+        }
+        
         next_command = current;
 
         // Determine if the current command is part of a pipe
@@ -260,14 +280,31 @@ void ms_execute_commands(data_t *data) {
                 break;
             }
             if (next_command->type == T_REDIRECT_OUT || next_command->type == T_APPEND_OUT ||
-                next_command->type == T_REDIRECT_IN) {
+                next_command->type == T_REDIRECT_IN || next_command->type == T_HEREDOC) {
                 is_redirect = 1;
             }
             next_command = next_command->next;
         }
 
         args = ms_get_full_args(current, next_command);
-
+        
+        // Handle Heredoc
+        if (current->type == T_HEREDOC) {
+            ms_heredoc(data, current);
+            // Set up redirection for the heredoc
+            if (data->heredoc_tmp_file) {
+                int heredoc_fd = open(data->heredoc_tmp_file, O_RDONLY);
+                if (heredoc_fd == -1) {
+                    perror("open heredoc file");
+                    exit(EXIT_FAILURE); // or handle error as needed
+                }
+                if (in_fd != 0) {
+                    close(in_fd);
+                }
+                in_fd = heredoc_fd;
+            }
+        }
+        
         // Handle built-in commands differently when they are part of a pipeline
         if (is_builtin_command(args[0]) && !is_pipe && !is_redirect) {
             ms_run_builtin(data, args, current);
