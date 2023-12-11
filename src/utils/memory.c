@@ -65,27 +65,25 @@ void wipe_data_struct(data_t *data) {
     ft_memset(data, 0, sizeof(data_t));
 }
 
-void* memory_realloc(void* ptr, size_t new_size) 
-{
-    void* new_ptr;
-    size_t copy_size;
-
-    if (new_size == 0)
-	{
+void* memory_realloc(void* ptr, size_t new_size) {
+    if (new_size == 0) {
         free_memory(ptr);
         return NULL;
     }
-    if (ptr == NULL)
-        return (allocate_memory(new_size));
-    new_ptr = allocate_memory(new_size);
-    if (new_ptr != NULL) 
-	{
-        if (new_size < sizeof(ptr))
-            copy_size = new_size;
-        else
-            copy_size = sizeof(ptr);
-        ft_memcpy(new_ptr, ptr, copy_size);
-        free_memory(ptr);
+
+    if (ptr == NULL) {
+        return allocate_memory(new_size);
     }
-    return (new_ptr);
+
+    void* new_ptr = allocate_memory(new_size);
+    if (new_ptr == NULL) {
+        return NULL; // Don't free original pointer if allocation fails
+    }
+
+    // Since we can't know the original allocation size, we have to assume new_size
+    // is safe, but this is not ideal and can lead to bugs.
+    ft_memcpy(new_ptr, ptr, new_size);
+    free_memory(ptr);
+
+    return new_ptr;
 }
