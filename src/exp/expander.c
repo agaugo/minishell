@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/11 18:02:38 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/11 22:07:30 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,7 @@ char *expand_dollarsign(data_t *data, char *token_value)
     if (index == -1) {
         return ft_strdup("");  // Return empty string if not found
     }
-    char *var_val = strchr(data->envp[index], '=') + 1;
+    char *var_val = ft_strchr(data->envp[index], '=') + 1;
     return ft_strdup(var_val);
 }
 
@@ -201,7 +201,7 @@ char *expand_quotes(data_t *data, char *token_value)
             size_t exit_code_len = ft_strlen(exit_code_str);
 
             // Check if exit code fits within the string, otherwise reallocate
-            char *new_token_value = (char *)allocate_memory(strlen(token_value) + exit_code_len + 1);
+            char *new_token_value = (char *)allocate_memory(ft_strlen(token_value) + exit_code_len + 1);
 
             // Copy characters before $?
             ft_strncpy(new_token_value, token_value, i);
@@ -221,9 +221,9 @@ char *expand_quotes(data_t *data, char *token_value)
             i++;
             k = 0;
             var_name = (char *)allocate_memory(ft_strlen(token_value) + 1);
-            memset(var_name, 0, ft_strlen(token_value) + 1);
+            ft_memset(var_name, 0, ft_strlen(token_value) + 1);
 
-            while (isalnum(token_value[i + k]) || token_value[i + k] == '_' || token_value[i + k] == '?')
+            while (ft_isalnum(token_value[i + k]) || token_value[i + k] == '_' || token_value[i + k] == '?')
             {
                 var_name[k] = token_value[i + k];
                 k++;
@@ -338,16 +338,13 @@ void ms_expander(data_t *data)
     current_token = data->tokens;
     prev_token = NULL;
 
-
     while (current_token)
     {
         char *cq = ms_clean_quotes(&vars, current_token->value);
         free_memory(current_token->value);
         current_token->value = cq;
         if (current_token->type == T_WORD || current_token->type == T_DOUBLE_QUOTE)
-        {            
-            char *expanded_value = NULL;
-
+        {
             if (current_token->type == T_WORD)
             {
                 if (ft_strchr(current_token->value, '~'))
@@ -358,8 +355,10 @@ void ms_expander(data_t *data)
 
             if (ft_strchr(current_token->value, '$'))
             {
-                expanded_value = expand_quotes(data, current_token->value);
-                current_token->value = expanded_value;
+                char *ev = expand_quotes(data, current_token->value);
+                free(current_token->value);
+                current_token->value = ev;
+                // system("leaks minishell");
             }
         }
 
