@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/09 22:27:08 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/11 16:39:42 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@
 #include <sys/stat.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+
+extern int print_new_prompt;
 
 typedef struct data {
     char            **envp;
