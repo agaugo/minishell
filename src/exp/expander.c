@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/11 22:07:30 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/11 22:17:14 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,6 +187,7 @@ char *expand_quotes(data_t *data, char *token_value)
     char *var_name;
     char *var_value;
     int i = 0, j = 0, k, var_len;
+    int do_free = 0;
     // int result_size = strlen(token_value) * 2 + 1;  // Initial allocation
 
     result = allocate_memory(4096);
@@ -213,7 +214,7 @@ char *expand_quotes(data_t *data, char *token_value)
             ft_strcpy(new_token_value + i + exit_code_len, token_value + i + 2);
 
             free_memory(exit_code_str);
-            free_memory(token_value);
+            do_free = 1;
             token_value = new_token_value;
         }
         if (token_value[i] == '$' && token_value[i + 1] != '\'')
@@ -268,6 +269,8 @@ char *expand_quotes(data_t *data, char *token_value)
     }
     result[j] = '\0';
     result = memory_realloc(result, j + 1);
+    if (do_free)
+        free(token_value);
 	// debug("tokenizer buffer\n"); //for testing
     return (result);
 }
@@ -356,9 +359,8 @@ void ms_expander(data_t *data)
             if (ft_strchr(current_token->value, '$'))
             {
                 char *ev = expand_quotes(data, current_token->value);
-                free(current_token->value);
+                free_memory(current_token->value);
                 current_token->value = ev;
-                // system("leaks minishell");
             }
         }
 
