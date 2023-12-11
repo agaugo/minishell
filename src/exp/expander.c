@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/11 22:17:14 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/11 22:30:55 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ char *expand_tilde(data_t *data, char *token_value)
         int home_index = ms_find_env_index(data->envp, "HOME");
         if (home_index == -1) {
             perror("Environment Variable HOME Not Found");
-            return strdup(token_value); // Return the original token if HOME not found
+            return ft_strdup(token_value); // Return the original token if HOME not found
         }
 
         char *home_path = ft_strchr(data->envp[home_index], '=') + 1;
@@ -146,7 +146,6 @@ char *expand_tilde(data_t *data, char *token_value)
         ft_strcpy(new_token_value, home_path); // Copy home directory
         ft_strcat(new_token_value, token_value + 1); // Append the rest of the original token after tilde
 
-        free_memory(token_value); // Free the original token value
 		// debug(new_token_value); //for testing
         return new_token_value; // Return the new token value
     }
@@ -351,8 +350,10 @@ void ms_expander(data_t *data)
             if (current_token->type == T_WORD)
             {
                 if (ft_strchr(current_token->value, '~'))
-                {
-                    current_token->value = expand_tilde(data, current_token->value);
+                { 
+                    char *et = expand_tilde(data, current_token->value);
+                    free_memory(current_token->value);
+                    current_token->value = et;
                 } 
             }
 

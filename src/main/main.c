@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/11 22:21:49 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/11 22:31:24 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -269,7 +269,6 @@ int	main(int argc, char *argv[], char *envp[])
             ms_process_input(&data);
         free_token_list(data.tokens);
         free_memory(data.user_input);
-        system("leaks minishell");
 	}
 	return (0);
 }
