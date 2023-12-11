@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/10 14:20:30 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/11 16:39:20 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,9 +203,9 @@ int setup_redirection(token_t *tokens)
 
     current = tokens;
     while (current != NULL) {
-        if (current->type == T_REDIRECT_IN) {
+        if (current->type == T_REDIRECT_IN && current->next->type == T_WORD) {
             if (access(current->next->value, F_OK) == -1) {
-                fprintf(stderr, "bash: %s: No such file or directory\n", current->next->value);
+                fprintf(stderr, "%s: No such file or directory\n", current->next->value);
                 return -1; // Return error code for missing input file
             }
             flags = O_RDONLY;
@@ -245,60 +245,76 @@ void ms_execute_commands(data_t *data) {
     current = data->tokens;
     while (current != NULL) {
         token_t *temp = current;
+        int br2 = 0;
         while (temp != NULL) {
             if (temp->type == T_HEREDOC) {
-                ms_heredoc(data, temp);
-                
-                temp->type = T_REDIRECT_IN;
-                temp->value = "<";
-
-                if (temp->next)
+                if (temp->next == NULL || (temp->next && temp->next->type != T_WORD))
                 {
-                    temp->next->type = T_WORD;
-                    temp->next->value = strdup(data->heredoc_tmp_file);
-                }     
-                
-                free_memory(data->heredoc_tmp_file);
-                data->heredoc_tmp_file = NULL;
+                    char    *val = NULL;
+                    if (temp->next == NULL)
+                        val = "\\n";
+                    else
+                        val = temp->next->value;
+                    fprintf(stderr, "syntax error near unexpected token '%s'\n", val);
+                    data->last_exit_code = 258;
+                    br2 = 1;
+                    break;
+                }
+                else
+                {
+                    ms_heredoc(data, temp);
+                    
+                    temp->type = T_REDIRECT_IN;
+                    temp->value = "<";
+
+                    if (temp->next)
+                    {
+                        temp->next->type = T_WORD;
+                        temp->next->value = strdup(data->heredoc_tmp_file);
+                    }     
+                    
+                    free_memory(data->heredoc_tmp_file);
+                    data->heredoc_tmp_file = NULL;  
+                }
             }
             temp = temp->next;
         }
-        
+        if (br2 == 1)
+            break;
+            
         next_command = current;
 
         // Determine if the current command is part of a pipe
         int is_pipe = 0;
         int is_redirect = 0;
+        int br = 0;
         while (next_command != NULL) {
             if (next_command->type == T_PIPE) {
                 is_pipe = 1;
                 break;
             }
             if (next_command->type == T_REDIRECT_OUT || next_command->type == T_APPEND_OUT ||
-                next_command->type == T_REDIRECT_IN || next_command->type == T_HEREDOC) {
+                next_command->type == T_REDIRECT_IN) {
                 is_redirect = 1;
+                if (next_command->next == NULL || (next_command->next && next_command->next->type != T_WORD))
+                {
+                    char    *val = NULL;
+                    if (next_command->next == NULL)
+                        val = "\\n";
+                    else
+                        val = next_command->next->value;
+                    fprintf(stderr, "syntax error near unexpected token '%s'\n", val);
+                    data->last_exit_code = 258;
+                    br = 1;
+                    break;
+                }
             }
             next_command = next_command->next;
         }
+        if (br == 1)
+            break;
 
-        args = ms_get_full_args(current, next_command);
-        
-        // Handle Heredoc
-        if (current->type == T_HEREDOC) {
-            ms_heredoc(data, current);
-            // Set up redirection for the heredoc
-            if (data->heredoc_tmp_file) {
-                int heredoc_fd = open(data->heredoc_tmp_file, O_RDONLY);
-                if (heredoc_fd == -1) {
-                    perror("open heredoc file");
-                    exit(EXIT_FAILURE); // or handle error as needed
-                }
-                if (in_fd != 0) {
-                    close(in_fd);
-                }
-                in_fd = heredoc_fd;
-            }
-        }
+        args = ms_get_full_args(current, next_command); 
         
         // Handle built-in commands differently when they are part of a pipeline
         if (is_builtin_command(args[0]) && !is_pipe && !is_redirect) {
@@ -386,8 +402,10 @@ void ms_execute_commands(data_t *data) {
                 in_fd = 0;
             }
 
+            print_new_prompt = 1;
             waitpid(pid, &status, 0); // Wait for the child process to finish
             data->last_exit_code = WEXITSTATUS(status);
+            print_new_prompt = 0;
         }
 
         current = next_command ? next_command->next : NULL;

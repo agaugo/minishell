@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/09 21:47:51 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/11 16:39:26 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,18 +164,22 @@ void remove_intermediate_input_redirections(data_t *data) {
         if (current->type == T_REDIRECT_IN) {
             // Found a redirection, now find the last file in the sequence
             token_t *last_file = current;
-            while (last_file->next && last_file->next->type == T_WORD) {
-                last_file = last_file->next;
-            }
 
-            // Remove intermediate files if there are more than one
-            if (current->next != last_file) {
-                token_t *temp = current->next;
-                current->next = last_file;
-                while (temp != last_file) {
-                    token_t *next_temp = temp->next;
-                    free_memory(temp); // Assuming you need to free the removed nodes
-                    temp = next_temp;
+            // Ensure there is at least one word after the redirection
+            if (last_file->next && last_file->next->type == T_WORD) {
+                while (last_file->next && last_file->next->type == T_WORD) {
+                    last_file = last_file->next;
+                }
+
+                // Remove intermediate files if there are more than one
+                if (current->next != last_file) {
+                    token_t *temp = current->next;
+                    current->next = last_file;
+                    while (temp != last_file) {
+                        token_t *next_temp = temp->next;
+                        free_memory(temp); // Assuming you need to free the removed nodes
+                        temp = next_temp;
+                    }
                 }
             }
             current = last_file->next;
@@ -258,7 +262,6 @@ int	main(int argc, char *argv[], char *envp[])
 		ms_expander(&data);
         if (data.tokens != NULL)
             ms_process_input(&data);
-		// free_token_list(data.tokens);
 		free_memory(data.user_input);
 	}
 	return (0);

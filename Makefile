@@ -56,7 +56,7 @@ clean:
 	$(MAKE) clean -C libft
 
 fclean: clean
-	@echo "$(RED)Removing $(NAME)l executable...$(RESET)"
+	@echo "$(RED)Removing $(NAME) executable...$(RESET)"
 	rm -f $(NAME)
 	$(MAKE) fclean -C libft
 
