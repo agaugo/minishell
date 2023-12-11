@@ -51,7 +51,7 @@ static void	ms_add_to_env(data_t *data, char *key)
 	int		size;
 
 	size = ms_get_env_size(data->envp);
-	new_envp = realloc(data->envp, (size + 2) * sizeof(char *));
+	new_envp = memory_realloc(data->envp, (size + 2) * sizeof(char *));
 	if (!new_envp)
 	{
 		perror("Failed to reallocate memory for envp");

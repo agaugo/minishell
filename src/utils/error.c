@@ -30,3 +30,7 @@ void	ms_free_2d_array(char **_array)
 	}
 	free_memory(_array);
 }
+void debug(char *output)
+{
+	printf("Content: %s\n", output);
+}

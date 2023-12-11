@@ -66,5 +66,6 @@ char	**ms_clone_envp(char **envp)
 		i++;
 	}
 	new_envp[count] = NULL;
+	// debug("envp alloc\n"); //for testing
 	return (new_envp);
 }

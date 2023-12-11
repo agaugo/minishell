@@ -77,6 +77,7 @@ static char *ms_clean_quotes(t_quote_vars *vars, const char *str)
     while (str[i])
         ms_check_quotes(str, vars);
     cleaned_str[j] = '\0';
+	// debug(cleaned_str); //for testing
     return (cleaned_str);
 }
 
@@ -146,6 +147,7 @@ char *expand_tilde(data_t *data, char *token_value)
         ft_strcat(new_token_value, token_value + 1); // Append the rest of the original token after tilde
 
         free_memory(token_value); // Free the original token value
+		// debug(new_token_value); //for testing
         return new_token_value; // Return the new token value
     }
     return ft_strdup(token_value); // Return the original token if it doesn't start with tilde
@@ -264,7 +266,8 @@ char *expand_quotes(data_t *data, char *token_value)
             result[j++] = token_value[i++];
     }
     result[j] = '\0';
-    result = realloc(result, j + 1);
+    result = memory_realloc(result, j + 1);
+	// debug("tokenizer buffer\n"); //for testing
     return (result);
 }
 

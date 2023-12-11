@@ -60,6 +60,7 @@ char *read_file_content(const char *filename) {
     fread(buffer, 1, length, file);
     buffer[length] = '\0';
     fclose(file);
+	// debug("file (fopen)"); //for testing
     return buffer;
 }
 
@@ -117,9 +118,7 @@ int is_directory2(const char *path)
 {
     struct stat statbuf;
     if (stat(path, &statbuf) != 0)
-    {
         return 0; // Cannot access path, assume not a directory
-    }
     return S_ISDIR(statbuf.st_mode);
 }
 
@@ -179,11 +178,10 @@ void remove_intermediate_input_redirections(data_t *data) {
                     temp = next_temp;
                 }
             }
-
             current = last_file->next;
-        } else {
+        } 
+		else
             current = current->next;
-        }
     }
 }
 
@@ -254,6 +252,7 @@ int	main(int argc, char *argv[], char *envp[])
 	while (1)
 	{
 		data.user_input = readline(PROMPT);
+		printf("+ + + MEMORY ALLOCATION -> **USERINPUT**\n");
 		ms_handle_ctrl_d(&data);
 		data.tokens = ms_tokenizer(data);
 		ms_expander(&data);

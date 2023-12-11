@@ -39,6 +39,7 @@ static char	*ms_process_quotes(char *temp_value, token_t *token)
 		temp_value = (char *)allocate_memory(ft_strlen(inner_value) + 2);
 		temp_value[0] = token->value[0];
 		ft_strcpy(temp_value + 1, inner_value);
+		// debug(temp_value); //for testing
 		free_memory(inner_value);
 	}
 	if (temp_value[0] == '\"'

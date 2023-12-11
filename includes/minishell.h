@@ -51,6 +51,8 @@ char *ft_strchr(const char *str, int character);
 char *ft_strcat(char *dest, const char *src);
 char *ft_strncpy(char *dest, const char *src, size_t n);
 char *ft_strndup(const char *str, size_t n);
+void debug(char *output);
+void	*memory_realloc(void* ptr, size_t new_size);
 
 // Location: /src/main.c
 void executeBuiltin(struct termios *_oldTermios, token_t *_token);

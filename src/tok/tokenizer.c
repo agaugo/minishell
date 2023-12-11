@@ -22,7 +22,8 @@ static token_t	*init_new_token(char *start, char *current, tokentype_t type, dat
 	token_t	*new_token;
 
 	new_token = allocate_memory(sizeof(token_t));
-	new_token->value = strndup(start, current - start);
+	// debug("(token_t *)"); //for testing
+	new_token->value = ft_strndup(start, current - start);
 	new_token->type = type;
 	new_token->envp = data.envp;
 	new_token->next = NULL;

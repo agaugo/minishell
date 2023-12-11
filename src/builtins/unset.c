@@ -46,7 +46,7 @@ void	ms_unset_command(data_t *data, token_t *token)
             }
             // Reduce the size of the environment pointer array
             int size = ms_get_env_size(data->envp);
-            char **new_envp = realloc(data->envp, size * sizeof(char *));
+            char **new_envp = memory_realloc(data->envp, size * sizeof(char *));
             if (!new_envp)
             {
                 perror("Failed to reallocate memory for envp");
