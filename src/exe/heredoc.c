@@ -55,7 +55,7 @@ void ms_heredoc(data_t *data, token_t *token)
     if (heredoc_fd != -1) {
         close(heredoc_fd);
         unlink(data->heredoc_tmp_file); // Delete the temp file
-        free(data->heredoc_tmp_file);
+        free_memory(data->heredoc_tmp_file);
         data->heredoc_tmp_file = NULL;
     }
 
@@ -64,7 +64,7 @@ void ms_heredoc(data_t *data, token_t *token)
         input = readline("> ");
         if (strcmp(input, delimiter) == 0)
         {
-            free(input);
+            free_memory(input);
             break;
         }
 
@@ -72,8 +72,8 @@ void ms_heredoc(data_t *data, token_t *token)
         write(fd, expanded_input, strlen(expanded_input));
         write(fd, "\n", 1); // Write newline character
 
-        free(expanded_input);
-        free(input);
+        free_memory(expanded_input);
+        free_memory(input);
     }
     close(fd);
     // Store the filename in your data structure for later use

@@ -114,36 +114,24 @@ void ms_export_command(data_t *data, token_t *token)
             if (strchr(value, ' ') || strchr(value, '\t') || strchr(value, '\"') || strchr(value, '\''))
             {
                 // Create new key-value assignment string with quotes
-                new_assignment = malloc(strlen(key) + strlen(value) + 4); // Space for key, '=', quotes, and null terminator
-                if (!new_assignment)
-                {
-                    perror("Failed to allocate memory for new_assignment");
-                    exit(EXIT_FAILURE);
-                }
-
+                new_assignment = (char *)allocate_memory(strlen(key) + strlen(value) + 4); // Space for key, '=', quotes, and null terminator
                 sprintf(new_assignment, "%s=\"%s\"", key, value); 
             }
             else
             {
                 // Create new key-value assignment string without quotes
-                new_assignment = malloc(strlen(key) + strlen(value) + 2); // Space for key, '=', and null terminator
-                if (!new_assignment)
-                {
-                    perror("Failed to allocate memory for new_assignment");
-                    exit(EXIT_FAILURE);
-                }
-
+                new_assignment = allocate_memory(strlen(key) + strlen(value) + 2); // Space for key, '=', and null terminator
                 sprintf(new_assignment, "%s=%s", key, value); 
             }
 
             // Check if the variable already exists, and if so, update its value
             for (i = 0; data->envp[i]; i++)
             {
-                if (strncmp(data->envp[i], key, strlen(key)) == 0 && data->envp[i][strlen(key)] == '=')
+                if (ft_strncmp(data->envp[i], key, strlen(key)) == 0 && data->envp[i][strlen(key)] == '=')
                 {
                     // Update the existing environment variable with the new value
-                    free(data->envp[i]);
-                    data->envp[i] = strdup(new_assignment);
+                    free_memory(data->envp[i]);
+                    data->envp[i] = ft_strdup(new_assignment);
                     break;
                 }
             }
@@ -152,7 +140,7 @@ void ms_export_command(data_t *data, token_t *token)
             if (data->envp[i] == NULL)
                 ms_add_to_env(data, new_assignment);
             
-            free(new_assignment);
+            free_memory(new_assignment);
             current_token = current_token->next;
             continue;
         }

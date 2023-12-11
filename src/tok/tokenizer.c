@@ -146,7 +146,7 @@ token_t *ms_tokenizer(data_t data)
 
             char *value = strndup(start, current - start);
             token_t *new_token = init_new_token(value, current, current_token_type, data);
-			free(value);
+			free_memory(value);
             if (!head)
                 head = new_token;
             else
@@ -169,13 +169,13 @@ token_t *ms_tokenizer(data_t data)
         {
             char *value = strndup(start, current - start);
             token_t *new_token = init_new_token(value, current, current_token_type, data);
-			free(value);
+			free_memory(value);
             if (!head)
                 head = new_token;
             else
                 current_token->next = new_token;
             current_token = new_token;
-
+ 
             if (is_whitespace(*current) || *current == '|' || *current == '<' || *current == '>')
                 current_token->connect = 0;
             else

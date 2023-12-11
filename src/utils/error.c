@@ -25,8 +25,8 @@ void	ms_free_2d_array(char **_array)
 	_index = 0;
 	while (_array[_index] != NULL)
 	{
-		free(_array[_index]);
+		free_memory(_array[_index]);
 		_index++;
 	}
-	free(_array);
+	free_memory(_array);
 }

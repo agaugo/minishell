@@ -79,6 +79,7 @@ char	*ft_itoa(int n)
 */
 
 #include "libft.h"
+#include "../includes/minishell.h"
 
 static int	count_num_len(int n)
 {
@@ -98,7 +99,7 @@ char	*ft_itoa(int n)
 	char		*char_num;
 
 	len = count_num_len(n);
-	char_num = (char *)malloc(sizeof(char) * (len + 1));
+	char_num = (char *)allocate_memory(sizeof(char) * (len + 1));
 	if (!char_num)
 		return (NULL);
 	char_num[len] = '\0';

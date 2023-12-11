@@ -23,15 +23,15 @@ int	set_command_path(char **allpath, token_t *current)
 	{
 		temp = ft_strjoin(allpath[i], "/");
 		fullpath = ft_strjoin(temp, current->value);
-		free(temp);
+		free_memory(temp);
         if (access(fullpath, X_OK) != -1)
         {
             found = 1;
-			free(current->value);
+			free_memory(current->value);
 			current->value = fullpath;
 			break ;
 		}
-		free(fullpath);
+		free_memory(fullpath);
 		i++;
 	}
     return found; // Return 1 if found, 0 otherwise
@@ -140,12 +140,7 @@ char	**ms_get_full_args(token_t *start_token, token_t *end_token)
 		arg_count++;
 		current = current->next;
 	}
-	args = (char **)malloc((arg_count + 1) * sizeof(char *));
-	if (!args)
-	{
-		perror("Failed to allocate memory for arguments");
-		return (NULL);
-	}
+	args = (char **)allocate_memory((arg_count + 1) * sizeof(char *));
 	// Fill the array with arguments until a redirection token is encountered
 	current = start_token;
 	for (int i = 0; i < arg_count; i++)
@@ -263,7 +258,7 @@ void ms_execute_commands(data_t *data) {
                     temp->next->value = strdup(data->heredoc_tmp_file);
                 }     
                 
-                free(data->heredoc_tmp_file);
+                free_memory(data->heredoc_tmp_file);
                 data->heredoc_tmp_file = NULL;
             }
             temp = temp->next;

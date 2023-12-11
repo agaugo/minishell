@@ -26,12 +26,17 @@ RETURN VALUES
 */
 
 #include "libft.h"
+#include "../includes/minishell.h"
 
 static void	free_memory(char **sub_array, int i)
 {
 	while (i-- > 0)
+	{
 		free(sub_array[i]);
+		printf("- - - FT_SPLIT FREE)");
+	}
 	free(sub_array);
+	printf("- - - FT_SPLIT FREE)");
 }
 
 static int	substr_len(char const *s, char c, int i)
@@ -101,7 +106,7 @@ char	**ft_split(char const *s, char c)
 	if (!s)
 		return (NULL);
 	total_substr = substr_count(s, c);
-	sub_array = (char **)malloc(sizeof(char *) * (total_substr + 1));
+	sub_array = (char **)allocate_memory(sizeof(char *) * (total_substr + 1));
 	if (!sub_array)
 		return (NULL);
 	sub_array = set_array(s, c, sub_array, total_substr);

@@ -54,9 +54,7 @@ char	**ms_clone_envp(char **envp)
 	count = 0;
 	while (envp[count])
 		count++;
-	new_envp = (char **)malloc(sizeof(char *) * (count + 1));
-	if (!new_envp)
-		ms_handle_error(EXIT_FAILURE, "Failed to allocate memory for new_envp");
+	new_envp = (char **)allocate_memory(sizeof(char *) * (count + 1));
 	while (i < count)
 	{
 		new_envp[i] = ft_strdup(envp[i]);

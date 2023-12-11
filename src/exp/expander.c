@@ -15,12 +15,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <stdlib.h>
-#include <string.h>
-
-#include <stdlib.h>
-#include <string.h>
-
 typedef struct s_quote_vars
 {
 	size_t	*i;
@@ -78,7 +72,7 @@ static char *ms_clean_quotes(t_quote_vars *vars, const char *str)
     j = 0;
     sq = 0;
     dq = 0;
-    cleaned_str = malloc(strlen(str) + 1);
+    cleaned_str = (char *)allocate_memory(ft_strlen(str) + 1);
     vars = &(t_quote_vars){&i, &j, &sq, &dq, cleaned_str};
     while (str[i])
         ms_check_quotes(str, vars);
@@ -140,31 +134,31 @@ char *expand_tilde(data_t *data, char *token_value)
             return strdup(token_value); // Return the original token if HOME not found
         }
 
-        char *home_path = strchr(data->envp[home_index], '=') + 1;
-        size_t new_size = strlen(home_path) + strlen(token_value);
-        char *new_token_value = (char *)malloc(new_size);
+        char *home_path = ft_strchr(data->envp[home_index], '=') + 1;
+        size_t new_size = ft_strlen(home_path) + strlen(token_value);
+        char *new_token_value = (char *)allocate_memory(new_size);
         if (new_token_value == NULL) {
             perror("Memory Allocation Failed");
-            return strdup(token_value); // Return the original token if allocation fails
+            return ft_strdup(token_value); // Return the original token if allocation fails
         }
 
-        strcpy(new_token_value, home_path); // Copy home directory
-        strcat(new_token_value, token_value + 1); // Append the rest of the original token after tilde
+        ft_strcpy(new_token_value, home_path); // Copy home directory
+        ft_strcat(new_token_value, token_value + 1); // Append the rest of the original token after tilde
 
-        free(token_value); // Free the original token value
+        free_memory(token_value); // Free the original token value
         return new_token_value; // Return the new token value
     }
-    return strdup(token_value); // Return the original token if it doesn't start with tilde
+    return ft_strdup(token_value); // Return the original token if it doesn't start with tilde
 }
 
 char *expand_dollarsign(data_t *data, char *token_value)
 {
     int index = ms_find_env_index(data->envp, token_value);
     if (index == -1) {
-        return strdup("");  // Return empty string if not found
+        return ft_strdup("");  // Return empty string if not found
     }
     char *var_val = strchr(data->envp[index], '=') + 1;
-    return strdup(var_val);
+    return ft_strdup(var_val);
 }
 
 void remove_token(token_t **head, token_t *prev_token, token_t *current_token)
@@ -180,8 +174,8 @@ void remove_token(token_t **head, token_t *prev_token, token_t *current_token)
     }
 
     // Free the current token
-    free(current_token->value);
-    free(current_token);
+    free_memory(current_token->value);
+    free_memory(current_token);
 }
 
 char *expand_quotes(data_t *data, char *token_value)
@@ -201,32 +195,29 @@ char *expand_quotes(data_t *data, char *token_value)
         if (token_value[i] == '$' && token_value[i+1] == '?')
         {
             char *exit_code_str = ft_itoa(data->last_exit_code);
-            size_t exit_code_len = strlen(exit_code_str);
+            size_t exit_code_len = ft_strlen(exit_code_str);
 
             // Check if exit code fits within the string, otherwise reallocate
-            char *new_token_value = allocate_memory(strlen(token_value) + exit_code_len + 1);
-            if (!new_token_value) {
-                // Handle memory allocation error
-            }
+            char *new_token_value = (char *)allocate_memory(strlen(token_value) + exit_code_len + 1);
 
             // Copy characters before $?
-            strncpy(new_token_value, token_value, i);
+            ft_strncpy(new_token_value, token_value, i);
 
             // Copy exit code string
-            strcpy(new_token_value + i, exit_code_str);
+            ft_strcpy(new_token_value + i, exit_code_str);
 
             // Copy characters after $? 
-            strcpy(new_token_value + i + exit_code_len, token_value + i + 2);
+            ft_strcpy(new_token_value + i + exit_code_len, token_value + i + 2);
 
-            free(exit_code_str);
-            free(token_value);
+            free_memory(exit_code_str);
+            free_memory(token_value);
             token_value = new_token_value;
         }
         if (token_value[i] == '$' && token_value[i + 1] != '\'')
         {
             i++;
             k = 0;
-            var_name = (char *)allocate_memory(strlen(token_value) + 1);
+            var_name = (char *)allocate_memory(ft_strlen(token_value) + 1);
             memset(var_name, 0, ft_strlen(token_value) + 1);
 
             while (isalnum(token_value[i + k]) || token_value[i + k] == '_' || token_value[i + k] == '?')
@@ -244,9 +235,9 @@ char *expand_quotes(data_t *data, char *token_value)
             {
                 var_value = ft_itoa(data->last_exit_code);
                 var_len = ft_strlen(var_value);
-                strncpy(result + j, var_value, var_len);
+                ft_strncpy(result + j, var_value, var_len);
                 j += var_len;
-                free(var_value);
+                free_memory(var_value);
             }
             else
             {
@@ -254,19 +245,19 @@ char *expand_quotes(data_t *data, char *token_value)
                 if (var_value)
                 {
                     var_len = ft_strlen(var_value);
-                    strncpy(result + j, var_value, var_len);
+                    ft_strncpy(result + j, var_value, var_len);
                     j += var_len;
-                    free(var_value);
+                    free_memory(var_value);
                 }
                 else
                 {
                     result[j++] = '$';
-                    strncpy(result + j, var_name, k);
+                    ft_strncpy(result + j, var_name, k);
                     j += k;
                 }
             }
 
-            free(var_name);
+            free_memory(var_name);
             i += k;
         }
         else
@@ -292,16 +283,10 @@ int should_combine_tokens(token_t *current_token, token_t *next_token) {
 }
 
 char *combine_token_values(char *value1, char *value2) {
-    size_t new_size = strlen(value1) + strlen(value2) + 1;
-    char *combined_value = (char *)malloc(new_size);
-    if (!combined_value) {
-        perror("Memory Allocation Failed");
-        return NULL;
-    }
-
-    strcpy(combined_value, value1);
-    strcat(combined_value, value2);
-
+    size_t new_size = ft_strlen(value1) + ft_strlen(value2) + 1;
+    char *combined_value = (char *)allocate_memory(new_size);
+    ft_strcpy(combined_value, value1);
+    ft_strcat(combined_value, value2);
     return combined_value;
 }
 
@@ -316,21 +301,14 @@ void merge_connected_tokens(data_t *data)
         if (current->connect == 1)
         {
             // Calculating the length for the merged string
-            size_t merged_length = strlen(current->value) + strlen(current->next->value);
-            char *merged_value = (char *)malloc(merged_length + 1); // +1 for the null terminator
-            if (merged_value == NULL)
-            {
-                // Handle memory allocation failure
-                perror("Memory allocation failed");
-                return;
-            }
-
+            size_t merged_length = ft_strlen(current->value) + strlen(current->next->value);
+            char *merged_value = (char *)allocate_memory(merged_length + 1); // +1 for the null terminator
             // Merging current token with the next
-            strcpy(merged_value, current->value);
-            strcat(merged_value, current->next->value);
+            ft_strcpy(merged_value, current->value);
+            ft_strcat(merged_value, current->next->value);
 
             // Update the current token value
-            free(current->value);
+            free_memory(current->value);
             current->value = merged_value;
 
             // Remove the next token and link the list
@@ -339,13 +317,11 @@ void merge_connected_tokens(data_t *data)
             current->connect = to_remove->connect; // Transfer connect flag from the next token
 
             // Free the removed token
-            free(to_remove->value);
-            free(to_remove);
+            free_memory(to_remove->value);
+            free_memory(to_remove);
         }
         else
-        {
             current = current->next;
-        }
     }
 }
 
@@ -374,13 +350,13 @@ void ms_expander(data_t *data)
 
             if (current_token->type == T_WORD)
             {
-                if (strchr(current_token->value, '~'))
+                if (ft_strchr(current_token->value, '~'))
                 {
                     current_token->value = expand_tilde(data, current_token->value);
                 } 
             }
 
-            if (strchr(current_token->value, '$'))
+            if (ft_strchr(current_token->value, '$'))
             {
                 expanded_value = expand_quotes(data, current_token->value);
                 current_token->value = expanded_value;

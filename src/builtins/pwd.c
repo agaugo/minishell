@@ -27,7 +27,7 @@ char	*ms_get_current_working_dir(void)
             return (NULL);
         if (getcwd(current_directory, buffer_size) != NULL)
             return (current_directory);
-        free(current_directory);
+        free_memory(current_directory);
         if (errno == ERANGE)
         {
             buffer_size *= 2;
@@ -44,6 +44,6 @@ void	ms_pwd_command(data_t *data)
 
 	current_directory = ms_get_current_working_dir();
 	printf("%s\n", current_directory);
-	free(current_directory);
+	free_memory(current_directory);
 	data->last_exit_code = 0;
 }

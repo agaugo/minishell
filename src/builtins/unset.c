@@ -38,7 +38,7 @@ void	ms_unset_command(data_t *data, token_t *token)
         if (index != -1)
         {
             // Free the environment variable at the specified index
-            free(data->envp[index]);
+            free_memory(data->envp[index]);
             // Shift the remaining environment variables
             for (int i = index; i < ms_get_env_size(data->envp) - 1; i++)
             {
