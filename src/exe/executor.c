@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/11 21:05:53 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/11 21:43:06 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -377,7 +377,7 @@ void ms_execute_commands(data_t *data) {
                         data->last_exit_code = 127;
                         exit(127);
                     }
-                    
+                                        
                     execve(args[0], args, data->envp);
 
                     // If execve returns, it means there was an error
@@ -422,7 +422,7 @@ void ms_execute_commands(data_t *data) {
             print_new_prompt = 0;
         }
 
-        free_memory(args);
+        ms_free_lst(args);
         current = next_command ? next_command->next : NULL;
     }
 }
