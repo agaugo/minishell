@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/10 15:25:10 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/11 18:02:38 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -341,13 +341,9 @@ void ms_expander(data_t *data)
 
     while (current_token)
     {
-        current_token->value = ms_clean_quotes(&vars, current_token->value);
-        
-        // if (current_token->type == T_TILDE)
-        // {
-        //     current_token->value = expand_tilde(data, current_token->value);
-        //     current_token->type = T_WORD;
-        // }
+        char *cq = ms_clean_quotes(&vars, current_token->value);
+        free_memory(current_token->value);
+        current_token->value = cq;
         if (current_token->type == T_WORD || current_token->type == T_DOUBLE_QUOTE)
         {            
             char *expanded_value = NULL;
