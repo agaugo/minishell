@@ -22,7 +22,8 @@ static token_t	*init_new_token(char *start, char *current, tokentype_t type, dat
 	token_t	*new_token;
 
 	new_token = allocate_memory(sizeof(token_t));
-	new_token->value = strndup(start, current - start);
+	// debug("(token_t *)"); //for testing
+	new_token->value = ft_strndup(start, current - start);
 	new_token->type = type;
 	new_token->envp = data.envp;
 	new_token->next = NULL;
@@ -146,7 +147,7 @@ token_t *ms_tokenizer(data_t data)
 
             char *value = strndup(start, current - start);
             token_t *new_token = init_new_token(value, current, current_token_type, data);
-
+			free_memory(value);
             if (!head)
                 head = new_token;
             else
@@ -161,26 +162,21 @@ token_t *ms_tokenizer(data_t data)
 
         // Parse other types of tokens
         if (*current == '\'' || *current == '\"')
-        {
             current_token_type = parse_quote_token(&current);
-        }
         else
-        {
             current_token_type = parse_word_token(&current);
-        }
-
         // Create a token for the parsed word or quote
         if (current != start)
         {
             char *value = strndup(start, current - start);
             token_t *new_token = init_new_token(value, current, current_token_type, data);
-
+			free_memory(value);
             if (!head)
                 head = new_token;
             else
                 current_token->next = new_token;
             current_token = new_token;
-
+ 
             if (is_whitespace(*current) || *current == '|' || *current == '<' || *current == '>')
                 current_token->connect = 0;
             else

@@ -12,6 +12,7 @@
 
 #include "../../includes/minishell.h"
 
+
 void    print_list3(token_t *head)
 {
     token_t    *current_token;
@@ -41,6 +42,7 @@ void remove_newline(char *str) {
 
 char *read_file_content(const char *filename) {
     FILE *file = fopen(filename, "r");
+	char *buffer;
     if (!file) {
         perror("Unable to open file");
         return NULL;
@@ -50,17 +52,15 @@ char *read_file_content(const char *filename) {
     long length = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    char *buffer = malloc(length + 1);
+    buffer = (char *)allocate_memory(length + 1);
     if (!buffer) {
-        perror("Memory allocation failed");
         fclose(file);
-        return NULL;
+		ms_handle_error(-1, "Failed to read file.");
     }
-
     fread(buffer, 1, length, file);
     buffer[length] = '\0';
-
     fclose(file);
+	// debug("file (fopen)"); //for testing
     return buffer;
 }
 
@@ -89,10 +89,10 @@ void ms_check_redirect(data_t *data)
             if (tmp)  // Check if the next token is not NULL
             {
                 prev->next = tmp->next;  // Bypass 'token' and 'tmp'
-                free(token->value);
-                free(token);
-                free(tmp->value);
-                free(tmp);
+                free_memory(token->value);
+                free_memory(token);
+                free_memory(tmp->value);
+                free_memory(tmp);
 
                 token = prev->next;  // Move to the next valid token
                 continue;  // Continue to the next iteration
@@ -118,9 +118,7 @@ int is_directory2(const char *path)
 {
     struct stat statbuf;
     if (stat(path, &statbuf) != 0)
-    {
         return 0; // Cannot access path, assume not a directory
-    }
     return S_ISDIR(statbuf.st_mode);
 }
 
@@ -179,16 +177,15 @@ void remove_intermediate_input_redirections(data_t *data) {
                     current->next = last_file;
                     while (temp != last_file) {
                         token_t *next_temp = temp->next;
-                        free(temp); // Assuming you need to free the removed nodes
+                        free_memory(temp); // Assuming you need to free the removed nodes
                         temp = next_temp;
                     }
                 }
             }
-
             current = last_file->next;
-        } else {
+        } 
+		else
             current = current->next;
-        }
     }
 }
 
@@ -207,7 +204,7 @@ void	ms_check_command(data_t *data)
         char *heredoc_content = read_file_content(data->heredoc_tmp_file);
         if (heredoc_content) {
             // Assign the content to data->tokens->value
-            free(data->tokens->value); // Free existing value if necessary
+            free_memory(data->tokens->value); // Free existing value if necessary
             data->tokens->value = heredoc_content;
 			remove_newline(data->tokens->value);
             // Rest of your code to handle the command execution
@@ -215,7 +212,7 @@ void	ms_check_command(data_t *data)
 
         // Clean up heredoc file
         unlink(data->heredoc_tmp_file); // Delete the temp file
-        free(data->heredoc_tmp_file);
+        free_memory(data->heredoc_tmp_file);
         data->heredoc_tmp_file = NULL;
     }
 
@@ -259,13 +256,13 @@ int	main(int argc, char *argv[], char *envp[])
 	while (1)
 	{
 		data.user_input = readline(PROMPT);
+		printf("+ + + MEMORY ALLOCATION -> **USERINPUT**\n");
 		ms_handle_ctrl_d(&data);
 		data.tokens = ms_tokenizer(data);
 		ms_expander(&data);
         if (data.tokens != NULL)
             ms_process_input(&data);
-		free(data.user_input);
-		// system("leaks minishell");
+		free_memory(data.user_input);
 	}
 	return (0);
 }

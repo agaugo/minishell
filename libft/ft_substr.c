@@ -79,13 +79,13 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		len = s_len - start;
 	if (start >= s_len)
 	{
-		substr = (char *)malloc(1);
+		substr = (char *)allocate_memory(1);
 		if (!substr)
 			return (NULL);
 		substr[0] = '\0';
 		return (substr);
 	}
-	substr = (char *)malloc(sizeof(char) * (len + 1));
+	substr = (char *)allocate_memory(sizeof(char) * (len + 1));
 	if (!substr)
 		return (NULL);
 	ft_strlcpy(substr, s + start, len + 1);

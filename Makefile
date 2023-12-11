@@ -29,7 +29,8 @@ SRC = \
 	src/main/signal.c		\
 	src/tok/tokenizer.c		\
 	src/utils/error.c		\
-	src/utils/memory.c
+	src/utils/memory.c		\
+	src/utils/stdlib.c
 
 
 OBJS = $(addprefix $(OBJS_DIR), $(SRC:.c=.o))

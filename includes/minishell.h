@@ -48,6 +48,13 @@ typedef struct data {
 } data_t;
 
 void	*allocate_memory(size_t buffer_size);
+char *ft_strcpy(char *dest, const char *src);
+char *ft_strchr(const char *str, int character);
+char *ft_strcat(char *dest, const char *src);
+char *ft_strncpy(char *dest, const char *src, size_t n);
+char *ft_strndup(const char *str, size_t n);
+void debug(char *output);
+void	*memory_realloc(void* ptr, size_t new_size);
 
 // Location: /src/main.c
 void executeBuiltin(struct termios *_oldTermios, token_t *_token);
@@ -119,5 +126,8 @@ int is_builtin_command(char *command);
 
 char *expand_quotes(data_t *data, char *token_value);
 int setup_redirection(token_t *tokens);
+void free_token_list(token_t *head);
+void wipe_data_struct(data_t *data);
+void	free_memory(void *buffer);
 
 #endif

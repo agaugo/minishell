@@ -35,24 +35,25 @@ static char	*ms_process_quotes(char *temp_value, token_t *token)
 	if ((*temp_value == '-' || *temp_value == '+') && temp_value[1] == '\"'
 		&& temp_value[ft_strlen(temp_value) - 1] == '\"')
 	{
-		inner_value = strndup(temp_value + 2, ft_strlen(temp_value) - 3);
-		temp_value = malloc(ft_strlen(inner_value) + 2);
+		inner_value = ft_strndup(temp_value + 2, ft_strlen(temp_value) - 3);
+		temp_value = (char *)allocate_memory(ft_strlen(inner_value) + 2);
 		temp_value[0] = token->value[0];
-		strcpy(temp_value + 1, inner_value);
-		free(inner_value);
+		ft_strcpy(temp_value + 1, inner_value);
+		// debug(temp_value); //for testing
+		free_memory(inner_value);
 	}
 	if (temp_value[0] == '\"'
 		&& temp_value[ft_strlen(temp_value) - 1] == '\"')
 	{
-		inner_value = strndup(temp_value + 1, ft_strlen(temp_value) - 2);
+		inner_value = ft_strndup(temp_value + 1, ft_strlen(temp_value) - 2);
 		if (temp_value != token->value)
-			free(temp_value);
+			free_memory(temp_value);
 		temp_value = inner_value;
 	}
 	return (temp_value);
 }
 
-static void	ms_check_args_and_exit(token_t *token, char *temp_value)
+static void	ms_check_args_and_exit(data_t *data, token_t *token, char *temp_value)
 {
 	int	exit_code;
 
@@ -61,14 +62,16 @@ static void	ms_check_args_and_exit(token_t *token, char *temp_value)
 		fprintf(stderr, "exit: %s: numeric argument required\n",
 			token->value);
 		if (temp_value != token->value)
-			free(temp_value);
+			free_memory(temp_value);
 		exit(255);
 	}
 	exit_code = ft_atoi(temp_value);
 	if (temp_value != token->value)
-		free(temp_value);
+		free_memory(temp_value);
 	printf("exit\n");
+	wipe_data_struct(data);
 	exit(exit_code % 256);
+
 }
 
 void	ms_exit_shell(data_t *data, token_t *token)
@@ -78,6 +81,7 @@ void	ms_exit_shell(data_t *data, token_t *token)
 	if (!token)
 	{
 		printf("exit\n");
+		wipe_data_struct(data);
 		exit(0);
 	}
 	if (token->type == T_WORD && token->next
@@ -89,5 +93,5 @@ void	ms_exit_shell(data_t *data, token_t *token)
 	}
 	temp_value = token->value;
 	temp_value = ms_process_quotes(temp_value, token);
-	ms_check_args_and_exit(token, temp_value);
+	ms_check_args_and_exit(data, token, temp_value);
 }

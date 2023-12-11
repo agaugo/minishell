@@ -27,11 +27,16 @@ RETURN VALUES
 
 #include "libft.h"
 
-static void	free_memory(char **sub_array, int i)
+static void	split_free_memory(char **sub_array, int i)
 {
 	while (i-- > 0)
+	{
 		free(sub_array[i]);
+		printf("+1 FREE SPLIT");
+	}
 	free(sub_array);
+	printf("+1 FREE SPLIT");
+
 }
 
 static int	substr_len(char const *s, char c, int i)
@@ -63,7 +68,7 @@ char	**set_array(char const *s, char c, char **sub_array, int total_substr)
 		sub_array[j] = ft_substr(s, i, sub_len);
 		if (!sub_array[j])
 		{
-			free_memory(sub_array, j);
+			split_free_memory(sub_array, j);
 			return (NULL);
 		}
 		i += sub_len;

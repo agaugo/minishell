@@ -23,7 +23,7 @@ static void	ms_cd_home(data_t *data)
 		return ;
 	}
     chdir(home_path);
-	free(home_path);
+	free_memory(home_path);
 }
 
 static void	ms_cd_absolute_path(data_t *data, char *path)

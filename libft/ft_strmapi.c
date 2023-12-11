@@ -66,7 +66,7 @@ char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 	if (!s)
 		return (NULL);
 	len = ft_strlen(s);
-	buffer = (char *)malloc(sizeof(char) * (len + 1));
+	buffer = (char *)allocate_memory(sizeof(char) * (len + 1));
 	if (!buffer)
 		return (NULL);
 	while (i < len)
