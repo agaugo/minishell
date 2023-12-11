@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/11 18:03:51 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/11 21:54:17 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,6 +220,7 @@ void	ms_check_command(data_t *data)
 
     resolve_command_paths(data);
     remove_intermediate_input_redirections(data);
+
     // print_list3(data->tokens);
 	ms_execute_commands(data);
 
@@ -237,22 +238,26 @@ void	ms_process_input(data_t *data)
 	add_history(data->user_input);
 }
 
+void make_struct(data_t *data, char **envp)
+{
+    ft_memset(data, 0, sizeof(data_t));
+    data->envp = ms_clone_envp(envp);
+    data->last_exit_code = 0;
+    data->heredoc_tmp_file = NULL;
+    data->last_path = ms_get_current_working_dir();
+}
 int	main(int argc, char *argv[], char *envp[])
 {
-	data_t	data;
+    data_t	data;
 
 	if (argc > 1)
 	{
 		printf("%s: Do not parse any commands yet\n", argv[1]);
 		exit(1);
 	}
-	ft_memset(&data, 0, sizeof(data_t));
 	if (ms_init_signals() == -1)
 		ms_handle_error(1, "Failed to initialise signals.");
-	data.envp = ms_clone_envp(envp);
-	data.last_exit_code = 0;
-	data.heredoc_tmp_file = NULL;
-    data.last_path = ms_get_current_working_dir();
+    make_struct(&data, envp);
 	while (1)
 	{
 		data.user_input = readline(PROMPT);
@@ -262,7 +267,9 @@ int	main(int argc, char *argv[], char *envp[])
 		ms_expander(&data);
         if (data.tokens != NULL)
             ms_process_input(&data);
-		free_memory(data.user_input);
+        wipe_data_struct(&data);
+        make_struct(&data, envp);
+        // system("leaks minishell");
 	}
 	return (0);
 }
