@@ -12,7 +12,7 @@ void *allocate_memory(size_t buffer_size) {
     if (!buffer)
         ms_handle_error(-1, "Error: Malloc failed to allocate memory.");
     
-    printf("+ + + MEMORY ALLOCATION -> Malloc #%zu Allocated %zu bytes of memory at %p\n",malloc_count, buffer_size, buffer);
+    // printf("+ + + MEMORY ALLOCATION -> Malloc #%zu Allocated %zu bytes of memory at %p\n",malloc_count, buffer_size, buffer);
     malloc_count++;
 
     return buffer;
@@ -20,7 +20,7 @@ void *allocate_memory(size_t buffer_size) {
 
 void free_memory(void *buffer) {
     if (buffer) {
-        printf("- - - MEMORY FREED -> Free #%zu, Freed memory at %p\n ", free_count, buffer);
+        // printf("- - - MEMORY FREED -> Free #%zu, Freed memory at %p\n ", free_count, buffer);
         free(buffer);
         buffer = NULL;
         free_count++;

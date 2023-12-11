@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/11 16:39:26 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/11 18:03:51 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,7 +243,7 @@ int	main(int argc, char *argv[], char *envp[])
 
 	if (argc > 1)
 	{
-		printf("minishell: %s: Do not parse any commands yet\n", argv[1]);
+		printf("%s: Do not parse any commands yet\n", argv[1]);
 		exit(1);
 	}
 	ft_memset(&data, 0, sizeof(data_t));
@@ -256,7 +256,7 @@ int	main(int argc, char *argv[], char *envp[])
 	while (1)
 	{
 		data.user_input = readline(PROMPT);
-		printf("+ + + MEMORY ALLOCATION -> **USERINPUT**\n");
+		// printf("+ + + MEMORY ALLOCATION -> **USERINPUT**\n");
 		ms_handle_ctrl_d(&data);
 		data.tokens = ms_tokenizer(data);
 		ms_expander(&data);
