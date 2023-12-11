@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/11 17:52:19 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/11 21:01:10 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,21 @@ int is_directory(const char *path)
     return S_ISDIR(statbuf.st_mode);
 }
 
+void ms_free_lst(char **array)
+{
+    if (array == NULL)
+    {
+        return;
+    }
+
+    for (int i = 0; array[i] != NULL; i++)
+    {
+        free(array[i]);
+    }
+
+    free(array);
+}
+
 void	resolve_command_paths(data_t *data)
 {
 	token_t	*current;
@@ -88,9 +103,7 @@ void	resolve_command_paths(data_t *data)
 	path = ft_getenv(data->envp, "PATH");
 	is_command = 1;
 	if (!path)
-	{
 		return ;
-	}
 	allpath = ft_split(path, ':');
 	while (current)
 	{
@@ -98,7 +111,7 @@ void	resolve_command_paths(data_t *data)
 		if (current->type == T_WORD && is_command
 			&& !is_builtin_command(current->value))
 		{
-            if (strchr(current->value, '/') != NULL)
+            if (ft_strchr(current->value, '/') != NULL)
             {
                 if (is_directory(current->value))
                 {
@@ -122,7 +135,8 @@ void	resolve_command_paths(data_t *data)
 			is_command = 0;
 		current = current->next;
 	}
-	ms_free_2d_array(allpath);
+	ms_free_lst(allpath);
+    free_memory(path);
 }
 
 char	**ms_get_full_args(token_t *start_token, token_t *end_token)
