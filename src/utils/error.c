@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/06 15:29:02 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/12 20:59:43 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,21 @@ void	ms_handle_error(int _exitCode, char *_errorMessage)
 	exit(_exitCode);
 }
 
-void	ms_free_2d_array(char **_array)
+void ms_free_2d_array(char **array)
 {
-	int	_index;
+    if (array == NULL)
+    {
+        return;
+    }
 
-	_index = 0;
-	while (_array[_index] != NULL)
-	{
-		free_memory(_array[_index]);
-		_index++;
-	}
-	free_memory(_array);
+    for (int i = 0; array[i] != NULL; i++)
+    {
+        free(array[i]);
+    }
+
+    free(array);
 }
+
 void debug(char *output)
 {
 	printf("Content: %s\n", output);

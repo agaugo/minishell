@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/12 17:52:39 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/12 21:10:05 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,6 @@ typedef struct data {
 } data_t;
 
 // Tokenizer
-typedef struct tok_compact
-{
-    char **start;
-    char **current;
-    token_t **head;
-    token_t **current_token;
-} tok_compact_t;
-
 void	test_tok(token_t *head);
 token_t	*ms_tokenizer(data_t data);
 void	parse_special_tokens(char **current, token_t **head, token_t **current_token);
@@ -70,6 +62,27 @@ tokentype_t	parse_quote_token(char **current);
 tokentype_t	parse_word_token(char **current);
 int	ms_is_whitespace(char c);
 token_t	*init_new_token(char *start, char *current, tokentype_t type);
+
+
+// Expander
+typedef struct s_quote_vars
+{
+	size_t	*i;
+	size_t	*j;
+	int		*in_single_quote;
+	int		*in_double_quote;
+	char	*cleaned_str;
+}				t_quote_vars;
+
+char *ms_clean_quotes(t_quote_vars *vars, const char *str);
+
+// Executor
+void	ms_run_builtin(data_t *data, char **args, token_t *current);
+int	ms_is_builtin_command(char *command);
+void	ms_resolve_command_paths(data_t *data);
+int ms_is_directory(const char *path);
+int	ms_set_command_path(char **allpath, token_t *current);
+
 
 
 void	print_env(data_t *data);
@@ -152,10 +165,6 @@ char    *ft_getenv(char **envp, char *key);
 void ms_check_pipe(data_t *data);
 
 void    ms_execute_commands(data_t *data);
-void    resolve_command_paths(data_t *data);
-
-// In includes/minishell.h or a similar header file
-int is_builtin_command(char *command);
 
 char *expand_quotes(data_t *data, char *token_value);
 int setup_redirection(token_t *tokens);

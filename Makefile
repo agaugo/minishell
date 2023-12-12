@@ -23,7 +23,10 @@ SRC = \
 	src/builtins/unset.c		\
 	src/exe/executor.c			\
 	src/exe/heredoc.c			\
+	src/exe/exe_resolve_paths.c	\
+	src/exe/exe_builtins.c	\
 	src/exp/expander.c			\
+	src/exp/exp_quotes.c		\
 	src/main/env.c				\
 	src/main/main.c				\
 	src/main/signal.c			\
@@ -34,7 +37,8 @@ SRC = \
 	src/utils/error.c			\
 	src/utils/memory.c			\
 	src/utils/stdlib.c			\
-	src/utils/path.c
+	src/utils/path.c			\
+	src/test/test.c
 
 OBJS = $(addprefix $(OBJS_DIR), $(SRC:.c=.o))
 
