@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/12 11:48:54 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/12 14:12:19 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,10 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+# define STDIN 0
+# define STDOUT 1
+# define STDERR 2
+
 extern int print_new_prompt;
 
 typedef struct data {
@@ -54,6 +58,9 @@ char *ft_strncpy(char *dest, const char *src, size_t n);
 char *ft_strndup(const char *str, size_t n);
 void debug(char *output);
 void	*memory_realloc(void* ptr, size_t new_size);
+
+int	ms_get_env_size(char **envp);
+void	ms_add_to_env(data_t *data, char *key);
 
 // Location: /src/main.c
 void executeBuiltin(struct termios *_oldTermios, token_t *_token);
