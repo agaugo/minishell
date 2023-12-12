@@ -31,10 +31,10 @@ void free_memory(void *buffer) {
 void free_token_list(token_t *head) {
     token_t *current = head;
     token_t *next;
+    
     while (current != NULL) {
         next = current->next;
         free_memory(current->value);
-        free_memory(current->executableDir);
         free_memory(current); // Free the token itself
         current = next;
     }
@@ -47,7 +47,6 @@ void wipe_data_struct(data_t *data) {
 
     // Free any dynamically allocated memory within data
     free_memory(data->user_input);
-    free_memory(data->executableDir);
     free_memory(data->heredoc_tmp_file);
     free_memory(data->last_path);
     free_token_list(data->tokens);
@@ -63,6 +62,15 @@ void wipe_data_struct(data_t *data) {
         free_memory(data->envp);
     }
     ft_memset(data, 0, sizeof(data_t));
+
+    char temp_filename[] = "/tmp/minishell_heredoc";
+
+    if (access(temp_filename, F_OK) == 0) {
+        if (unlink(temp_filename) == -1) {
+            perror("unlink");
+            return;
+        }
+    }
 }
 
 void* memory_realloc(void* ptr, size_t new_size) {

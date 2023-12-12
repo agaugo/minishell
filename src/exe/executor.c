@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/12 01:09:45 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/12 11:50:47 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,7 +305,6 @@ void ms_execute_commands(data_t *data) {
                             new_token = allocate_memory(sizeof(token_t));
                             new_token->value = ft_strdup("|");
                             new_token->type = T_PIPE;
-                            new_token->envp = data->envp;
                             new_token->next = temp->next->next;
                             new_token->connect = 0;
 

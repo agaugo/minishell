@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 18:26:52 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/07 21:17:44 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/12 11:50:11 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,6 @@ typedef struct token
 	char			*value;
 	tokentype_t		type;
 	struct token	*next;
-	char			**envp;
-	char			*executableDir;
 	int				fd;
 	int				status;
 	int				connect;
