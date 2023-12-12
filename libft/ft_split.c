@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/14 12:11:06 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2022/10/14 12:11:59 by tvan-bee      ########   odam.nl         */
+/*   Updated: 2023/12/13 00:35:38 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,8 @@ static void	split_free_memory(char **sub_array, int i)
 	while (i-- > 0)
 	{
 		free(sub_array[i]);
-		printf("+1 FREE SPLIT");
 	}
 	free(sub_array);
-	printf("+1 FREE SPLIT");
-
 }
 
 static int	substr_len(char const *s, char c, int i)

@@ -6,16 +6,12 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/13 13:46:59 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2022/10/13 13:47:01 by tvan-bee      ########   odam.nl         */
+/*   Updated: 2023/12/13 00:37:19 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "libft.h"
 #include "../includes/minishell.h"
-
-
-int count = 0;
 
 char	*ft_strdup(const char *s1)
 {
@@ -26,7 +22,6 @@ char	*ft_strdup(const char *s1)
 	buffer = (char *)allocate_memory(sizeof(char) * s1_len);
 	if (!buffer)
 		return (NULL);
-	count++;
 	ft_memcpy(buffer, s1, s1_len);
 	return (buffer);
 }
