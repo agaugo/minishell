@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 13:42:34 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/09 21:48:10 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/12 11:51:41 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int	is_whitespace(char c)
 	return (c == ' ' || c == '\t');
 }
 
-static token_t	*init_new_token(char *start, char *current, tokentype_t type, data_t data)
+static token_t	*init_new_token(char *start, char *current, tokentype_t type)
 {
 	token_t	*new_token;
 
@@ -25,7 +25,6 @@ static token_t	*init_new_token(char *start, char *current, tokentype_t type, dat
 	// debug("(token_t *)"); //for testing
 	new_token->value = ft_strndup(start, current - start);
 	new_token->type = type;
-	new_token->envp = data.envp;
 	new_token->next = NULL;
 	new_token->connect = 0;
 	return (new_token);
@@ -146,7 +145,7 @@ token_t *ms_tokenizer(data_t data)
                 current_token_type = parse_redirect_token(&current);
 
             char *value = strndup(start, current - start);
-            token_t *new_token = init_new_token(value, current, current_token_type, data);
+            token_t *new_token = init_new_token(value, current, current_token_type);
 			free_memory(value);
             if (!head)
                 head = new_token;
@@ -169,7 +168,7 @@ token_t *ms_tokenizer(data_t data)
         if (current != start)
         {
             char *value = strndup(start, current - start);
-            token_t *new_token = init_new_token(value, current, current_token_type, data);
+            token_t *new_token = init_new_token(value, current, current_token_type);
 			free_memory(value);
             if (!head)
                 head = new_token;

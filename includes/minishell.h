@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/12 00:45:31 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/12 11:48:54 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ extern int print_new_prompt;
 typedef struct data {
     char            **envp;
     char            *user_input;
-    char            *executableDir;
     int             last_exit_code;
     token_t         *tokens;
     int             redirect;
