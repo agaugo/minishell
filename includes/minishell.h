@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/12 23:31:37 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 00:22:36 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,20 @@ typedef struct s_quote_vars
 char *ms_clean_quotes(t_quote_vars *vars, const char *str);
 
 // Executor
+typedef struct exec_data {
+    pid_t pid;
+    token_t *current;
+    token_t *next_command;
+    char **args;
+    int fds[2];
+    int in_fd;
+    int is_pipe;
+    int is_redirect;
+    int br;
+    int br2;
+    token_t *first_command_token;
+} exec_data_t;
+
 void	ms_run_builtin(data_t *data, char **args, token_t *current);
 int	ms_is_builtin_command(char *command);
 void	ms_resolve_command_paths(data_t *data);
