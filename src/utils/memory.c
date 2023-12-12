@@ -63,6 +63,15 @@ void wipe_data_struct(data_t *data) {
         free_memory(data->envp);
     }
     ft_memset(data, 0, sizeof(data_t));
+
+    char temp_filename[] = "/tmp/minishell_heredoc";
+
+    if (access(temp_filename, F_OK) == 0) {
+        if (unlink(temp_filename) == -1) {
+            perror("unlink");
+            return;
+        }
+    }
 }
 
 void* memory_realloc(void* ptr, size_t new_size) {
