@@ -32,7 +32,6 @@ char *ft_strndup(const char *str, size_t n)
     result = (char *)allocate_memory(len + 1); // +1 for the null terminator
     ft_strncpy(result, str, len);
     result[len] = '\0'; // Null-terminate the copied string
-
     return result;
 }
 char *ft_strcpy(char *dest, const char *src) 

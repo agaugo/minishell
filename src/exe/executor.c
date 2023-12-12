@@ -6,11 +6,29 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/11 17:52:19 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/12 01:09:45 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+void    print_list7(token_t *head)
+{
+    token_t    *current_token;
+    int        i;
+
+    current_token = head;
+    i = 0;
+    printf("----------- expander debug -----------------------------------\n");
+    while (current_token)
+    {
+        printf("Token %d: %s, Type: %d\n", i, current_token->value,
+            current_token->type);
+        current_token = current_token->next;
+        i++;
+    }
+    printf("--------------------------------------------------------------\n");
+}
 
 int	set_command_path(char **allpath, token_t *current)
 {
@@ -35,20 +53,6 @@ int	set_command_path(char **allpath, token_t *current)
 		i++;
 	}
     return found; // Return 1 if found, 0 otherwise
-}
-
-int file_exists_and_executable(const char *path)
-{
-    struct stat statbuf;
-
-    // Use stat to get information about the file
-    if (stat(path, &statbuf) != 0)
-    {
-        return 0; // File doesn't exist or stat failed
-    }
-
-    // Check if the file is a regular file and if it's executable
-    return S_ISREG(statbuf.st_mode) && (access(path, X_OK) == 0);
 }
 
 int	is_builtin_command(char *command)
@@ -77,6 +81,21 @@ int is_directory(const char *path)
     return S_ISDIR(statbuf.st_mode);
 }
 
+void ms_free_lst(char **array)
+{
+    if (array == NULL)
+    {
+        return;
+    }
+
+    for (int i = 0; array[i] != NULL; i++)
+    {
+        free(array[i]);
+    }
+
+    free(array);
+}
+
 void	resolve_command_paths(data_t *data)
 {
 	token_t	*current;
@@ -88,9 +107,7 @@ void	resolve_command_paths(data_t *data)
 	path = ft_getenv(data->envp, "PATH");
 	is_command = 1;
 	if (!path)
-	{
 		return ;
-	}
 	allpath = ft_split(path, ':');
 	while (current)
 	{
@@ -98,7 +115,7 @@ void	resolve_command_paths(data_t *data)
 		if (current->type == T_WORD && is_command
 			&& !is_builtin_command(current->value))
 		{
-            if (strchr(current->value, '/') != NULL)
+            if (ft_strchr(current->value, '/') != NULL)
             {
                 if (is_directory(current->value))
                 {
@@ -122,7 +139,8 @@ void	resolve_command_paths(data_t *data)
 			is_command = 0;
 		current = current->next;
 	}
-	ms_free_2d_array(allpath);
+	ms_free_lst(allpath);
+    free_memory(path);
 }
 
 char	**ms_get_full_args(token_t *start_token, token_t *end_token)
@@ -243,10 +261,16 @@ void ms_execute_commands(data_t *data) {
     int in_fd = 0; // Initial input file descriptor
 
     current = data->tokens;
+
+    token_t *fir = data->tokens;
+    
     while (current != NULL) {
         token_t *temp = current;
         int br2 = 0;
         while (temp != NULL) {
+            if (temp->type == T_PIPE)
+                fir = temp->next;
+        
             if (temp->type == T_HEREDOC) {
                 if (temp->next == NULL || (temp->next && temp->next->type != T_WORD))
                 {
@@ -265,16 +289,38 @@ void ms_execute_commands(data_t *data) {
                     ms_heredoc(data, temp);
                     
                     temp->type = T_REDIRECT_IN;
-                    temp->value = "<";
+                    free_memory(temp->value);
+                    temp->value = ft_strdup("<");
 
                     if (temp->next)
                     {
                         temp->next->type = T_WORD;
-                        temp->next->value = strdup(data->heredoc_tmp_file);
+                        free_memory(temp->next->value);
+                        temp->next->value = ft_strdup(data->heredoc_tmp_file);
+
+                        if (fir && fir->type != T_WORD)
+                        {
+                            token_t	*new_token;
+
+                            new_token = allocate_memory(sizeof(token_t));
+                            new_token->value = ft_strdup("|");
+                            new_token->type = T_PIPE;
+                            new_token->envp = data->envp;
+                            new_token->next = temp->next->next;
+                            new_token->connect = 0;
+
+                            temp->next->next = new_token;
+
+                            resolve_command_paths(data);
+                        }
                     }     
                     
+                    remove_intermediate_input_redirections(data);
+
                     free_memory(data->heredoc_tmp_file);
                     data->heredoc_tmp_file = NULL;  
+
+                    // print_list7(data->tokens);
                 }
             }
             temp = temp->next;
@@ -363,7 +409,7 @@ void ms_execute_commands(data_t *data) {
                         data->last_exit_code = 127;
                         exit(127);
                     }
-                    
+                                        
                     execve(args[0], args, data->envp);
 
                     // If execve returns, it means there was an error
@@ -408,6 +454,7 @@ void ms_execute_commands(data_t *data) {
             print_new_prompt = 0;
         }
 
+        ms_free_lst(args);
         current = next_command ? next_command->next : NULL;
     }
 }

@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/11 18:02:38 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/11 22:30:55 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ char *expand_tilde(data_t *data, char *token_value)
         int home_index = ms_find_env_index(data->envp, "HOME");
         if (home_index == -1) {
             perror("Environment Variable HOME Not Found");
-            return strdup(token_value); // Return the original token if HOME not found
+            return ft_strdup(token_value); // Return the original token if HOME not found
         }
 
         char *home_path = ft_strchr(data->envp[home_index], '=') + 1;
@@ -146,7 +146,6 @@ char *expand_tilde(data_t *data, char *token_value)
         ft_strcpy(new_token_value, home_path); // Copy home directory
         ft_strcat(new_token_value, token_value + 1); // Append the rest of the original token after tilde
 
-        free_memory(token_value); // Free the original token value
 		// debug(new_token_value); //for testing
         return new_token_value; // Return the new token value
     }
@@ -160,7 +159,7 @@ char *expand_dollarsign(data_t *data, char *token_value)
     if (index == -1) {
         return ft_strdup("");  // Return empty string if not found
     }
-    char *var_val = strchr(data->envp[index], '=') + 1;
+    char *var_val = ft_strchr(data->envp[index], '=') + 1;
     return ft_strdup(var_val);
 }
 
@@ -187,6 +186,7 @@ char *expand_quotes(data_t *data, char *token_value)
     char *var_name;
     char *var_value;
     int i = 0, j = 0, k, var_len;
+    int do_free = 0;
     // int result_size = strlen(token_value) * 2 + 1;  // Initial allocation
 
     result = allocate_memory(4096);
@@ -201,7 +201,7 @@ char *expand_quotes(data_t *data, char *token_value)
             size_t exit_code_len = ft_strlen(exit_code_str);
 
             // Check if exit code fits within the string, otherwise reallocate
-            char *new_token_value = (char *)allocate_memory(strlen(token_value) + exit_code_len + 1);
+            char *new_token_value = (char *)allocate_memory(ft_strlen(token_value) + exit_code_len + 1);
 
             // Copy characters before $?
             ft_strncpy(new_token_value, token_value, i);
@@ -213,7 +213,7 @@ char *expand_quotes(data_t *data, char *token_value)
             ft_strcpy(new_token_value + i + exit_code_len, token_value + i + 2);
 
             free_memory(exit_code_str);
-            free_memory(token_value);
+            do_free = 1;
             token_value = new_token_value;
         }
         if (token_value[i] == '$' && token_value[i + 1] != '\'')
@@ -221,9 +221,9 @@ char *expand_quotes(data_t *data, char *token_value)
             i++;
             k = 0;
             var_name = (char *)allocate_memory(ft_strlen(token_value) + 1);
-            memset(var_name, 0, ft_strlen(token_value) + 1);
+            ft_memset(var_name, 0, ft_strlen(token_value) + 1);
 
-            while (isalnum(token_value[i + k]) || token_value[i + k] == '_' || token_value[i + k] == '?')
+            while (ft_isalnum(token_value[i + k]) || token_value[i + k] == '_' || token_value[i + k] == '?')
             {
                 var_name[k] = token_value[i + k];
                 k++;
@@ -268,6 +268,8 @@ char *expand_quotes(data_t *data, char *token_value)
     }
     result[j] = '\0';
     result = memory_realloc(result, j + 1);
+    if (do_free)
+        free(token_value);
 	// debug("tokenizer buffer\n"); //for testing
     return (result);
 }
@@ -338,28 +340,28 @@ void ms_expander(data_t *data)
     current_token = data->tokens;
     prev_token = NULL;
 
-
     while (current_token)
     {
         char *cq = ms_clean_quotes(&vars, current_token->value);
         free_memory(current_token->value);
         current_token->value = cq;
         if (current_token->type == T_WORD || current_token->type == T_DOUBLE_QUOTE)
-        {            
-            char *expanded_value = NULL;
-
+        {
             if (current_token->type == T_WORD)
             {
                 if (ft_strchr(current_token->value, '~'))
-                {
-                    current_token->value = expand_tilde(data, current_token->value);
+                { 
+                    char *et = expand_tilde(data, current_token->value);
+                    free_memory(current_token->value);
+                    current_token->value = et;
                 } 
             }
 
             if (ft_strchr(current_token->value, '$'))
             {
-                expanded_value = expand_quotes(data, current_token->value);
-                current_token->value = expanded_value;
+                char *ev = expand_quotes(data, current_token->value);
+                free_memory(current_token->value);
+                current_token->value = ev;
             }
         }
 

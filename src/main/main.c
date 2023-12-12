@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/11 18:03:51 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/12 10:36:23 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,9 +175,17 @@ void remove_intermediate_input_redirections(data_t *data) {
                 if (current->next != last_file) {
                     token_t *temp = current->next;
                     current->next = last_file;
+
                     while (temp != last_file) {
                         token_t *next_temp = temp->next;
-                        free_memory(temp); // Assuming you need to free the removed nodes
+
+                        // Properly free the memory inside the token_t
+                        // This should include freeing any dynamically allocated memory such as strings.
+                        if (temp->value) {
+                            free(temp->value);  // Free the string or other dynamically allocated fields
+                        }
+                        free(temp);  // Then free the token_t itself
+
                         temp = next_temp;
                     }
                 }
@@ -218,9 +226,11 @@ void	ms_check_command(data_t *data)
 
 	// print_list3(data->tokens);
 
+
     resolve_command_paths(data);
     remove_intermediate_input_redirections(data);
-    // print_list3(data->tokens);
+
+    // print_list3(data->tokens);   
 	ms_execute_commands(data);
 
     // dup2(original_stdin, STDIN_FILENO);  // Restore the original STDIN
@@ -237,22 +247,26 @@ void	ms_process_input(data_t *data)
 	add_history(data->user_input);
 }
 
+void make_struct(data_t *data, char **envp)
+{
+    ft_memset(data, 0, sizeof(data_t));
+    data->envp = ms_clone_envp(envp);
+    data->last_exit_code = 0;
+    data->heredoc_tmp_file = NULL;
+    data->last_path = ms_get_current_working_dir();
+}
 int	main(int argc, char *argv[], char *envp[])
 {
-	data_t	data;
+    data_t	data;
 
 	if (argc > 1)
 	{
 		printf("%s: Do not parse any commands yet\n", argv[1]);
 		exit(1);
 	}
-	ft_memset(&data, 0, sizeof(data_t));
 	if (ms_init_signals() == -1)
 		ms_handle_error(1, "Failed to initialise signals.");
-	data.envp = ms_clone_envp(envp);
-	data.last_exit_code = 0;
-	data.heredoc_tmp_file = NULL;
-    data.last_path = ms_get_current_working_dir();
+    make_struct(&data, envp);
 	while (1)
 	{
 		data.user_input = readline(PROMPT);
@@ -262,7 +276,8 @@ int	main(int argc, char *argv[], char *envp[])
 		ms_expander(&data);
         if (data.tokens != NULL)
             ms_process_input(&data);
-		free_memory(data.user_input);
+        free_token_list(data.tokens);
+        free_memory(data.user_input);
 	}
 	return (0);
 }
