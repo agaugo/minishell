@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/11 22:31:24 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/12 01:02:10 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,9 +175,17 @@ void remove_intermediate_input_redirections(data_t *data) {
                 if (current->next != last_file) {
                     token_t *temp = current->next;
                     current->next = last_file;
+
                     while (temp != last_file) {
                         token_t *next_temp = temp->next;
-                        free_memory(temp); // Assuming you need to free the removed nodes
+
+                        // Properly free the memory inside the token_t
+                        // This should include freeing any dynamically allocated memory such as strings.
+                        if (temp->value) {
+                            free(temp->value);  // Free the string or other dynamically allocated fields
+                        }
+                        free(temp);  // Then free the token_t itself
+
                         temp = next_temp;
                     }
                 }
@@ -218,10 +226,11 @@ void	ms_check_command(data_t *data)
 
 	// print_list3(data->tokens);
 
+
     resolve_command_paths(data);
     remove_intermediate_input_redirections(data);
 
-    // print_list3(data->tokens);
+    // print_list3(data->tokens);   
 	ms_execute_commands(data);
 
     // dup2(original_stdin, STDIN_FILENO);  // Restore the original STDIN
@@ -269,6 +278,7 @@ int	main(int argc, char *argv[], char *envp[])
             ms_process_input(&data);
         free_token_list(data.tokens);
         free_memory(data.user_input);
+        // system("leaks minishell");
 	}
 	return (0);
 }
