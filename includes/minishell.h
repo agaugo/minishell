@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/11 16:39:42 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/12 00:45:31 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,8 @@ void ms_handle_ctrl_d(data_t *data);
 void ms_handle_ctrl_backspace(int _signalNumber);
 int ms_init_signals(void);
 int	ms_find_env_index(char **envp, const char *key);
+
+void remove_intermediate_input_redirections(data_t *data);
 
 token_t	*ms_tokenizer(data_t data);
 void	ms_expander(data_t *data);
