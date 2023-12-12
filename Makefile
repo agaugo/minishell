@@ -22,9 +22,11 @@ SRC = \
 	src/builtins/pwd.c			\
 	src/builtins/unset.c		\
 	src/exe/executor.c			\
-	src/exe/heredoc.c			\
+	src/exe/exe_heredoc.c		\
 	src/exe/exe_resolve_paths.c	\
-	src/exe/exe_builtins.c	\
+	src/exe/exe_builtins.c		\
+	src/exe/exe_utils.c			\
+	src/exe/exe_redirects.c		\
 	src/exp/expander.c			\
 	src/exp/exp_quotes.c		\
 	src/main/env.c				\

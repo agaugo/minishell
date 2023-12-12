@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/12 21:10:05 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/12 23:31:37 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,10 @@ int	ms_is_builtin_command(char *command);
 void	ms_resolve_command_paths(data_t *data);
 int ms_is_directory(const char *path);
 int	ms_set_command_path(char **allpath, token_t *current);
-
+char	**ms_get_full_args(token_t *start_token, token_t *end_token);
+token_t *ms_handle_heredoc(data_t *data, token_t *temp, token_t *first_command_token, int *br2);
+token_t *ms_check_redirects(data_t *data, token_t *next_command, int *is_pipe, int *is_redirect, int *br);
+int ms_setup_redirection(token_t *tokens);
 
 
 void	print_env(data_t *data);

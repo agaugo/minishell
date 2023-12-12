@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 18:26:52 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/12 11:50:11 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/12 21:40:25 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 ** Represents different types of tokens available in the shell.
 **
 ** T_WORD: Generic word or command name.
-** T_FLAG: Represents a flag used in commands, usually preceded by '-' (e.g.,
-	-l).
 ** T_PIPE: The '|' character, representing a pipe between commands.
 ** T_REDIRECT_IN: The '<' character, representing input redirection.
 ** T_REDIRECT_OUT: The '>' character, representing output redirection.
@@ -28,13 +26,6 @@
 ** T_SINGLE_QUOTE: The '\'' character, representing single quotes.
 ** T_DOUBLE_QUOTE: The '\"' character, representing double quotes.
 ** T_ENV_VARIABLE: The '$' character, representing environment variables.
-** T_EXIT_STATUS: The '$?' characters,
-	representing the exit status of the last command.
-** T_NEWLINE: The '\n' character, representing the end of a command.
-** T_WHITESPACE: Represents spaces or tabs, which are used to separate tokens.
-** T_BUILTIN: Represents built-in commands like echo, cd, pwd, etc.
-** T_ASSIGNMENT: Represents assignment operations,
-	usually in the format VAR=VALUE.
 */
 typedef enum e_tokentype
 {
