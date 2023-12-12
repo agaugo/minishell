@@ -14,23 +14,26 @@ BLUE = \033[1;34m
 RESET = \033[0m
 
 SRC = \
-	src/builtins/cd.c		\
-	src/builtins/echo.c		\
-	src/builtins/env.c		\
-	src/builtins/exit.c		\
-	src/builtins/export.c	\
-	src/builtins/pwd.c		\
-	src/builtins/unset.c	\
-	src/exe/executor.c		\
-	src/exe/heredoc.c		\
-	src/exp/expander.c		\
-	src/main/env.c			\
-	src/main/main.c			\
-	src/main/signal.c		\
-	src/tok/tokenizer.c		\
-	src/utils/error.c		\
-	src/utils/memory.c		\
-	src/utils/stdlib.c		\
+	src/builtins/cd.c			\
+	src/builtins/echo.c			\
+	src/builtins/env.c			\
+	src/builtins/exit.c			\
+	src/builtins/export.c		\
+	src/builtins/pwd.c			\
+	src/builtins/unset.c		\
+	src/exe/executor.c			\
+	src/exe/heredoc.c			\
+	src/exp/expander.c			\
+	src/main/env.c				\
+	src/main/main.c				\
+	src/main/signal.c			\
+	src/tok/tokenizer.c			\
+	src/tok/tok_create_link.c	\
+	src/tok/tok_parse_tokens.c	\
+	src/tok/tok_utils.c			\
+	src/utils/error.c			\
+	src/utils/memory.c			\
+	src/utils/stdlib.c			\
 	src/utils/path.c
 
 OBJS = $(addprefix $(OBJS_DIR), $(SRC:.c=.o))

@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/12 15:49:38 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/12 17:52:39 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,28 @@ typedef struct data {
     char            *heredoc_tmp_file;
     char            *last_path;
 } data_t;
+
+// Tokenizer
+typedef struct tok_compact
+{
+    char **start;
+    char **current;
+    token_t **head;
+    token_t **current_token;
+} tok_compact_t;
+
+void	test_tok(token_t *head);
+token_t	*ms_tokenizer(data_t data);
+void	parse_special_tokens(char **current, token_t **head, token_t **current_token);
+void	parse_regular_tokens(char **current, token_t **head, token_t **current_token);
+tokentype_t	parse_pipe_token(char **current);
+tokentype_t	parse_redirect_token(char **current);
+tokentype_t	parse_redirect_token2(char **current);
+tokentype_t	parse_quote_token(char **current);
+tokentype_t	parse_word_token(char **current);
+int	ms_is_whitespace(char c);
+token_t	*init_new_token(char *start, char *current, tokentype_t type);
+
 
 void	print_env(data_t *data);
 void	update_env(data_t *data, char *key, char *new_assignment);
