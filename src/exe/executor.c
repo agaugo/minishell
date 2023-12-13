@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 08:57:38 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 12:40:15 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@ void	handle_parent_process(data_t *data, exec_data_t *cmd_data, int fds[2])
 	}
 	else
 		cmd_data->in_fd = 0;
-	print_new_prompt = 1;
+	g_print_new_prompt = 1;
 	waitpid(cmd_data->pid, &status, 0);
 	data->last_exit_code = WEXITSTATUS(status);
-	print_new_prompt = 0;
+	g_print_new_prompt = 0;
 }
 
 void	execute_child_process(data_t *data, exec_data_t *cmd_data,

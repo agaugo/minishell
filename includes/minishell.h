@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/13 12:38:08 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:02:39 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 # define STDOUT 1
 # define STDERR 2
 
-extern int print_new_prompt;
+extern int g_print_new_prompt;
 
 typedef struct data {
     char            **envp;
@@ -49,6 +49,10 @@ typedef struct data {
     char            *heredoc_tmp_file;
     char            *last_path;
 } data_t;
+
+// Main
+void	ms_make_data_struct(data_t *data, char **envp);
+void	ms_check_redirect(data_t *data);
 
 // Tokenizer
 void	test_tok(token_t *head);
@@ -176,6 +180,8 @@ void ms_handle_ctrl_d(data_t *data);
 void ms_handle_ctrl_backspace(int _signalNumber);
 int ms_init_signals(void);
 int	ms_find_env_index(char **envp, const char *key);
+
+char	*read_file_content(const char *filename);
 
 void remove_intermediate_input_redirections(data_t *data);
 

@@ -33,7 +33,9 @@ SRC = \
 	src/exp/exp_token_utils.c	\
 	src/exp/exp_merge.c			\
 	src/main/env.c				\
+	src/main/env2.c				\
 	src/main/main.c				\
+	src/main/main_utils.c		\
 	src/main/signal.c			\
 	src/tok/tokenizer.c			\
 	src/tok/tok_create_link.c	\
