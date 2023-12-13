@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 18:09:43 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 19:07:59 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,11 @@ char	**ms_get_full_args(t_token_t *start_token, t_token_t *end_token)
 void	ms_throw_error(t_data *data, t_token_t *current)
 {
 	char	*error_msg;
-	
+
 	if (current->status == 126)
 	{
-		error_msg = ft_strjoin_free(ft_strdup(current->value), ft_strdup(": is a directory"));
+		error_msg = ft_strjoin_free(ft_strdup(current->value),
+				ft_strdup(": is a directory"));
 		ft_putendl_fd(error_msg, STDERR);
 		free_memory(error_msg);
 		data->last_exit_code = 126;
@@ -55,7 +56,8 @@ void	ms_throw_error(t_data *data, t_token_t *current)
 	}
 	if (current->status == 127)
 	{
-		error_msg = ft_strjoin_free(ft_strdup(current->value), ft_strdup(": command not found"));
+		error_msg = ft_strjoin_free(ft_strdup(current->value),
+				ft_strdup(": command not found"));
 		ft_putendl_fd(error_msg, STDERR);
 		free_memory(error_msg);
 		data->last_exit_code = 127;

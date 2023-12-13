@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/25 10:37:37 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 18:10:56 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 19:09:41 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ void	ms_exit_shell(t_data *data, t_token_t *token)
 {
 	if (!token)
 	{
-		// system("leaks minishell");
 		printf("exit\n");
 		wipe_data_struct(data);
 		exit(0);

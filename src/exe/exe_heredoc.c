@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/01 16:11:03 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 17:59:30 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 19:07:26 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,9 @@ void	ms_print_synatx_error(t_data *data, t_token_t *temp, int *br2)
 		val = "\\n";
 	else
 		val = temp->next->value;
-	error_msg = ft_strjoin_free(ft_strdup("syntax error near unexpected token '"),
-					ft_strdup(val));
+	error_msg = ft_strjoin_free(
+			ft_strdup("syntax error near unexpected token '"),
+			ft_strdup(val));
 	error_msg = ft_strjoin_free(error_msg, ft_strdup("'"));
 	ft_putendl_fd(error_msg, STDERR);
 	free_memory(error_msg);
