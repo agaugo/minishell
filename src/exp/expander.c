@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 15:11:05 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/14 00:05:34 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ char	*ms_call_expand(t_data *data, char *token_value)
 	result[exp_data.j] = '\0';
 	result = memory_realloc(result, exp_data.j + 1);
 	if (exp_data.do_free)
-		free(token_value);
+		free_memory(token_value);
 	return (result);
 }
 
