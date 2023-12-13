@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 11:41:34 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:33:34 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	ms_check_quotes2(const char *str, t_quote_vars *vars)
 {
 	if ((str[*vars->i] == '\'' || str[*vars->i] == '\"')
 		&& !(*vars->in_single_quote) && !(*vars->in_double_quote)
-		&& (*vars->i == 0 || *vars->i == strlen(str) - 1
+		&& (*vars->i == 0 || *vars->i == ft_strlen(str) - 1
 			|| str[*vars->i - 1] == ' ' || str[*vars->i + 1] == ' '
 			|| str[*vars->i + 1] == '\0'))
 		(*vars->i)++;

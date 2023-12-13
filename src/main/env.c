@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/24 23:38:22 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:29:01 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:35:50 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ void	update_env(t_data *data, char *key, char *new_assignment)
 	i = 0;
 	while (data->envp[i])
 	{
-		if (ft_strncmp(data->envp[i], key, strlen(key)) == 0
-			&& data->envp[i][strlen(key)] == '=')
+		if (ft_strncmp(data->envp[i], key, ft_strlen(key)) == 0
+			&& data->envp[i][ft_strlen(key)] == '=')
 		{
 			free_memory(data->envp[i]);
 			data->envp[i] = ft_strdup(new_assignment);

@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/25 10:37:37 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 15:06:06 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:20:04 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,18 @@ static void	ms_cd_home(t_data *data)
 	char	*home_path;
 
 	home_path = ft_getenv(data->envp, "HOME");
-	if (home_path == NULL)
+	if (!home_path)
 	{
-		perror("Environment Variable Not Found");
-		return ;
+		data->last_exit_code = 1;
+		perror("cd");
+		return;
 	}
 	chdir(home_path);
+	if (chdir(home_path) != 0)
+	{
+		data->last_exit_code = 1;
+		perror("cd");
+	}
 	free_memory(home_path);
 }
 

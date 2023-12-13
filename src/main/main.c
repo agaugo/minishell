@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:29:09 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:38:16 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	remove_newline(char *str)
 
 	if (str == NULL)
 		return ;
-	len = strlen(str);
+	len = ft_strlen(str);
 	if (len > 0 && str[len - 1] == '\n')
 		str[len - 1] = '\0';
 }

@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 15:11:14 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:37:59 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ t_token_t	*ms_rm_input(t_token_t *current)
 			{
 				next_temp = temp->next;
 				if (temp->value)
-					free(temp->value);
-				free(temp);
+					free_memory(temp->value);
+				free_memory(temp);
 				temp = next_temp;
 			}
 		}

@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 15:06:52 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:33:51 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	remove_empty_token(t_data *data, t_token_t **prev_token,
 {
 	t_token_t	*next_token;
 
-	if (*current_token && strcmp((*current_token)->value, "") == 0)
+	if (*current_token && ft_strcmp((*current_token)->value, "") == 0)
 	{
 		next_token = (*current_token)->next;
 		remove_token(&(data->tokens), *prev_token, *current_token);

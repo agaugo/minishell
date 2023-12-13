@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 15:06:44 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:32:09 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,10 @@ char	*ms_expand_tilde(t_data *data, char *token_value)
 		home_index = ms_find_env_index(data->envp, "HOME");
 		if (home_index == -1)
 		{
-			perror("Environment Variable HOME Not Found");
 			return (ft_strdup(token_value));
 		}
 		home_path = ft_strchr(data->envp[home_index], '=') + 1;
-		new_size = ft_strlen(home_path) + strlen(token_value);
+		new_size = ft_strlen(home_path) + ft_strlen(token_value);
 		new_token_value = (char *)allocate_memory(new_size);
 		ft_strcpy(new_token_value, home_path);
 		ft_strcat(new_token_value, token_value + 1);
