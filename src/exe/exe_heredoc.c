@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/01 16:11:03 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 09:22:55 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 11:51:01 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void	ms_read_heredoc(data_t *data, char *delimiter, int *fd)
 			free_memory(input);
 			break ;
 		}
-		expanded_input = expand_quotes(data, input);
+		expanded_input = ms_call_expand(data, input);
 		write(*fd, expanded_input, strlen(expanded_input));
 		write(*fd, "\n", 1);
 		free_memory(expanded_input);

@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/13 08:41:58 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 12:20:37 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,28 @@ token_t *ms_check_redirects(data_t *data, exec_data_t *cmd_data, token_t *next_c
 int ms_setup_redirection(token_t *tokens);
 void	ms_throw_error(data_t *data, token_t *current);
 
+
+// Expander
+typedef struct exp_data {
+	int		i;
+	int		j;
+    int		k;
+	int		do_free;
+} exp_data_t;
+
+char *ms_expand_tilde(data_t *data, char *token_value);
+char *ms_expand_dollarsign(data_t *data, char *token_value);
+void ms_expand_variable(data_t *data, token_t *current_token);
+void ms_expand_tokens(data_t *data, token_t *current_token);
+void update_token_type(token_t *current_token);
+void remove_token(token_t **head, token_t *prev_token, token_t *current_token);
+void remove_empty_token(data_t *data, token_t **prev_token, token_t **current_token);
+void remove_next_token(token_t *current);
+char *merge_token_values(token_t *current, token_t *next);
+void merge_connected_tokens(data_t *data);
+char *ms_call_expand(data_t *data, char *token_value);
+char *ms_expand_exit_code(data_t *data, char *token_value, int *do_free, int i);
+
 void	print_env(data_t *data);
 void	update_env(data_t *data, char *key, char *new_assignment);
 
@@ -183,7 +205,6 @@ void ms_check_pipe(data_t *data);
 
 void    ms_execute_commands(data_t *data);
 
-char *expand_quotes(data_t *data, char *token_value);
 int setup_redirection(token_t *tokens);
 void free_token_list(token_t *head);
 void wipe_data_struct(data_t *data);

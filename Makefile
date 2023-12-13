@@ -29,6 +29,9 @@ SRC = \
 	src/exe/exe_redirects.c		\
 	src/exp/expander.c			\
 	src/exp/exp_quotes.c		\
+	src/exp/exp_expand.c		\
+	src/exp/exp_token_utils.c	\
+	src/exp/exp_merge.c			\
 	src/main/env.c				\
 	src/main/main.c				\
 	src/main/signal.c			\
