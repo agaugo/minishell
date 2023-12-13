@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 17:46:14 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 15:06:16 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 19:04:43 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,23 +28,49 @@ static int	ms_is_valid_identifier(const char *key)
 	return (1);
 }
 
-static char	*create_assignment(char *key, char *value)
+static char *create_assignment(char *key, char *value)
 {
-	char	*new_assignment;
+	char *new_assignment;
+	size_t key_len = ft_strlen(key);
+	size_t value_len = ft_strlen(value);
+	size_t total_len;
+	size_t i, j;
 
-	if (strchr(value, ' ') || strchr(value, '\t') || strchr(value, '\"')
-		|| strchr(value, '\''))
+	if (ft_strchr(value, ' ') || ft_strchr(value, '\t') || ft_strchr(value, '\"') || ft_strchr(value, '\''))
 	{
-		new_assignment = (char *)allocate_memory(strlen(key)
-				+ strlen(value) + 4);
-		sprintf(new_assignment, "%s=\"%s\"", key, value);
+		total_len = key_len + value_len + 4; // Two quotes, equals sign, and null terminator
+		new_assignment = (char *)malloc(total_len);
+		if (new_assignment == NULL) return NULL; // Memory allocation check
+
+		for (i = 0; key[i] != '\0'; i++)
+			new_assignment[i] = key[i];
+
+		new_assignment[i++] = '=';
+
+		new_assignment[i++] = '\"';
+		for (j = 0; value[j] != '\0'; j++)
+			new_assignment[i + j] = value[j];
+
+		new_assignment[i + j++] = '\"';
+		new_assignment[i + j] = '\0'; // Null-terminate the string
 	}
 	else
 	{
-		new_assignment = allocate_memory(strlen(key) + strlen(value) + 2);
-		sprintf(new_assignment, "%s=%s", key, value);
+		total_len = key_len + value_len + 2; // Equals sign and null terminator
+		new_assignment = (char *)malloc(total_len);
+		if (new_assignment == NULL) return NULL; // Memory allocation check
+
+		for (i = 0; key[i] != '\0'; i++)
+			new_assignment[i] = key[i];
+
+		new_assignment[i++] = '=';
+		for (j = 0; value[j] != '\0'; j++)
+			new_assignment[i + j] = value[j];
+
+		new_assignment[i + j] = '\0'; // Null-terminate the string
 	}
-	return (new_assignment);
+
+	return new_assignment;
 }
 
 static int	find_equals_index(const char *str)
@@ -71,9 +97,7 @@ static void	process_token(t_data *data, t_token_t *current_token)
 	key = current_token->value;
 	equals_index = find_equals_index(key);
 	if (equals_index != -1)
-	{
 		key[equals_index] = '\0';
-	}
 	if (!ms_is_valid_identifier(key))
 	{
 		ft_putendl_fd("minishell: not a valid identifier", STDERR);

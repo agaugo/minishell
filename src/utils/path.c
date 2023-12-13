@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/22 23:51:43 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:01:49 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 19:04:49 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,29 +38,46 @@ char	*ms_get_current_working_dir(void)
 	return (NULL);
 }
 
-char	*read_file_content(const char *filename)
-{
-	char	*buffer;
-	FILE	*file;
-	long	length;
 
-	file = fopen(filename, "r");
-	if (!file)
-	{
+char *read_file_content(const char *filename) {
+	int fd;
+	char *buffer;
+	ssize_t bytes_read;
+	size_t buffer_size = 1024;
+	size_t total_read = 0;
+
+	fd = open(filename, O_RDONLY);
+	if (fd == -1) {
 		perror("Unable to open file");
-		return (NULL);
+		return NULL;
 	}
-	fseek(file, 0, SEEK_END);
-	length = ftell(file);
-	fseek(file, 0, SEEK_SET);
-	buffer = (char *)allocate_memory(length + 1);
-	if (!buffer)
-	{
-		fclose(file);
-		ms_handle_error(-1, "Failed to read file.");
+	buffer = allocate_memory(buffer_size);
+	if (!buffer) {
+		close(fd);
+		return NULL;
 	}
-	fread(buffer, 1, length, file);
-	buffer[length] = '\0';
-	fclose(file);
-	return (buffer);
+	while (1) {
+		if (total_read == buffer_size) {
+			buffer_size *= 2;
+			char *new_buffer = memory_realloc(buffer, buffer_size);
+			if (!new_buffer) {
+				free_memory(buffer);
+				close(fd);
+				return NULL;
+			}
+			buffer = new_buffer;
+		}
+		bytes_read = read(fd, buffer + total_read, buffer_size - total_read - 1);
+		if (bytes_read < 0) {
+			free_memory(buffer);
+			close(fd);
+			perror("Error reading file");
+			return NULL;
+		} else if (bytes_read == 0)
+			break;
+		total_read += bytes_read;
+	}
+	buffer[total_read] = '\0';
+	close(fd);
+	return buffer;
 }
