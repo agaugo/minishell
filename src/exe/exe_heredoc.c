@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/01 16:11:03 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 15:06:29 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 19:07:26 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,18 @@
 void	ms_print_synatx_error(t_data *data, t_token_t *temp, int *br2)
 {
 	char	*val;
+	char	*error_msg;
 
 	if (temp->next == NULL)
 		val = "\\n";
 	else
 		val = temp->next->value;
-	fprintf(stderr, "syntax error near unexpected token '%s'\n", val);
+	error_msg = ft_strjoin_free(
+			ft_strdup("syntax error near unexpected token '"),
+			ft_strdup(val));
+	error_msg = ft_strjoin_free(error_msg, ft_strdup("'"));
+	ft_putendl_fd(error_msg, STDERR);
+	free_memory(error_msg);
 	data->last_exit_code = 258;
 	*br2 = 1;
 }
@@ -88,13 +94,13 @@ void	ms_read_heredoc(t_data *data, char *delimiter, int *fd)
 	while (1)
 	{
 		input = readline("> ");
-		if (strcmp(input, delimiter) == 0)
+		if (ft_strcmp(input, delimiter) == 0)
 		{
 			free_memory(input);
 			break ;
 		}
 		expanded_input = ms_call_expand(data, input);
-		write(*fd, expanded_input, strlen(expanded_input));
+		write(*fd, expanded_input, ft_strlen(expanded_input));
 		write(*fd, "\n", 1);
 		free_memory(expanded_input);
 		free_memory(input);
@@ -123,5 +129,5 @@ void	ms_heredoc(t_data *data, t_token_t *token)
 	}
 	ms_read_heredoc(data, token->next->value, &fd);
 	close(fd);
-	data->heredoc_tmp_file = strdup(temp_filename);
+	data->heredoc_tmp_file = ft_strdup(temp_filename);
 }

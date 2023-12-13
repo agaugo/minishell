@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 15:06:33 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 19:08:30 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,16 @@
 
 int	ms_open_in(t_token_t *current)
 {
-	int	flags;
-	int	fd;
+	int		flags;
+	int		fd;
+	char	*error_msg;
 
 	if (access(current->next->value, F_OK) == -1)
 	{
-		fprintf(stderr, "%s: No such file or directory\n",
-			current->next->value);
+		error_msg = ft_strjoin_free(ft_strdup(current->next->value),
+				ft_strdup(": No such file or directory"));
+		ft_putendl_fd(error_msg, STDERR);
+		free_memory(error_msg);
 		return (-1);
 	}
 	flags = O_RDONLY;
@@ -81,12 +84,18 @@ int	ms_setup_redirection(t_token_t *tokens)
 void	ms_redirect_syntax_error(t_data *data, t_token_t *next_command, int *br)
 {
 	char	*val;
+	char	*error_msg;
 
 	if (next_command->next == NULL)
 		val = "\\n";
 	else
 		val = next_command->next->value;
-	fprintf(stderr, "syntax error near unexpected token '%s'\n", val);
+	error_msg = ft_strjoin_free(
+			ft_strdup("syntax error near unexpected token '"),
+			ft_strdup(val));
+	error_msg = ft_strjoin_free(error_msg, ft_strdup("'"));
+	ft_putendl_fd(error_msg, STDERR);
+	free_memory(error_msg);
 	data->last_exit_code = 258;
 	*br = 1;
 }

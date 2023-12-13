@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 17:46:14 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 15:06:16 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 20:22:04 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,25 +26,6 @@ static int	ms_is_valid_identifier(const char *key)
 		i++;
 	}
 	return (1);
-}
-
-static char	*create_assignment(char *key, char *value)
-{
-	char	*new_assignment;
-
-	if (strchr(value, ' ') || strchr(value, '\t') || strchr(value, '\"')
-		|| strchr(value, '\''))
-	{
-		new_assignment = (char *)allocate_memory(strlen(key)
-				+ strlen(value) + 4);
-		sprintf(new_assignment, "%s=\"%s\"", key, value);
-	}
-	else
-	{
-		new_assignment = allocate_memory(strlen(key) + strlen(value) + 2);
-		sprintf(new_assignment, "%s=%s", key, value);
-	}
-	return (new_assignment);
 }
 
 static int	find_equals_index(const char *str)
@@ -71,9 +52,7 @@ static void	process_token(t_data *data, t_token_t *current_token)
 	key = current_token->value;
 	equals_index = find_equals_index(key);
 	if (equals_index != -1)
-	{
 		key[equals_index] = '\0';
-	}
 	if (!ms_is_valid_identifier(key))
 	{
 		ft_putendl_fd("minishell: not a valid identifier", STDERR);
