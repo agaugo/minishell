@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/01 16:11:03 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 11:51:01 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:28:21 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	ms_print_synatx_error(data_t *data, token_t *temp, int *br2)
+void	ms_print_synatx_error(t_data *data, token_t *temp, int *br2)
 {
 	char	*val;
 
@@ -25,7 +25,7 @@ void	ms_print_synatx_error(data_t *data, token_t *temp, int *br2)
 	*br2 = 1;
 }
 
-void	ms_handle_heredoc2(data_t *data, token_t *temp,
+void	ms_handle_heredoc2(t_data *data, token_t *temp,
 			token_t *first_command_token)
 {
 	token_t	*new_token;
@@ -51,7 +51,7 @@ void	ms_handle_heredoc2(data_t *data, token_t *temp,
 	}
 }
 
-token_t	*ms_handle_heredoc(data_t *data, token_t *temp,
+token_t	*ms_handle_heredoc(t_data *data, token_t *temp,
 			token_t *first_command_token, int *br2)
 {
 	while (temp != NULL)
@@ -80,7 +80,7 @@ token_t	*ms_handle_heredoc(data_t *data, token_t *temp,
 	return (first_command_token);
 }
 
-void	ms_read_heredoc(data_t *data, char *delimiter, int *fd)
+void	ms_read_heredoc(t_data *data, char *delimiter, int *fd)
 {
 	char	*input;
 	char	*expanded_input;
@@ -101,7 +101,7 @@ void	ms_read_heredoc(data_t *data, char *delimiter, int *fd)
 	}
 }
 
-void	ms_heredoc(data_t *data, token_t *token)
+void	ms_heredoc(t_data *data, token_t *token)
 {
 	char	*temp_filename;
 	int		fd;

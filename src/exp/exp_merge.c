@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 11:32:58 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:28:52 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	*merge_token_values(token_t *current, token_t *next)
 	return (merged_value);
 }
 
-void	merge_connected_tokens(data_t *data)
+void	merge_connected_tokens(t_data *data)
 {
 	token_t	*current;
 	char	*merged_value;

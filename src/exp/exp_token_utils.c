@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 11:35:45 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:28:55 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	remove_token(token_t **head, token_t *prev_token,
 	free_memory(current_token);
 }
 
-void	remove_empty_token(data_t *data, token_t **prev_token,
+void	remove_empty_token(t_data *data, token_t **prev_token,
 			token_t **current_token)
 {
 	token_t	*next_token;

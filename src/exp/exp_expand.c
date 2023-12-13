@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 12:08:25 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:28:49 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	*ms_expand_exit_code(data_t *data, char *token_value, int *do_free,
+char	*ms_expand_exit_code(t_data *data, char *token_value, int *do_free,
 			int i)
 {
 	char	*exit_code_str;
@@ -34,7 +34,7 @@ char	*ms_expand_exit_code(data_t *data, char *token_value, int *do_free,
 	return (token_value);
 }
 
-char	*ms_expand_tilde(data_t *data, char *token_value)
+char	*ms_expand_tilde(t_data *data, char *token_value)
 {
 	int		home_index;
 	char	*home_path;
@@ -60,7 +60,7 @@ char	*ms_expand_tilde(data_t *data, char *token_value)
 	return (ft_strdup(token_value));
 }
 
-char	*ms_expand_dollarsign(data_t *data, char *token_value)
+char	*ms_expand_dollarsign(t_data *data, char *token_value)
 {
 	int		index;
 	char	*var_val;
@@ -73,7 +73,7 @@ char	*ms_expand_dollarsign(data_t *data, char *token_value)
 	return (ft_strdup(var_val));
 }
 
-void	ms_expand_variable(data_t *data, token_t *current_token)
+void	ms_expand_variable(t_data *data, token_t *current_token)
 {
 	char	*expanded_value;
 
@@ -82,7 +82,7 @@ void	ms_expand_variable(data_t *data, token_t *current_token)
 	current_token->value = expanded_value;
 }
 
-void	ms_expand_tokens(data_t *data, token_t *current_token)
+void	ms_expand_tokens(t_data *data, token_t *current_token)
 {
 	char	*expanded_string;
 

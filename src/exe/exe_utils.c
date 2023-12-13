@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 08:52:57 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:28:28 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	**ms_get_full_args(token_t *start_token, token_t *end_token)
 	return (args);
 }
 
-void	ms_throw_error(data_t *data, token_t *current)
+void	ms_throw_error(t_data *data, token_t *current)
 {
 	if (current->status == 126)
 	{

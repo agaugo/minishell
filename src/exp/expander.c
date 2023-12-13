@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 12:21:17 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:33:33 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	*ms_expand_more2(data_t *data, exp_data_t *exp_data, char *result,
+char	*ms_expand_more2(t_data *data, t_exp_t_data *exp_data, char *result,
 			char *var_name)
 {
 	char	*var_value;
@@ -35,7 +35,7 @@ char	*ms_expand_more2(data_t *data, exp_data_t *exp_data, char *result,
 	return (result);
 }
 
-char	*ms_expand_more(data_t *data, exp_data_t *exp_data, char *token_value,
+char	*ms_expand_more(t_data *data, t_exp_t_data *exp_data, char *token_value,
 		char *result)
 {
 	char	*var_name;
@@ -61,10 +61,10 @@ char	*ms_expand_more(data_t *data, exp_data_t *exp_data, char *token_value,
 	return (result);
 }
 
-char	*ms_call_expand(data_t *data, char *token_value)
+char	*ms_call_expand(t_data *data, char *token_value)
 {
 	char		*result;
-	exp_data_t	exp_data;
+	t_exp_t_data	exp_data;
 
 	exp_data.do_free = 0;
 	exp_data.i = 0;
@@ -96,7 +96,7 @@ void	process_quotes(t_quote_vars *vars, token_t *current_token)
 	current_token->value = cleaned_string;
 }
 
-void	ms_expander(data_t *data)
+void	ms_expander(t_data *data)
 {
 	token_t			*current_token;
 	token_t			*prev_token;

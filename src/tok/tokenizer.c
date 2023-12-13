@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 13:42:34 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/12 17:41:26 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:29:21 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-token_t	*ms_tokenizer(data_t data)
+token_t	*ms_tokenizer(t_data data)
 {
 	token_t	*head;
 	token_t	*current_token;

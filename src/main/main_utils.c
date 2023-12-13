@@ -6,15 +6,15 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:02:16 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:29:07 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	ms_make_data_struct(data_t *data, char **envp)
+void	ms_make_data_struct(t_data *data, char **envp)
 {
-	ft_memset(data, 0, sizeof(data_t));
+	ft_memset(data, 0, sizeof(t_data));
 	data->envp = ms_clone_envp(envp);
 	data->last_exit_code = 0;
 	data->heredoc_tmp_file = NULL;
@@ -59,7 +59,7 @@ token_t	*ms_rtn_curr(token_t *current)
 	return (current);
 }
 
-void	remove_intermediate_input_redirections(data_t *data)
+void	remove_intermediate_input_redirections(t_data *data)
 {
 	token_t	*current;
 	int		skip;

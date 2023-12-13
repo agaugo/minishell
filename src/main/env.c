@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/24 23:38:22 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 13:10:42 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:29:01 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	print_env(data_t *data)
+void	print_env(t_data *data)
 {
 	int	i;
 
@@ -24,7 +24,7 @@ void	print_env(data_t *data)
 	}
 }
 
-void	update_env(data_t *data, char *key, char *new_assignment)
+void	update_env(t_data *data, char *key, char *new_assignment)
 {
 	int	i;
 
@@ -54,7 +54,7 @@ int	ms_get_env_size(char **envp)
 	return (size);
 }
 
-void	ms_add_to_env(data_t *data, char *key)
+void	ms_add_to_env(t_data *data, char *key)
 {
 	char	**new_envp;
 	int		size;

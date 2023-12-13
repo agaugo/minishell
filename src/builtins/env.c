@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 00:04:00 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/11/01 16:52:19 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:28:03 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	ms_print_env_variables(data_t *data)
+void	ms_print_env_variables(t_data *data)
 {
 	int		index;
 

@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:00:31 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:29:05 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	ms_red_free(token_t *token, token_t	*tmp)
 	free_memory(tmp);
 }
 
-void	ms_check_redirect(data_t *data)
+void	ms_check_redirect(t_data *data)
 {
 	token_t	*token;
 	token_t	*prev;

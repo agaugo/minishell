@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 12:40:15 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:32:53 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	ms_identify_and_exec(data_t *data, token_t *current, char **args)
+void	ms_identify_and_exec(t_data *data, token_t *current, char **args)
 {
 	if (ms_is_builtin_command(args[0]))
 	{
@@ -41,7 +41,7 @@ void	ms_identify_and_exec(data_t *data, token_t *current, char **args)
 	}
 }
 
-void	handle_parent_process(data_t *data, exec_data_t *cmd_data, int fds[2])
+void	handle_parent_process(t_data *data, t_exec_t_data *cmd_data, int fds[2])
 {
 	int	status;
 
@@ -60,7 +60,7 @@ void	handle_parent_process(data_t *data, exec_data_t *cmd_data, int fds[2])
 	g_print_new_prompt = 0;
 }
 
-void	execute_child_process(data_t *data, exec_data_t *cmd_data,
+void	execute_child_process(t_data *data, t_exec_t_data *cmd_data,
 			token_t *current, int fds[2])
 {
 	if (cmd_data->in_fd != 0)
@@ -82,7 +82,7 @@ void	execute_child_process(data_t *data, exec_data_t *cmd_data,
 	ms_identify_and_exec(data, current, cmd_data->args);
 }
 
-void	ms_get_args_and_exec(data_t *data, exec_data_t *cmd_data)
+void	ms_get_args_and_exec(t_data *data, t_exec_t_data *cmd_data)
 {
 	cmd_data->args = ms_get_full_args(cmd_data->current,
 			cmd_data->next_command);
@@ -107,9 +107,9 @@ void	ms_get_args_and_exec(data_t *data, exec_data_t *cmd_data)
 	ms_free_2d_array(cmd_data->args);
 }
 
-void	ms_execute_commands(data_t *data)
+void	ms_execute_commands(t_data *data)
 {
-	exec_data_t		cmd_data;
+	t_exec_t_data		cmd_data;
 
 	cmd_data.in_fd = 0;
 	cmd_data.current = data->tokens;
