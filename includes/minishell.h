@@ -75,6 +75,10 @@ typedef struct exec_data {
 	int			br;
 	int			br2;
 	t_token_t	*first_command_token;
+	pid_t		pids[10];
+    int			num_pids;
+
+
 }			t_exec_t_data;
 
 typedef struct exp_data {
