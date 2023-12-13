@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/13 14:02:39 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:06:01 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,10 @@ typedef struct data {
     int             pipe[2];
     char            *heredoc_tmp_file;
     char            *last_path;
+    struct termios	*original_termios;
 } data_t;
+
+struct termios enable_noncanonical_mode(void);
 
 // Main
 void	ms_make_data_struct(data_t *data, char **envp);

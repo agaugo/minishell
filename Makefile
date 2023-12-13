@@ -45,6 +45,7 @@ SRC = \
 	src/utils/memory.c			\
 	src/utils/stdlib.c			\
 	src/utils/path.c			\
+	src/main/term.c				\
 	src/test/test.c
 
 OBJS = $(addprefix $(OBJS_DIR), $(SRC:.c=.o))

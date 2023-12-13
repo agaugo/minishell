@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:02:07 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:06:52 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,15 @@ void	ms_process_input(data_t *data)
 int	main(int argc, char *argv[], char *envp[])
 {
 	data_t	data;
+	struct termios original_termios;
 
 	if (argc > 1)
 	{
 		printf("%s: Do not parse any commands yet\n", argv[1]);
 		exit(1);
 	}
+	original_termios = enable_noncanonical_mode();
+	data.original_termios = &original_termios;
 	if (ms_init_signals() == -1)
 		ms_handle_error(1, "Failed to initialise signals.");
 	ms_make_data_struct(&data, envp);
