@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 00:21:23 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 08:59:51 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,20 @@
 
 int	ms_is_builtin_command(char *command)
 {
+	const char	*builtins[] = {"echo", "cd", "export", "unset", "env", "exit",
+		"pwd", NULL};
+	int			i;
+
 	if (command == NULL)
 		return (1);
-	const char *builtins[] = {"echo", "cd", "export", "unset", "env", "exit",
-		"pwd", NULL};
-	for (int i = 0; builtins[i] != NULL; i++)
+	i = 0;
+	while (builtins[i] != NULL)
 	{
 		if (ft_strcmp(command, builtins[i]) == 0)
 		{
 			return (1);
 		}
+		i++;
 	}
 	return (0);
 }

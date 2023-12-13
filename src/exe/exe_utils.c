@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/12 23:23:43 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 08:52:57 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ char	**ms_get_full_args(token_t *start_token, token_t *end_token)
 	int		arg_count;
 	char	**args;
 	token_t	*current;
+	int		i;
 
 	current = start_token;
 	arg_count = 0;
@@ -28,15 +29,30 @@ char	**ms_get_full_args(token_t *start_token, token_t *end_token)
 	}
 	args = (char **)allocate_memory((arg_count + 1) * sizeof(char *));
 	current = start_token;
-	for (int i = 0; i < arg_count; i++)
+	i = 0;
+	while (i < arg_count)
 	{
 		if (current->type == T_REDIRECT_OUT)
-		{
 			break ;
-		}
-		args[i] = ft_strdup(current->value);
+		args[i++] = ft_strdup(current->value);
 		current = current->next;
 	}
 	args[arg_count] = NULL;
 	return (args);
+}
+
+void	ms_throw_error(data_t *data, token_t *current)
+{
+	if (current->status == 126)
+	{
+		fprintf(stderr, "%s: is a directory\n", current->value);
+		data->last_exit_code = 126;
+		exit(126);
+	}
+	if (current->status == 127)
+	{
+		fprintf(stderr, "%s: command not found\n", current->value);
+		data->last_exit_code = 127;
+		exit(127);
+	}
 }
