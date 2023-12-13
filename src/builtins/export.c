@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 17:46:14 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 19:04:43 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 20:22:04 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,51 +26,6 @@ static int	ms_is_valid_identifier(const char *key)
 		i++;
 	}
 	return (1);
-}
-
-static char *create_assignment(char *key, char *value)
-{
-	char *new_assignment;
-	size_t key_len = ft_strlen(key);
-	size_t value_len = ft_strlen(value);
-	size_t total_len;
-	size_t i, j;
-
-	if (ft_strchr(value, ' ') || ft_strchr(value, '\t') || ft_strchr(value, '\"') || ft_strchr(value, '\''))
-	{
-		total_len = key_len + value_len + 4; // Two quotes, equals sign, and null terminator
-		new_assignment = (char *)malloc(total_len);
-		if (new_assignment == NULL) return NULL; // Memory allocation check
-
-		for (i = 0; key[i] != '\0'; i++)
-			new_assignment[i] = key[i];
-
-		new_assignment[i++] = '=';
-
-		new_assignment[i++] = '\"';
-		for (j = 0; value[j] != '\0'; j++)
-			new_assignment[i + j] = value[j];
-
-		new_assignment[i + j++] = '\"';
-		new_assignment[i + j] = '\0'; // Null-terminate the string
-	}
-	else
-	{
-		total_len = key_len + value_len + 2; // Equals sign and null terminator
-		new_assignment = (char *)malloc(total_len);
-		if (new_assignment == NULL) return NULL; // Memory allocation check
-
-		for (i = 0; key[i] != '\0'; i++)
-			new_assignment[i] = key[i];
-
-		new_assignment[i++] = '=';
-		for (j = 0; value[j] != '\0'; j++)
-			new_assignment[i + j] = value[j];
-
-		new_assignment[i + j] = '\0'; // Null-terminate the string
-	}
-
-	return new_assignment;
 }
 
 static int	find_equals_index(const char *str)

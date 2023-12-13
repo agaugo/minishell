@@ -21,6 +21,7 @@ SRC = \
 	src/builtins/env.c			\
 	src/builtins/exit.c			\
 	src/builtins/export.c		\
+	src/builtins/export_extra.c	\
 	src/builtins/pwd.c			\
 	src/builtins/unset.c		\
 	src/exe/executor.c			\
