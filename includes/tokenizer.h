@@ -34,6 +34,7 @@ typedef struct token
 	struct token	*next;
 	int				fd;
 	int				status;
+	int				parse_id;
 	int				connect;
 }	t_token_t;
 

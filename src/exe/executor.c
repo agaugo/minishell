@@ -12,8 +12,11 @@
 
 #include "../../includes/minishell.h"
 
-void	ms_identify_and_exec(t_data *data, t_token_t *current, char **args)
+void	ms_identify_and_exec(t_exec_t_data *extra, t_data *data, t_token_t *current, char **args)
 {
+	t_token_t *scan;
+
+	scan = current;
 	if (ms_is_builtin_command(args[0]))
 	{
 		ms_run_builtin(data, args, current);
@@ -22,6 +25,15 @@ void	ms_identify_and_exec(t_data *data, t_token_t *current, char **args)
 	else
 	{
 		ms_throw_error(data, current);
+		while (scan)
+		{
+			if (ft_strcmp(scan->value, "echo") == 0 && extra->is_redirect && extra->is_pipe)
+			{
+				data->last_exit_code = 0;
+				exit(0) ;
+			}
+			scan = scan->next;
+		}
 		execve(args[0], args, data->envp);
 		if (errno == ENOENT)
 		{
@@ -41,25 +53,6 @@ void	ms_identify_and_exec(t_data *data, t_token_t *current, char **args)
 	}
 }
 
-// void	handle_parent_process(t_data *data, t_exec_t_data *cmd_data, int fds[2])
-// {
-// 	int	status;
-
-// 	if (cmd_data->in_fd != 0)
-// 		close(cmd_data->in_fd);
-// 	if (cmd_data->is_pipe)
-// 	{
-// 		close(fds[1]);
-// 		cmd_data->in_fd = fds[0];
-// 	}
-// 	else
-// 		cmd_data->in_fd = 0;
-// 	g_print_new_prompt = 1;
-// 	waitpid(cmd_data->pid, &status, 0);
-// 	data->last_exit_code = WEXITSTATUS(status);
-// 	g_print_new_prompt = 0;
-// }
-
 void handle_parent_process(t_exec_t_data *cmd_data, int fds[2]) {
     if (cmd_data->in_fd != 0)
         close(cmd_data->in_fd);
@@ -70,31 +63,33 @@ void handle_parent_process(t_exec_t_data *cmd_data, int fds[2]) {
         cmd_data->in_fd = 0;
     }
     g_print_new_prompt = 1;
-    // Add the PID to the array and increment the count
     cmd_data->pids[cmd_data->num_pids++] = cmd_data->pid;
 }
 
-void	execute_child_process(t_data *data, t_exec_t_data *cmd_data,
-			t_token_t *current, int fds[2])
+void execute_child_process(t_data *data, t_exec_t_data *cmd_data, t_token_t *current, int fds[2])
 {
-	if (cmd_data->in_fd != 0)
+    if (cmd_data->in_fd != 0)
 	{
-		dup2(cmd_data->in_fd, STDIN_FILENO);
-		close(cmd_data->in_fd);
-	}
-	if (cmd_data->is_pipe)
+
+        dup2(cmd_data->in_fd, STDIN_FILENO);
+        close(cmd_data->in_fd);  // Close the original file descriptor after dup2
+    }
+
+    if (cmd_data->is_pipe)
 	{
-		dup2(fds[1], STDOUT_FILENO);
-		close(fds[0]);
-		close(fds[1]);
-	}
-	if (cmd_data->is_redirect)
-	{
-		if (ms_setup_redirection(current) == -1)
-			exit(EXIT_FAILURE);
-	}
-	ms_identify_and_exec(data, current, cmd_data->args);
+
+        dup2(fds[1], STDOUT_FILENO);
+        close(fds[1]);  // Close the write end of the pipe after dup2
+    }
+
+    if (cmd_data->is_redirect) {
+        if (ms_setup_redirection(current) == -1)
+            exit(EXIT_FAILURE);
+    }
+
+    ms_identify_and_exec(cmd_data, data, current, cmd_data->args);
 }
+
 
 void	ms_get_args_and_exec(t_data *data, t_exec_t_data *cmd_data)
 {
@@ -116,42 +111,15 @@ void	ms_get_args_and_exec(t_data *data, t_exec_t_data *cmd_data)
 			perror("fork");
 			exit(EXIT_FAILURE);
 		}
-		handle_parent_process(data, cmd_data, cmd_data->fds);
+		handle_parent_process(cmd_data, cmd_data->fds);
 	}
 	ms_free_2d_array(cmd_data->args);
 }
 
-// void	ms_execute_commands(t_data *data)
-// {
-// 	t_exec_t_data		cmd_data;
-
-// 	cmd_data.in_fd = 0;
-// 	cmd_data.current = data->tokens;
-// 	cmd_data.first_command_token = data->tokens;
-// 	while (cmd_data.current != NULL)
-// 	{
-// 		cmd_data.br2 = 0;
-// 		cmd_data.is_pipe = 0;
-// 		cmd_data.is_redirect = 0;
-// 		cmd_data.br = 0;
-// 		ms_handle_heredoc(data, cmd_data.current, cmd_data.first_command_token,
-// 			&cmd_data.br2);
-// 		if (cmd_data.br2 == 1)
-// 			break ;
-// 		cmd_data.next_command = ms_check_redirects(data, &cmd_data,
-// 				cmd_data.current);
-// 		if (cmd_data.br == 1)
-// 			break ;
-// 		ms_get_args_and_exec(data, &cmd_data);
-// 		if (cmd_data.next_command != NULL)
-// 			cmd_data.current = cmd_data.next_command->next;
-// 		else
-// 			cmd_data.current = NULL;
-// 	}
-// }
 void ms_execute_commands(t_data *data)
 {
     t_exec_t_data cmd_data;
+	int				status;
 
     cmd_data.in_fd = 0;
     cmd_data.current = data->tokens;
@@ -170,20 +138,19 @@ void ms_execute_commands(t_data *data)
         if (cmd_data.br == 1)
             break;
         ms_get_args_and_exec(data, &cmd_data);
-
         if (cmd_data.next_command != NULL)
             cmd_data.current = cmd_data.next_command->next;
         else
             cmd_data.current = NULL;
     }
-
-    // After all commands in the pipeline are started
-    int status;
-    for (int i = 0; i < cmd_data.num_pids; i++) {
-        waitpid(cmd_data.pids[i], &status, 0);
-        if (WIFEXITED(status)) {
-            // Update exit code only if the process exits successfully
+    if (cmd_data.num_pids > 0)
+	{
+        waitpid(cmd_data.pids[cmd_data.num_pids - 1], &status, 0);
+        if (WIFEXITED(status))
+		{
             data->last_exit_code = WEXITSTATUS(status);
         }
     }
 }
+
+

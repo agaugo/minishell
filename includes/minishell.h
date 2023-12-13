@@ -63,6 +63,14 @@ typedef struct s_quote_vars
 	char	*cleaned_str;
 }			t_quote_vars;
 
+typedef struct parse
+{
+	int	order_id;
+	int	status;
+
+}	t_parse;
+
+
 typedef struct exec_data {
 	pid_t		pid;
 	t_token_t	*current;
@@ -75,10 +83,12 @@ typedef struct exec_data {
 	int			br;
 	int			br2;
 	t_token_t	*first_command_token;
-	pid_t		pids[10];
+	pid_t		pids[50];
+	int			exit_codes[50];
+	int			num_exits;
+    int			cmd_ids[50]; // Array to store command IDs (parse_ids)
     int			num_pids;
-
-
+	t_parse		*parsed[50];
 }			t_exec_t_data;
 
 typedef struct exp_data {

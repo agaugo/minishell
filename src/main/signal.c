@@ -16,14 +16,14 @@ int	g_print_new_prompt;
 
 void	ms_handle_ctrl_c(int _signalNumber)
 {
-	if (g_print_new_prompt == 0)
-	{
+	// if (g_print_new_prompt == 0)
+	// {
 		(void)_signalNumber;
 		printf("\n");
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
-	}
+	// }
 }
 
 void	ms_handle_ctrl_d(t_data *data)
