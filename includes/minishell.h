@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/13 12:23:29 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 12:38:08 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ void executeBuiltin(struct termios *_oldTermios, token_t *_token);
 int main(int argc, char *argv[], char *envp[]);
 
 // Location: /src/utils/
-void	ms_handle_error(int exit_code, char *message)
+void	ms_handle_error(int exit_code, char *message);
 
 // Location: /src/builtins/
 int		restoreTerminal(struct termios *_oldTermios);
