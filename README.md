@@ -4,6 +4,7 @@ TO DO:
 - Add syntax error with '|'. (Tristan)
 - Possibly remove global variable. (Tristan)
 - Perror Checks (Tristan)
+- Fix conditional jump valgrind?
 
 REPEAT:
 - Norm Check
