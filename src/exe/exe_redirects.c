@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 11:10:40 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 13:05:06 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,10 @@ void	ms_redirect_syntax_error(data_t *data, token_t *next_command, int *br)
 {
 	char	*val;
 
-	val = next_command->next->value;
 	if (next_command->next == NULL)
 		val = "\\n";
+	else
+		val = next_command->next->value;
 	fprintf(stderr, "syntax error near unexpected token '%s'\n", val);
 	data->last_exit_code = 258;
 	*br = 1;
