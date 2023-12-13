@@ -1,8 +1,9 @@
 TO DO:
-- Ticket system executor.
-- Fix segfault CTRL+D in heredoc.
-- Add syntax error with '|'.
-- Possibly remove global variable.
+- Ticket system executor. (Hugo?)
+- Fix segfault CTRL+D in heredoc. (Tristan)
+- Add syntax error with '|'. (Tristan)
+- Possibly remove global variable. (Tristan)
+- Perror Checks (Tristan)
 
 REPEAT:
 - Norm Check
