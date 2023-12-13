@@ -6,21 +6,21 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 11:35:45 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:33:51 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	update_token_type(token_t *current_token)
+void	update_token_type(t_token_t *current_token)
 {
 	if (current_token->type == T_SINGLE_QUOTE
 		|| current_token->type == T_DOUBLE_QUOTE)
 		current_token->type = T_WORD;
 }
 
-void	remove_token(token_t **head, token_t *prev_token,
-			token_t *current_token)
+void	remove_token(t_token_t **head, t_token_t *prev_token,
+			t_token_t *current_token)
 {
 	if (!current_token)
 		return ;
@@ -32,12 +32,12 @@ void	remove_token(token_t **head, token_t *prev_token,
 	free_memory(current_token);
 }
 
-void	remove_empty_token(data_t *data, token_t **prev_token,
-			token_t **current_token)
+void	remove_empty_token(t_data *data, t_token_t **prev_token,
+			t_token_t **current_token)
 {
-	token_t	*next_token;
+	t_token_t	*next_token;
 
-	if (*current_token && strcmp((*current_token)->value, "") == 0)
+	if (*current_token && ft_strcmp((*current_token)->value, "") == 0)
 	{
 		next_token = (*current_token)->next;
 		remove_token(&(data->tokens), *prev_token, *current_token);
@@ -48,9 +48,9 @@ void	remove_empty_token(data_t *data, token_t **prev_token,
 	}
 }
 
-void	remove_next_token(token_t *current)
+void	remove_next_token(t_token_t *current)
 {
-	token_t	*to_remove;
+	t_token_t	*to_remove;
 
 	to_remove = current->next;
 	current->next = current->next->next;

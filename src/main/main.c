@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:06:52 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:38:16 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,12 @@ void	remove_newline(char *str)
 
 	if (str == NULL)
 		return ;
-	len = strlen(str);
+	len = ft_strlen(str);
 	if (len > 0 && str[len - 1] == '\n')
 		str[len - 1] = '\0';
 }
 
-void	ms_check_command(data_t *data)
+void	ms_check_command(t_data *data)
 {
 	int		std_out;
 	int		std_in;
@@ -61,7 +61,7 @@ void	ms_check_command(data_t *data)
 	ms_reset_std(&std_in, &std_out);
 }
 
-void	ms_process_input(data_t *data)
+void	ms_process_input(t_data *data)
 {
 	if (!data->user_input || !*data->user_input)
 		return ;
@@ -71,8 +71,8 @@ void	ms_process_input(data_t *data)
 
 int	main(int argc, char *argv[], char *envp[])
 {
-	data_t	data;
-	struct termios original_termios;
+	t_data			data;
+	struct termios	original_termios;
 
 	if (argc > 1)
 	{

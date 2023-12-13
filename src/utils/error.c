@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 12:38:19 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:39:44 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ void	ms_free_2d_array(char **array)
 		return ;
 	while (array[i] != NULL)
 	{
-		free(array[i]);
+		free_memory(array[i]);
 		i++;
 	}
-	free(array);
+	free_memory(array);
 }

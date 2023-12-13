@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 12:32:11 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:07:28 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ void	free_memory(void *buffer)
 	}
 }
 
-void	free_token_list(token_t *head)
+void	free_token_list(t_token_t *head)
 {
-	token_t	*current;
-	token_t	*next;
+	t_token_t	*current;
+	t_token_t	*next;
 
 	current = head;
 	while (current != NULL)
@@ -46,7 +46,7 @@ void	free_token_list(token_t *head)
 	}
 }
 
-void	wipe_data_struct(data_t *data)
+void	wipe_data_struct(t_data *data)
 {
 	char	**env;
 
@@ -66,7 +66,7 @@ void	wipe_data_struct(data_t *data)
 		}
 		free_memory(data->envp);
 	}
-	ft_memset(data, 0, sizeof(data_t));
+	ft_memset(data, 0, sizeof(t_data));
 	if (access("/tmp/minishell_heredoc", F_OK) == 0)
 	{
 		if (unlink("/tmp/minishell_heredoc") == -1)

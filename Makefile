@@ -16,6 +16,8 @@ RESET = \033[0m
 SRC = \
 	src/builtins/cd.c			\
 	src/builtins/echo.c			\
+	src/builtins/echo_helper1.c	\
+	src/builtins/echo_helper2.c	\
 	src/builtins/env.c			\
 	src/builtins/exit.c			\
 	src/builtins/export.c		\

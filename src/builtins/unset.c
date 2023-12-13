@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/24 19:40:15 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/12 16:04:19 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:06:22 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	shift_envp_array(data_t *data, int start_index)
+void	shift_envp_array(t_data *data, int start_index)
 {
 	int	i;
 
@@ -24,7 +24,7 @@ void	shift_envp_array(data_t *data, int start_index)
 	}
 }
 
-void	resize_envp_array(data_t *data)
+void	resize_envp_array(t_data *data)
 {
 	int		size;
 	char	**new_envp;
@@ -40,7 +40,7 @@ void	resize_envp_array(data_t *data)
 	data->envp[size - 1] = NULL;
 }
 
-void	remove_env_var(data_t *data, char *key)
+void	remove_env_var(t_data *data, char *key)
 {
 	int	index;
 
@@ -53,7 +53,7 @@ void	remove_env_var(data_t *data, char *key)
 	}
 }
 
-void	ms_unset_command(data_t *data, token_t *token)
+void	ms_unset_command(t_data *data, t_token_t *token)
 {
 	if (!token->next)
 		return ;

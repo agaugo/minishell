@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 13:05:06 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:06:33 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	ms_open_in(token_t *current)
+int	ms_open_in(t_token_t *current)
 {
 	int	flags;
 	int	fd;
@@ -35,7 +35,7 @@ int	ms_open_in(token_t *current)
 	return (0);
 }
 
-int	ms_open_out(token_t *current)
+int	ms_open_out(t_token_t *current)
 {
 	int	flags;
 	int	fd;
@@ -55,9 +55,9 @@ int	ms_open_out(token_t *current)
 	return (0);
 }
 
-int	ms_setup_redirection(token_t *tokens)
+int	ms_setup_redirection(t_token_t *tokens)
 {
-	token_t	*current;
+	t_token_t	*current;
 
 	current = tokens;
 	while (current != NULL)
@@ -78,7 +78,7 @@ int	ms_setup_redirection(token_t *tokens)
 	return (0);
 }
 
-void	ms_redirect_syntax_error(data_t *data, token_t *next_command, int *br)
+void	ms_redirect_syntax_error(t_data *data, t_token_t *next_command, int *br)
 {
 	char	*val;
 
@@ -91,8 +91,8 @@ void	ms_redirect_syntax_error(data_t *data, token_t *next_command, int *br)
 	*br = 1;
 }
 
-token_t	*ms_check_redirects(data_t *data, exec_data_t *cmd_data,
-	token_t *next_command)
+t_token_t	*ms_check_redirects(t_data *data, t_exec_t_data *cmd_data,
+	t_token_t *next_command)
 {
 	while (next_command != NULL)
 	{
