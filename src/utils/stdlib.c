@@ -1,67 +1,90 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   stdlib.c                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/10/13 13:46:59 by tvan-bee      #+#    #+#                 */
+/*   Updated: 2023/12/13 12:37:36 by trstn4        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-char *ft_strncpy(char *dest, const char *src, size_t n) 
+char	*ft_strncpy(char *dest, const char *src, size_t n)
 {
-    char *dest_start;
+	char	*dest_start;
 
 	dest_start = dest;
-    // Copy at most 'n' characters from 'src' to 'dest'
-    while (*src != '\0' && n > 0) {
-        *dest++ = *src++;
-        n--;
-    }
-    // Pad 'dest' with null bytes if 'n' is greater than the length of 'src'
-    while (n > 0) 
+	while (*src != '\0' && n > 0)
 	{
-        *dest++ = '\0';
-        n--;
-    }
-    return (dest_start);
+		*dest++ = *src++;
+		n--;
+	}
+	while (n > 0)
+	{
+		*dest++ = '\0';
+		n--;
+	}
+	return (dest_start);
 }
 
-char *ft_strndup(const char *str, size_t n)
+char	*ft_strndup(const char *str, size_t n)
 {
-	char *result;
-	size_t len;
+	char	*result;
+	size_t	len;
 
-    if (str == NULL)
-        return NULL;
-    len = ft_strlen(str);
-    if (n < len)
-        len = n;
-    result = (char *)allocate_memory(len + 1); // +1 for the null terminator
-    ft_strncpy(result, str, len);
-    result[len] = '\0'; // Null-terminate the copied string
-    return result;
+	if (str == NULL)
+		return (NULL);
+	len = ft_strlen(str);
+	if (n < len)
+		len = n;
+	result = (char *)allocate_memory(len + 1);
+	ft_strncpy(result, str, len);
+	result[len] = '\0';
+	return (result);
 }
-char *ft_strcpy(char *dest, const char *src) 
+
+char	*ft_strcpy(char *dest, const char *src)
 {
-    char *dest_start = dest;
+	char	*dest_start;
 
-    // Copy characters from src to dest until the null terminator is encountered in src
-    while ((*dest++ = *src++) != '\0');
-
-    return dest_start;
+	dest_start = dest;
+	while (*src != '\0')
+	{
+		*dest = *src;
+		dest++;
+		src++;
+	}
+	*dest = '\0';
+	return (dest_start);
 }
 
-char *ft_strchr(const char *str, int character) {
-    while (*str != '\0') {
-        if (*str == character)
-            return (char *)str;
-        str++;
-    }
-    return (NULL);
+char	*ft_strchr(const char *str, int character)
+{
+	while (*str != '\0')
+	{
+		if (*str == character)
+			return ((char *)str);
+		str++;
+	}
+	return (NULL);
 }
 
-char *ft_strcat(char *dest, const char *src) {
-    char *dest_start = dest;
+char	*ft_strcat(char *dest, const char *src)
+{
+	char	*dest_start;
 
-    // Move the dest pointer to the end of the destination string
-    while (*dest)
-        dest++;
-
-    // Copy characters from src to the end of dest
-    while ((*dest++ = *src++) != '\0');
-
-    return dest_start;
+	dest_start = dest;
+	while (*dest)
+		dest++;
+	while (*src != '\0')
+	{
+		*dest = *src;
+		dest++;
+		src++;
+	}
+	*dest = '\0';
+	return (dest_start);
 }

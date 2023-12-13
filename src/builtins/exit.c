@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/25 10:37:37 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/12 11:53:42 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/12 14:22:50 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	ms_str_isdigit(const char *str)
+static int	ms_str_isdigit(const char *str)
 {
 	if (str == NULL)
 		return (0);
@@ -34,7 +34,7 @@ static void	ms_check_args_and_exit(data_t *data, token_t *token)
 
 	if (ms_str_isdigit(token->value) == 0)
 	{
-		fprintf(stderr, "exit: %s: numeric argument required\n", token->value);
+		ft_putendl_fd("minishell: numeric argument required", STDERR);
 		wipe_data_struct(data);
 		exit(255);
 	}
@@ -55,7 +55,7 @@ void	ms_exit_shell(data_t *data, token_t *token)
 	if (token->type == T_WORD && token->next
 		&& token->next->type == T_WORD)
 	{
-		fprintf(stderr, "exit: too many arguments\n");
+		ft_putendl_fd("minishell: too many arguments", STDERR);
 		data->last_exit_code = 1;
 		return ;
 	}

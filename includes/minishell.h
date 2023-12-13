@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/12 11:48:54 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:06:01 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,11 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-extern int print_new_prompt;
+# define STDIN 0
+# define STDOUT 1
+# define STDERR 2
+
+extern int g_print_new_prompt;
 
 typedef struct data {
     char            **envp;
@@ -44,7 +48,91 @@ typedef struct data {
     int             pipe[2];
     char            *heredoc_tmp_file;
     char            *last_path;
+    struct termios	*original_termios;
 } data_t;
+
+struct termios enable_noncanonical_mode(void);
+
+// Main
+void	ms_make_data_struct(data_t *data, char **envp);
+void	ms_check_redirect(data_t *data);
+
+// Tokenizer
+void	test_tok(token_t *head);
+token_t	*ms_tokenizer(data_t data);
+void	parse_special_tokens(char **current, token_t **head, token_t **current_token);
+void	parse_regular_tokens(char **current, token_t **head, token_t **current_token);
+tokentype_t	parse_pipe_token(char **current);
+tokentype_t	parse_redirect_token(char **current);
+tokentype_t	parse_redirect_token2(char **current);
+tokentype_t	parse_quote_token(char **current);
+tokentype_t	parse_word_token(char **current);
+int	ms_is_whitespace(char c);
+token_t	*init_new_token(char *start, char *current, tokentype_t type);
+
+
+// Expander
+typedef struct s_quote_vars
+{
+	size_t	*i;
+	size_t	*j;
+	int		*in_single_quote;
+	int		*in_double_quote;
+	char	*cleaned_str;
+}				t_quote_vars;
+
+char *ms_clean_quotes(t_quote_vars *vars, const char *str);
+
+// Executor
+typedef struct exec_data {
+    pid_t pid;
+    token_t *current;
+    token_t *next_command;
+    char **args;
+    int fds[2];
+    int in_fd;
+    int is_pipe;
+    int is_redirect;
+    int br;
+    int br2;
+    token_t *first_command_token;
+} exec_data_t;
+
+void	ms_run_builtin(data_t *data, char **args, token_t *current);
+int	ms_is_builtin_command(char *command);
+void	ms_resolve_command_paths(data_t *data);
+int ms_is_directory(const char *path);
+int	ms_set_command_path(char **allpath, token_t *current);
+char	**ms_get_full_args(token_t *start_token, token_t *end_token);
+token_t *ms_handle_heredoc(data_t *data, token_t *temp, token_t *first_command_token, int *br2);
+token_t *ms_check_redirects(data_t *data, exec_data_t *cmd_data, token_t *next_command);
+int ms_setup_redirection(token_t *tokens);
+void	ms_throw_error(data_t *data, token_t *current);
+
+
+// Expander
+typedef struct exp_data {
+	int		i;
+	int		j;
+    int		k;
+	int		do_free;
+} exp_data_t;
+
+char *ms_expand_tilde(data_t *data, char *token_value);
+char *ms_expand_dollarsign(data_t *data, char *token_value);
+void ms_expand_variable(data_t *data, token_t *current_token);
+void ms_expand_tokens(data_t *data, token_t *current_token);
+void update_token_type(token_t *current_token);
+void remove_token(token_t **head, token_t *prev_token, token_t *current_token);
+void remove_empty_token(data_t *data, token_t **prev_token, token_t **current_token);
+void remove_next_token(token_t *current);
+char *merge_token_values(token_t *current, token_t *next);
+void merge_connected_tokens(data_t *data);
+char *ms_call_expand(data_t *data, char *token_value);
+char *ms_expand_exit_code(data_t *data, char *token_value, int *do_free, int i);
+
+void	print_env(data_t *data);
+void	update_env(data_t *data, char *key, char *new_assignment);
 
 void	*allocate_memory(size_t buffer_size);
 char *ft_strcpy(char *dest, const char *src);
@@ -55,12 +143,15 @@ char *ft_strndup(const char *str, size_t n);
 void debug(char *output);
 void	*memory_realloc(void* ptr, size_t new_size);
 
+int	ms_get_env_size(char **envp);
+void	ms_add_to_env(data_t *data, char *key);
+
 // Location: /src/main.c
 void executeBuiltin(struct termios *_oldTermios, token_t *_token);
 int main(int argc, char *argv[], char *envp[]);
 
 // Location: /src/utils/
-void	ms_handle_error(int _exitCode, char *_errorMessage);
+void	ms_handle_error(int exit_code, char *message);
 
 // Location: /src/builtins/
 int		restoreTerminal(struct termios *_oldTermios);
@@ -93,6 +184,8 @@ void ms_handle_ctrl_backspace(int _signalNumber);
 int ms_init_signals(void);
 int	ms_find_env_index(char **envp, const char *key);
 
+char	*read_file_content(const char *filename);
+
 void remove_intermediate_input_redirections(data_t *data);
 
 token_t	*ms_tokenizer(data_t data);
@@ -120,12 +213,7 @@ char    *ft_getenv(char **envp, char *key);
 void ms_check_pipe(data_t *data);
 
 void    ms_execute_commands(data_t *data);
-void    resolve_command_paths(data_t *data);
 
-// In includes/minishell.h or a similar header file
-int is_builtin_command(char *command);
-
-char *expand_quotes(data_t *data, char *token_value);
 int setup_redirection(token_t *tokens);
 void free_token_list(token_t *head);
 void wipe_data_struct(data_t *data);

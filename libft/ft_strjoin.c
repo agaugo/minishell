@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/13 16:44:43 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2022/10/13 16:45:34 by tvan-bee      ########   odam.nl         */
+/*   Updated: 2023/12/13 00:35:10 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	if (!s1 || !s2)
 		return (NULL);
-	buffer = (char *)allocate_memory(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	buffer = (char *)allocate_memory(sizeof(char) * (ft_strlen(s1)
+				+ ft_strlen(s2) + 1));
 	if (!buffer)
 		return (NULL);
 	i = 0;

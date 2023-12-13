@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   ft_strdup.c                                        :+:    :+:            */
+/*   term.c                                             :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/10/13 13:46:59 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/13 00:37:19 by trstn4        ########   odam.nl         */
+/*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
+/*   Updated: 2023/12/13 14:09:47 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
-char	*ft_strdup(const char *s1)
+struct	termios enable_noncanonical_mode(void)
 {
-	char		*buffer;
-	size_t		s1_len;
+	struct termios newTermios;
+	struct termios oldTermios;
 
-	s1_len = ft_strlen(s1) + 1;
-	buffer = (char *)allocate_memory(sizeof(char) * s1_len);
-	if (!buffer)
-		return (NULL);
-	ft_memcpy(buffer, s1, s1_len);
-	return (buffer);
+	if (tcgetattr(STDIN_FILENO, &oldTermios) == -1)
+		return (oldTermios);
+	newTermios = oldTermios;
+	newTermios.c_lflag &= ~ECHOCTL;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &newTermios) == -1)
+		return (oldTermios);
+	return (oldTermios);
 }
