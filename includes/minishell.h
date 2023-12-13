@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/13 14:40:30 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 14:53:01 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ char			*ft_strcpy(char *dest, const char *src);
 char			*ft_strchr(const char *str, int character);
 char			*ft_strcat(char *dest, const char *src);
 char			*ft_strncpy(char *dest, const char *src, size_t n);
-char			ft_strndup(const char *str, size_t n);
+char			*ft_strndup(const char *str, size_t n);
 void			*memory_realloc(void *ptr, size_t new_size);
 int				ms_get_env_size(char **envp);
 void			ms_add_to_env(t_data *data, char *key);
