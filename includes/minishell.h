@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/13 15:09:53 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 16:11:08 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,15 @@ typedef struct exp_data {
 	int		k;
 	int		do_free;
 }			t_exp_t_data;
+
+typedef struct echo_data {
+	int		flag_n;
+	int		first_word;
+	int		stdout_backup;
+	int		should_print_space;
+	int		flags;
+	int		fd;
+}			t_echo_t_data;
 
 struct termios	enable_noncanonical_mode(void);
 void			ms_make_data_struct(t_data *data, char **envp);
@@ -175,5 +184,19 @@ int				setup_redirection(t_token_t *tokens);
 void			free_token_list(t_token_t *head);
 void			wipe_data_struct(t_data *data);
 void			free_memory(void *buffer);
+t_token_t		*if_body1(t_token_t *token, int *flags);
+t_token_t		*if_body2(int *fd, t_token_t *token, int *flags, t_data *data);
+t_token_t		*type_append_or_out(t_token_t *token, int *flags, t_data *data,
+					int *fd);
+t_token_t		*big_mama(t_token_t *token, t_data *data,
+					t_echo_t_data *echo_data);
+t_token_t		*assign_flag_n(t_token_t *token, int *flag_n);
+void			open_error(t_data *data);
+t_token_t		*set_token(t_token_t *token);
+void			restore_and_close(int flag_n, int stdout_backup, t_data *data);
+void			dup_and_close(int fd);
+void			should_print_space_func(int *should_print_space,
+					t_token_t *token);
+void			fill_flag(t_token_t *token, int *flags);
 
 #endif
