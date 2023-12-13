@@ -49,6 +49,9 @@ typedef struct data {
 	char			*heredoc_tmp_file;
 	char			*last_path;
 	struct termios	*original_termios;
+	int				std_out;
+	int				std_in;
+
 }					t_data;
 
 typedef struct s_quote_vars

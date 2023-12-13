@@ -22,7 +22,7 @@ t_token_t	*if_body1(t_token_t *token, int *flags)
 t_token_t	*if_body2(int *fd, t_token_t *token, int *flags, t_data *data)
 {
 	*fd = open(token->value, *flags, 0666);
-	if (fd < 0)
+	if (*fd < 0)
 	{
 		open_error(data);
 		return (token);

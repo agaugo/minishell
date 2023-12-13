@@ -12,14 +12,14 @@
 
 #include "../../includes/minishell.h"
 
-void	ms_reset_std(int *std_in, int *std_out)
+void	ms_reset_std(t_data *data)
 {
-	if (dup2(*std_out, 1) == -1)
+	if (dup2(data->std_out, STDOUT_FILENO) == -1)
 		perror("Error restoring standard output");
-	if (dup2(*std_in, 0) == -1)
+	if (dup2(data->std_in, STDIN_FILENO) == -1)
 		perror("Error restoring standard output");
-	close(*std_out);
-	close(*std_in);
+	close(data->std_out);
+	close(data->std_in);
 }
 
 void	remove_newline(char *str)
@@ -35,12 +35,10 @@ void	remove_newline(char *str)
 
 void	ms_check_command(t_data *data)
 {
-	int		std_out;
-	int		std_in;
 	char	*heredoc_content;
 
-	std_in = dup(0);
-	std_out = dup(1);
+	data->std_in = dup(0);
+	data->std_out = dup(1);
 	data->redirect = 0;
 	if (data->heredoc_tmp_file != NULL)
 	{
@@ -58,7 +56,7 @@ void	ms_check_command(t_data *data)
 	ms_resolve_command_paths(data);
 	remove_intermediate_input_redirections(data);
 	ms_execute_commands(data);
-	ms_reset_std(&std_in, &std_out);
+	ms_reset_std(data);
 }
 
 void	ms_process_input(t_data *data)
