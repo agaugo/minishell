@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/13 16:11:08 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 17:41:53 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,5 +198,6 @@ void			dup_and_close(int fd);
 void			should_print_space_func(int *should_print_space,
 					t_token_t *token);
 void			fill_flag(t_token_t *token, int *flags);
+char			*ft_strjoin_free(char *s1, char *s2);
 
 #endif
