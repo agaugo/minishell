@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/25 10:37:37 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:27:56 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:06:06 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void	ms_cd_absolute_path(t_data *data, char *path)
 	}
 }
 
-void	ms_cd_command(t_data *data, token_t *token)
+void	ms_cd_command(t_data *data, t_token_t *token)
 {
 	char	*direction;
 

@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 17:46:14 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:28:09 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:06:16 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static int	find_equals_index(const char *str)
 	return (-1);
 }
 
-static void	process_token(t_data *data, token_t *current_token)
+static void	process_token(t_data *data, t_token_t *current_token)
 {
 	char	*key;
 	char	*value;
@@ -89,9 +89,9 @@ static void	process_token(t_data *data, token_t *current_token)
 	}
 }
 
-void	ms_export_command(t_data *data, token_t *token)
+void	ms_export_command(t_data *data, t_token_t *token)
 {
-	token_t	*current_token;
+	t_token_t	*current_token;
 
 	data->last_exit_code = 0;
 	current_token = token->next;

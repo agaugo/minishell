@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:28:18 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:06:26 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	ms_is_builtin_command(char *command)
 	return (0);
 }
 
-void	ms_run_builtin(t_data *data, char **args, token_t *current)
+void	ms_run_builtin(t_data *data, char **args, t_token_t *current)
 {
 	if (ft_strcmp(args[0], "export") == 0)
 		ms_export_command(data, current);

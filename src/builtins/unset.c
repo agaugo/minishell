@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/24 19:40:15 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:28:15 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:06:22 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	remove_env_var(t_data *data, char *key)
 	}
 }
 
-void	ms_unset_command(t_data *data, token_t *token)
+void	ms_unset_command(t_data *data, t_token_t *token)
 {
 	if (!token->next)
 		return ;

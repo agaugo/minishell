@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:32:53 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:06:41 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	ms_identify_and_exec(t_data *data, token_t *current, char **args)
+void	ms_identify_and_exec(t_data *data, t_token_t *current, char **args)
 {
 	if (ms_is_builtin_command(args[0]))
 	{
@@ -61,7 +61,7 @@ void	handle_parent_process(t_data *data, t_exec_t_data *cmd_data, int fds[2])
 }
 
 void	execute_child_process(t_data *data, t_exec_t_data *cmd_data,
-			token_t *current, int fds[2])
+			t_token_t *current, int fds[2])
 {
 	if (cmd_data->in_fd != 0)
 	{

@@ -6,19 +6,19 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 13:42:34 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/12 17:56:42 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:11:38 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	parse_special_tokens(char **current, token_t **head,
-			token_t **current_token)
+void	parse_special_tokens(char **current, t_token_t **head,
+			t_token_t **current_token)
 {
-	char		*start;
-	tokentype_t	type;
-	char		*value;
-	token_t		*new_token;
+	char			*start;
+	t_tokentype_t	type;
+	char			*value;
+	t_token_t		*new_token;
 
 	start = *current;
 	type = T_WORD;
@@ -37,13 +37,13 @@ void	parse_special_tokens(char **current, token_t **head,
 	(*current_token)->connect = 0;
 }
 
-void	parse_regular_tokens(char **current, token_t **head,
-			token_t **current_token)
+void	parse_regular_tokens(char **current, t_token_t **head,
+			t_token_t **current_token)
 {
-	char		*start;
-	tokentype_t	type;
-	char		*value;
-	token_t		*new_token;
+	char			*start;
+	t_tokentype_t	type;
+	char			*value;
+	t_token_t		*new_token;
 
 	start = *current;
 	if (**current == '\'' || **current == '\"')

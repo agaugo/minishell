@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/25 10:37:37 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:28:06 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:06:13 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	ms_str_isdigit(const char *str)
 	return (1);
 }
 
-static void	ms_check_args_and_exit(t_data *data, token_t *token)
+static void	ms_check_args_and_exit(t_data *data, t_token_t *token)
 {
 	int	exit_code;
 
@@ -44,7 +44,7 @@ static void	ms_check_args_and_exit(t_data *data, token_t *token)
 	exit(exit_code % 256);
 }
 
-void	ms_exit_shell(t_data *data, token_t *token)
+void	ms_exit_shell(t_data *data, t_token_t *token)
 {
 	if (!token)
 	{

@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 13:42:34 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/12 17:50:41 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:05:30 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-tokentype_t	parse_pipe_token(char **current)
+t_tokentype_t	parse_pipe_token(char **current)
 {
 	if (**current == '|')
 	{
@@ -22,7 +22,7 @@ tokentype_t	parse_pipe_token(char **current)
 	return (T_WORD);
 }
 
-tokentype_t	parse_redirect_token2(char **current)
+t_tokentype_t	parse_redirect_token2(char **current)
 {
 	if (*(*current + 1) != '\0' && *(*current + 1) == '>')
 	{
@@ -36,7 +36,7 @@ tokentype_t	parse_redirect_token2(char **current)
 	}
 }
 
-tokentype_t	parse_redirect_token(char **current)
+t_tokentype_t	parse_redirect_token(char **current)
 {
 	if (**current == '<')
 	{
@@ -56,7 +56,7 @@ tokentype_t	parse_redirect_token(char **current)
 	return (T_WORD);
 }
 
-tokentype_t	parse_quote_token(char **current)
+t_tokentype_t	parse_quote_token(char **current)
 {
 	if (**current == '\'')
 	{
@@ -79,7 +79,7 @@ tokentype_t	parse_quote_token(char **current)
 	return (T_WORD);
 }
 
-tokentype_t	parse_word_token(char **current)
+t_tokentype_t	parse_word_token(char **current)
 {
 	while (**current && !ms_is_whitespace(**current) && **current != '|'
 		&& **current != '<' && **current != '>' && **current != '\''

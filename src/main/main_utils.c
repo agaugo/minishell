@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:29:07 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:11:14 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,11 @@ void	ms_make_data_struct(t_data *data, char **envp)
 	data->last_path = ms_get_current_working_dir();
 }
 
-token_t	*ms_rm_input(token_t *current)
+t_token_t	*ms_rm_input(t_token_t *current)
 {
-	token_t	*temp;
-	token_t	*next_temp;
-	token_t	*last_file;
+	t_token_t	*temp;
+	t_token_t	*next_temp;
+	t_token_t	*last_file;
 
 	last_file = current;
 	if (last_file->next && last_file->next->type == T_WORD)
@@ -50,7 +50,7 @@ token_t	*ms_rm_input(token_t *current)
 	return (last_file->next);
 }
 
-token_t	*ms_rtn_curr(token_t *current)
+t_token_t	*ms_rtn_curr(t_token_t *current)
 {
 	if (current->type == T_REDIRECT_IN)
 		current = ms_rm_input(current);
@@ -61,8 +61,8 @@ token_t	*ms_rtn_curr(token_t *current)
 
 void	remove_intermediate_input_redirections(t_data *data)
 {
-	token_t	*current;
-	int		skip;
+	t_token_t	*current;
+	int			skip;
 
 	skip = 0;
 	current = data->tokens;

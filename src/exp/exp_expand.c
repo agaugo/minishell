@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:28:49 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:06:44 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ char	*ms_expand_dollarsign(t_data *data, char *token_value)
 	return (ft_strdup(var_val));
 }
 
-void	ms_expand_variable(t_data *data, token_t *current_token)
+void	ms_expand_variable(t_data *data, t_token_t *current_token)
 {
 	char	*expanded_value;
 
@@ -82,7 +82,7 @@ void	ms_expand_variable(t_data *data, token_t *current_token)
 	current_token->value = expanded_value;
 }
 
-void	ms_expand_tokens(t_data *data, token_t *current_token)
+void	ms_expand_tokens(t_data *data, t_token_t *current_token)
 {
 	char	*expanded_string;
 

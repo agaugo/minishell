@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/01 16:11:03 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:28:21 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:06:29 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	ms_print_synatx_error(t_data *data, token_t *temp, int *br2)
+void	ms_print_synatx_error(t_data *data, t_token_t *temp, int *br2)
 {
 	char	*val;
 
@@ -25,10 +25,10 @@ void	ms_print_synatx_error(t_data *data, token_t *temp, int *br2)
 	*br2 = 1;
 }
 
-void	ms_handle_heredoc2(t_data *data, token_t *temp,
-			token_t *first_command_token)
+void	ms_handle_heredoc2(t_data *data, t_token_t *temp,
+			t_token_t *first_command_token)
 {
-	token_t	*new_token;
+	t_token_t	*new_token;
 
 	temp->type = T_REDIRECT_IN;
 	free_memory(temp->value);
@@ -40,7 +40,7 @@ void	ms_handle_heredoc2(t_data *data, token_t *temp,
 		temp->next->value = ft_strdup(data->heredoc_tmp_file);
 		if (first_command_token && first_command_token->type != T_WORD)
 		{
-			new_token = allocate_memory(sizeof(token_t));
+			new_token = allocate_memory(sizeof(t_token_t));
 			new_token->value = ft_strdup("|");
 			new_token->type = T_PIPE;
 			new_token->next = temp->next->next;
@@ -51,8 +51,8 @@ void	ms_handle_heredoc2(t_data *data, token_t *temp,
 	}
 }
 
-token_t	*ms_handle_heredoc(t_data *data, token_t *temp,
-			token_t *first_command_token, int *br2)
+t_token_t	*ms_handle_heredoc(t_data *data, t_token_t *temp,
+			t_token_t *first_command_token, int *br2)
 {
 	while (temp != NULL)
 	{
@@ -101,7 +101,7 @@ void	ms_read_heredoc(t_data *data, char *delimiter, int *fd)
 	}
 }
 
-void	ms_heredoc(t_data *data, token_t *token)
+void	ms_heredoc(t_data *data, t_token_t *token)
 {
 	char	*temp_filename;
 	int		fd;

@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:29:05 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:07:01 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void	ms_red_free(token_t *token, token_t	*tmp)
+static void	ms_red_free(t_token_t *token, t_token_t	*tmp)
 {
 	free_memory(token->value);
 	free_memory(token);
@@ -22,8 +22,8 @@ static void	ms_red_free(token_t *token, token_t	*tmp)
 
 void	ms_check_redirect(t_data *data)
 {
-	token_t	*token;
-	token_t	*prev;
+	t_token_t	*token;
+	t_token_t	*prev;
 
 	token = data->tokens->next;
 	prev = data->tokens;

@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:33:33 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:11:05 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ char	*ms_expand_more(t_data *data, t_exp_t_data *exp_data, char *token_value,
 
 char	*ms_call_expand(t_data *data, char *token_value)
 {
-	char		*result;
+	char			*result;
 	t_exp_t_data	exp_data;
 
 	exp_data.do_free = 0;
@@ -87,7 +87,7 @@ char	*ms_call_expand(t_data *data, char *token_value)
 	return (result);
 }
 
-void	process_quotes(t_quote_vars *vars, token_t *current_token)
+void	process_quotes(t_quote_vars *vars, t_token_t *current_token)
 {
 	char	*cleaned_string;
 
@@ -98,9 +98,9 @@ void	process_quotes(t_quote_vars *vars, token_t *current_token)
 
 void	ms_expander(t_data *data)
 {
-	token_t			*current_token;
-	token_t			*prev_token;
-	t_quote_vars	vars;
+	t_token_t			*current_token;
+	t_token_t			*prev_token;
+	t_quote_vars		vars;
 
 	current_token = data->tokens;
 	prev_token = NULL;

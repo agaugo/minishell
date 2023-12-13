@@ -6,13 +6,13 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 14:28:52 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/13 15:10:51 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	*merge_token_values(token_t *current, token_t *next)
+char	*merge_token_values(t_token_t *current, t_token_t *next)
 {
 	size_t	merged_length;
 	char	*merged_value;
@@ -26,8 +26,8 @@ char	*merge_token_values(token_t *current, token_t *next)
 
 void	merge_connected_tokens(t_data *data)
 {
-	token_t	*current;
-	char	*merged_value;
+	t_token_t	*current;
+	char		*merged_value;
 
 	if (data == NULL || data->tokens == NULL)
 		return ;
