@@ -44,6 +44,7 @@ static void	ms_cd_absolute_path(t_data *data, char *path)
 		data->last_exit_code = 1;
 		perror("cd");
 	}
+	printf("%s\n", data->last_path);
 }
 
 void	ms_cd_command(t_data *data, t_token_t *token)
@@ -57,12 +58,14 @@ void	ms_cd_command(t_data *data, t_token_t *token)
 	{
 		if (token->next->type == T_PIPE)
 			return ;
+		if (token->next->next && token->next->next->type == T_WORD)
+		{
+			data->last_exit_code = 1;
+			return (ft_putendl_fd("minishell: too many arguments", STDERR));
+		}
 		direction = token->next->value;
 		if (ft_strcmp(direction, "-") == 0)
-		{
 			ms_cd_absolute_path(data, data->last_path);
-			printf("%s\n", data->last_path);
-		}
 		else
 		{
 			if (access(direction, F_OK) == 0)

@@ -45,7 +45,7 @@ void	ms_throw_error(t_data *data, t_token_t *current)
 {
 	if (current->status == 126)
 	{
-		fprintf(stderr, "%s: is a directory\n", current->value);
+		fprintf(stderr, "%s: Is a directory\n", current->value);
 		data->last_exit_code = 126;
 		exit(126);
 	}

@@ -12,54 +12,40 @@
 
 #include "../../includes/minishell.h"
 
-void	free_token_list(t_token_t *head)
+void	*allocate_memory(size_t buffer_size)
 {
-	t_token_t	*current;
-	t_token_t	*next;
+	void	*buffer;
 
-	current = head;
-	while (current != NULL)
+	buffer = (void *)malloc(buffer_size);
+	if (!buffer)
+		ms_handle_error(-1, "Error: Malloc failed to allocate memory.");
+	return (buffer);
+}
+
+void	free_memory(void *buffer)
+{
+	if (buffer)
 	{
-		next = current->next;
-		free_memory(current->value);
-		free_memory(current);
-		current = next;
+		free(buffer);
+		buffer = NULL;
 	}
 }
 
-void	wipe_fd_and_heredoc(t_data *data)
+void	*memory_realloc(void *ptr, size_t new_size)
 {
-	if (data->std_out)
-		close(data->std_out);
-	if (data->std_in)
-		close(data->std_in);
-	ft_memset(data, 0, sizeof(t_data));
-	if (access("/tmp/minishell_heredoc", F_OK) == 0)
-	{
-		if (unlink("/tmp/minishell_heredoc") == -1)
-			perror("unlink");
-	}
-}
+	void	*new_ptr;
 
-void	wipe_data_struct(t_data *data)
-{
-	char	**env;
-
-	if (data == NULL)
-		return ;
-	free_memory(data->user_input);
-	free_memory(data->heredoc_tmp_file);
-	free_memory(data->last_path);
-	free_token_list(data->tokens);
-	if (data->envp != NULL)
+	if (new_size == 0)
 	{
-		env = data->envp;
-		while (*env != NULL)
-		{
-			free_memory(*env);
-			env++;
-		}
-		free_memory(data->envp);
+		free_memory(ptr);
+		return (NULL);
 	}
-	wipe_fd_and_heredoc(data);
+	if (ptr == NULL)
+		return (allocate_memory(new_size));
+	new_ptr = allocate_memory(new_size);
+	if (new_ptr == NULL)
+		return (NULL);
+	ft_memcpy(new_ptr, ptr, new_size);
+	free_memory(ptr);
+	return (new_ptr);
 }
