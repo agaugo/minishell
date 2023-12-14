@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/14 17:05:21 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/14 19:28:43 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ typedef struct data {
 	struct termios	*original_termios;
 	int				std_out;
 	int				std_in;
-
 }					t_data;
 
 typedef struct s_quote_vars
@@ -93,7 +92,6 @@ typedef struct echo_data {
 struct termios	enable_noncanonical_mode(void);
 void			ms_make_data_struct(t_data *data, char **envp);
 void			ms_check_redirect(t_data *data);
-void			test_tok(t_token_t *head);
 t_token_t		*ms_tokenizer(t_data data);
 void			parse_special_tokens(char **current, t_token_t **head,
 					t_token_t **current_token);

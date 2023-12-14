@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/21 18:26:52 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 15:09:59 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/14 19:28:10 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@ typedef enum e_tokentype
 	T_HEREDOC,
 	T_SINGLE_QUOTE,
 	T_DOUBLE_QUOTE,
-	T_ENV_VARIABLE,
-	T_TILDE
 }	t_tokentype_t;
 
 typedef struct token
@@ -32,7 +30,6 @@ typedef struct token
 	char			*value;
 	t_tokentype_t	type;
 	struct token	*next;
-	int				fd;
 	int				status;
 	int				connect;
 }	t_token_t;
