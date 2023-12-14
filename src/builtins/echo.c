@@ -55,4 +55,5 @@ void	ms_echo_command(t_data *data, t_token_t *token)
 		token = big_mama(token, data, &echo_data);
 	}
 	restore_and_close(echo_data.flag_n, echo_data.stdout_backup, data);
+	exit(0);
 }

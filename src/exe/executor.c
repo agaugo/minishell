@@ -12,6 +12,16 @@
 
 #include "../../includes/minishell.h"
 
+// void	wait_and_assign_exit(t_exec_t_data *cmd_data, t_data *data, int *status)
+// {
+// 	if (cmd_data->num_pids > 0)
+// 	{
+//         waitpid(cmd_data->pids[cmd_data->num_pids - 1], status, 0);
+//         if (WIFEXITED(status))
+//             data->last_exit_code = WEXITSTATUS(status);
+//     }
+// }
+
 void	ms_identify_and_exec(t_exec_t_data *extra, t_data *data, t_token_t *current, char **args)
 {
 	t_token_t *scan;
@@ -36,20 +46,11 @@ void	ms_identify_and_exec(t_exec_t_data *extra, t_data *data, t_token_t *current
 		}
 		execve(args[0], args, data->envp);
 		if (errno == ENOENT)
-		{
-			perror("execve");
-			exit(127);
-		}
+			ms_handle_error(127, "execve");
 		else if (errno == EACCES)
-		{
-			perror("execve");
-			exit(126);
-		}
+			ms_handle_error(126, "execve");
 		else
-		{
-			perror("execve");
-			exit(EXIT_FAILURE);
-		}
+			ms_handle_error(EXIT_FAILURE, "execve");
 	}
 }
 
@@ -86,7 +87,6 @@ void execute_child_process(t_data *data, t_exec_t_data *cmd_data, t_token_t *cur
         if (ms_setup_redirection(current) == -1)
             exit(EXIT_FAILURE);
     }
-
     ms_identify_and_exec(cmd_data, data, current, cmd_data->args);
 }
 
@@ -119,13 +119,12 @@ void	ms_get_args_and_exec(t_data *data, t_exec_t_data *cmd_data)
 void ms_execute_commands(t_data *data)
 {
     t_exec_t_data cmd_data;
-	int				status;
+	int				status = 0;
 
     cmd_data.in_fd = 0;
     cmd_data.current = data->tokens;
     cmd_data.first_command_token = data->tokens;
     cmd_data.num_pids = 0;  // Initialize num_pids
-
     while (cmd_data.current != NULL) {
         cmd_data.br2 = 0;
         cmd_data.is_pipe = 0;
@@ -143,14 +142,10 @@ void ms_execute_commands(t_data *data)
         else
             cmd_data.current = NULL;
     }
-    if (cmd_data.num_pids > 0)
+	if (cmd_data.num_pids > 0)
 	{
         waitpid(cmd_data.pids[cmd_data.num_pids - 1], &status, 0);
         if (WIFEXITED(status))
-		{
             data->last_exit_code = WEXITSTATUS(status);
-        }
     }
 }
-
-
