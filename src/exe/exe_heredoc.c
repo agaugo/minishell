@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/01 16:11:03 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/14 16:44:23 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/14 17:57:28 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,11 @@ void	ms_read_heredoc(t_data *data, char *delimiter, int *fd)
 	while (1)
 	{
 		input = readline("> ");
+		if (!input)
+		{
+			free_memory(input);
+			break ;
+		}
 		if (ft_strcmp(input, delimiter) == 0)
 		{
 			free_memory(input);
