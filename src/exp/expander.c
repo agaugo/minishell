@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/14 00:05:34 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/14 00:54:55 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,6 @@ void	ms_expander(t_data *data)
 	prev_token = NULL;
 	while (current_token)
 	{
-		process_quotes(&vars, current_token);
 		if (current_token->type == T_WORD
 			|| current_token->type == T_DOUBLE_QUOTE)
 		{
@@ -122,5 +121,5 @@ void	ms_expander(t_data *data)
 		prev_token = current_token;
 		current_token = current_token->next;
 	}
-	merge_connected_tokens(data);
+	merge_connected_tokens(data, &vars);
 }

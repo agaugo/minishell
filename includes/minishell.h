@@ -6,14 +6,14 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/13 20:27:48 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/14 01:02:28 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# define PROMPT "[ MINISHELL ]$ "
+# define PROMPT "\033[31m\033[1m[ MINISHELL ]\033[0m\033[96m$\033[0m "
 
 # define STDIN 0
 # define STDOUT 1
@@ -134,7 +134,7 @@ void			remove_empty_token(t_data *data, t_token_t **prev_token,
 					t_token_t **current_token);
 void			remove_next_token(t_token_t *current);
 char			*merge_token_values(t_token_t *current, t_token_t *next);
-void			merge_connected_tokens(t_data *data);
+void			merge_connected_tokens(t_data *data, t_quote_vars *vars);
 char			*ms_call_expand(t_data *data, char *token_value);
 char			*ms_expand_exit_code(t_data *data, char *token_value,
 					int *do_free, int i);
@@ -203,5 +203,6 @@ void			should_print_space_func(int *should_print_space,
 void			fill_flag(t_token_t *token, int *flags);
 char			*ft_strjoin_free(char *s1, char *s2);
 char			*create_assignment(char *key, char *value);
+void			process_quotes(t_quote_vars *vars, t_token_t *current_token);
 
 #endif
