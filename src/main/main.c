@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 15:38:16 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/14 12:29:29 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,8 @@ void	ms_check_command(t_data *data)
 			data->tokens->value = heredoc_content;
 			remove_newline(data->tokens->value);
 		}
-		unlink(data->heredoc_tmp_file);
+		if (unlink(data->heredoc_tmp_file) == -1)
+			perror("unlink");
 		free_memory(data->heredoc_tmp_file);
 		data->heredoc_tmp_file = NULL;
 	}

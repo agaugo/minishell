@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/22 23:51:43 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 23:24:03 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/14 12:30:27 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,8 @@ char	*read_file_content(const char *filename)
 		return (NULL);
 	}
 	buffer = ms_file_read_loop(buffer, &fd, &buffer_size, &total_read);
-	buffer[total_read] = '\0';
+	if (buffer)
+		buffer[total_read] = '\0';
 	close(fd);
 	return (buffer);
 }
