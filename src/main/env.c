@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/24 23:38:22 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 15:35:50 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/14 00:23:53 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	ms_add_to_env(t_data *data, char *key)
 	new_envp = memory_realloc(data->envp, (size + 2) * sizeof(char *));
 	if (!new_envp)
 	{
-		perror("Failed to reallocate memory for envp");
+		ms_handle_error(EXIT_FAILURE, "Failed to reallocate memory for envp");
 		exit(EXIT_FAILURE);
 	}
 	new_envp[size] = ft_strdup(key);

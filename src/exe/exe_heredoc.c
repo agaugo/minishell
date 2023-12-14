@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/01 16:11:03 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 19:07:26 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/14 00:21:51 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void	ms_heredoc(t_data *data, t_token_t *token)
 	fd = open(temp_filename, O_RDWR | O_CREAT | O_TRUNC, 0600);
 	if (fd == -1)
 	{
-		perror("open");
+		ms_handle_error(1, "Failed to open file for heredoc");
 		return ;
 	}
 	ms_read_heredoc(data, token->next->value, &fd);

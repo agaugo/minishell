@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 15:33:20 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/14 00:54:47 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	*merge_token_values(t_token_t *current, t_token_t *next)
 	return (merged_value);
 }
 
-void	merge_connected_tokens(t_data *data)
+void	merge_connected_tokens(t_data *data, t_quote_vars *vars)
 {
 	t_token_t	*current;
 	char		*merged_value;
@@ -44,5 +44,11 @@ void	merge_connected_tokens(t_data *data)
 		}
 		else
 			current = current->next;
+	}
+	current = data->tokens;
+	while (current)
+	{
+		process_quotes(vars, current);
+		current = current->next;
 	}
 }
