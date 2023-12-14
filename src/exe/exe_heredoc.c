@@ -6,30 +6,11 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/01 16:11:03 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/14 00:21:51 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/14 16:44:23 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-void	ms_print_synatx_error(t_data *data, t_token_t *temp, int *br2)
-{
-	char	*val;
-	char	*error_msg;
-
-	if (temp->next == NULL)
-		val = "\\n";
-	else
-		val = temp->next->value;
-	error_msg = ft_strjoin_free(
-			ft_strdup("syntax error near unexpected token '"),
-			ft_strdup(val));
-	error_msg = ft_strjoin_free(error_msg, ft_strdup("'"));
-	ft_putendl_fd(error_msg, STDERR);
-	free_memory(error_msg);
-	data->last_exit_code = 258;
-	*br2 = 1;
-}
 
 void	ms_handle_heredoc2(t_data *data, t_token_t *temp,
 			t_token_t *first_command_token)
@@ -58,7 +39,7 @@ void	ms_handle_heredoc2(t_data *data, t_token_t *temp,
 }
 
 t_token_t	*ms_handle_heredoc(t_data *data, t_token_t *temp,
-			t_token_t *first_command_token, int *br2)
+			t_token_t *first_command_token)
 {
 	while (temp != NULL)
 	{
@@ -66,20 +47,11 @@ t_token_t	*ms_handle_heredoc(t_data *data, t_token_t *temp,
 			first_command_token = temp->next;
 		if (temp->type == T_HEREDOC)
 		{
-			if (temp->next == NULL
-				|| (temp->next && temp->next->type != T_WORD))
-			{
-				ms_print_synatx_error(data, temp, br2);
-				break ;
-			}
-			else
-			{
-				ms_heredoc(data, temp);
-				ms_handle_heredoc2(data, temp, first_command_token);
-				remove_intermediate_input_redirections(data);
-				free_memory(data->heredoc_tmp_file);
-				data->heredoc_tmp_file = NULL;
-			}
+			ms_heredoc(data, temp);
+			ms_handle_heredoc2(data, temp, first_command_token);
+			remove_intermediate_input_redirections(data);
+			free_memory(data->heredoc_tmp_file);
+			data->heredoc_tmp_file = NULL;
 		}
 		temp = temp->next;
 	}

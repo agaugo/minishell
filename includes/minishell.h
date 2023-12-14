@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/14 15:21:20 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/14 17:05:21 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,6 @@ typedef struct exec_data {
 	int			in_fd;
 	int			is_pipe;
 	int			is_redirect;
-	int			br;
-	int			br2;
 	t_token_t	*first_command_token;
 }			t_exec_t_data;
 
@@ -117,9 +115,8 @@ int				ms_set_command_path(char **allpath, t_token_t *current);
 char			**ms_get_full_args(t_token_t *start_token,
 					t_token_t *end_token);
 t_token_t		*ms_handle_heredoc(t_data *data, t_token_t *temp,
-					t_token_t *first_command_token, int *br2);
-t_token_t		*ms_check_redirects(t_data *data, t_exec_t_data *cmd_data,
-					t_token_t *next_command);
+					t_token_t *first_command_token);
+t_token_t		*ms_check_redirects(t_exec_t_data *cmd_data, t_token_t *cmd);
 int				ms_setup_redirection(t_token_t *tokens);
 void			ms_throw_error(t_data *data, t_token_t *current);
 char			*ms_expand_tilde(t_data *data, char *token_value);
@@ -189,5 +186,6 @@ void			free_memory(void *buffer);
 char			*ft_strjoin_free(char *s1, char *s2);
 char			*create_assignment(char *key, char *value);
 void			process_quotes(t_quote_vars *vars, t_token_t *current_token);
+int				ms_exe_check_syntax(t_data *data);
 
 #endif

@@ -28,6 +28,7 @@ SRC = \
 	src/exe/exe_builtins.c		\
 	src/exe/exe_utils.c			\
 	src/exe/exe_redirects.c		\
+	src/exe/exe_syntax.c		\
 	src/exp/expander.c			\
 	src/exp/exp_quotes.c		\
 	src/exp/exp_expand.c		\

@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 19:08:30 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/14 17:05:05 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,48 +81,19 @@ int	ms_setup_redirection(t_token_t *tokens)
 	return (0);
 }
 
-void	ms_redirect_syntax_error(t_data *data, t_token_t *next_command, int *br)
+t_token_t	*ms_check_redirects(t_exec_t_data *cmd_data, t_token_t *cmd)
 {
-	char	*val;
-	char	*error_msg;
-
-	if (next_command->next == NULL)
-		val = "\\n";
-	else
-		val = next_command->next->value;
-	error_msg = ft_strjoin_free(
-			ft_strdup("syntax error near unexpected token '"),
-			ft_strdup(val));
-	error_msg = ft_strjoin_free(error_msg, ft_strdup("'"));
-	ft_putendl_fd(error_msg, STDERR);
-	free_memory(error_msg);
-	data->last_exit_code = 258;
-	*br = 1;
-}
-
-t_token_t	*ms_check_redirects(t_data *data, t_exec_t_data *cmd_data,
-	t_token_t *next_command)
-{
-	while (next_command != NULL)
+	while (cmd != NULL)
 	{
-		if (next_command->type == T_PIPE)
+		if (cmd->type == T_PIPE)
 		{
 			cmd_data->is_pipe = 1;
 			break ;
 		}
-		if (next_command->type == T_REDIRECT_OUT
-			|| next_command->type == T_APPEND_OUT
-			|| next_command->type == T_REDIRECT_IN)
-		{
+		if (cmd->type == T_REDIRECT_OUT || cmd->type == T_APPEND_OUT
+			|| cmd->type == T_REDIRECT_IN)
 			cmd_data->is_redirect = 1;
-			if (next_command->next == NULL
-				|| (next_command->next && next_command->next->type != T_WORD))
-			{
-				ms_redirect_syntax_error(data, next_command, &cmd_data->br);
-				break ;
-			}
-		}
-		next_command = next_command->next;
+		cmd = cmd->next;
 	}
-	return (next_command);
+	return (cmd);
 }
