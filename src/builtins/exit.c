@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/25 10:37:37 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 23:32:05 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/14 01:06:29 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	ms_check_args_and_exit(t_data *data, t_token_t *token)
 	{
 		ft_putendl_fd("minishell: numeric argument required", STDERR);
 		wipe_data_struct(data);
-		exit(2);
+		exit(255);
 	}
 	exit_code = ft_atoi(token->value);
 	printf("exit\n");
