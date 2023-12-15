@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/14 19:28:43 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/15 13:23:32 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,11 @@ typedef struct s_quote_vars
 	char	*cleaned_str;
 }			t_quote_vars;
 
+typedef struct s_pid_node {
+    pid_t pid;
+    struct s_pid_node *next;
+} t_pid_node;
+
 typedef struct exec_data {
 	pid_t		pid;
 	t_token_t	*current;
@@ -72,6 +77,8 @@ typedef struct exec_data {
 	int			is_pipe;
 	int			is_redirect;
 	t_token_t	*first_command_token;
+	int			num_pids;
+	pid_t		pids[10];
 }			t_exec_t_data;
 
 typedef struct exp_data {
