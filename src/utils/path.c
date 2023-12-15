@@ -66,20 +66,21 @@ static char	*ms_file_read_loop(char *buffer, int *fd, size_t *buffer_size,
 	while (1)
 	{
 		ms_read_realloc(buffer, fd, buffer_size, total_read);
-		bytes_read = read(*fd, buffer + *total_read, *buffer_size
-				- *total_read - 1);
-		if (bytes_read < 0)
-		{
-			free_memory(buffer);
-			close(*fd);
-			perror("Error reading file");
-			return (NULL);
-		}
-		else if (bytes_read == 0)
+		bytes_read = read(*fd, buffer + *total_read,
+				*buffer_size - *total_read - 1);
+		if (bytes_read == 0)
 			break ;
 		total_read += bytes_read;
 	}
-	return (buffer);
+	if (bytes_read == 0)
+		return (buffer);
+	else
+	{
+		free_memory(buffer);
+		close(*fd);
+		perror("Error reading file");
+		return (NULL);
+	}
 }
 
 char	*read_file_content(const char *filename)
