@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 15:06:26 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/15 15:37:38 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	ms_is_builtin_command(char *command)
 	return (0);
 }
 
-void	ms_run_builtin(t_data *data, char **args, t_token_t *current)
+int	ms_run_builtin(t_data *data, char **args, t_token_t *current)
 {
 	if (ft_strcmp(args[0], "export") == 0)
 		ms_export_command(data, current);
@@ -48,4 +48,19 @@ void	ms_run_builtin(t_data *data, char **args, t_token_t *current)
 		ms_echo_command(data, current);
 	else if (ft_strcmp(args[0], "exit") == 0)
 		ms_exit_shell(data, current->next);
+	return (data->last_exit_code);
+}
+
+void	ms_builtin_exitcode(t_data *data, t_exec_t_data *cmd_data)
+{
+	int	is_last_command;
+
+	is_last_command = 0;
+	if (cmd_data->next_command == NULL)
+		is_last_command = 1;
+	cmd_data->builtin_exit_status = ms_run_builtin(data, cmd_data->args,
+			cmd_data->current);
+	cmd_data->has_builtin = true;
+	if (is_last_command == 1)
+		cmd_data->last_is_builtin = true;
 }

@@ -3,7 +3,7 @@ LIBFT = libft/libft.a
 FT_PRINTF = ft_printf/libftprintf.a
 
 CC = gcc
-CFLAGS = -Iincludes/ -Ilibft/ -Ift_printf/
+CFLAGS = -Wall -Wextra -Werror -Iincludes/ -Ilibft/ -Ift_printf/
 LDFLAGS = -lreadline
 OBJS_DIR = objs/
 
@@ -29,6 +29,7 @@ SRC = \
 	src/exe/exe_utils.c			\
 	src/exe/exe_redirects.c		\
 	src/exe/exe_syntax.c		\
+	src/exe/exe_pid.c			\
 	src/exp/expander.c			\
 	src/exp/exp_quotes.c		\
 	src/exp/exp_expand.c		\

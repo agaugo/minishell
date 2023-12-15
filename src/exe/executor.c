@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/15 13:42:58 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/15 15:37:49 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	handle_parent_process(t_exec_t_data *cmd_data, int fds[2])
 	else
 		cmd_data->in_fd = 0;
 	g_print_new_prompt = 1;
-    cmd_data->pids[cmd_data->num_pids++] = cmd_data->pid;
+	add_pid(cmd_data, cmd_data->pid);
 }
 
 void	execute_child_process(t_data *data, t_exec_t_data *cmd_data,
@@ -84,7 +84,7 @@ void	ms_get_args_and_exec(t_data *data, t_exec_t_data *cmd_data)
 			cmd_data->next_command);
 	if (ms_is_builtin_command(cmd_data->args[0]) && !cmd_data->is_pipe
 		&& !cmd_data->is_redirect)
-		ms_run_builtin(data, cmd_data->args, cmd_data->current);
+		ms_builtin_exitcode(data, cmd_data);
 	else
 	{
 		if (cmd_data->is_pipe)
@@ -103,33 +103,28 @@ void	ms_get_args_and_exec(t_data *data, t_exec_t_data *cmd_data)
 	ms_free_2d_array(cmd_data->args);
 }
 
-void ms_execute_commands(t_data *data) {
-    t_exec_t_data cmd_data;
-    int status = 0;
+void	ms_execute_commands(t_data *data)
+{
+	t_exec_t_data	cmd_data;
 
-    cmd_data.in_fd = 0;
-    cmd_data.current = data->tokens;
-    cmd_data.first_command_token = data->tokens;
-    cmd_data.num_pids = 0;
-
-    while (cmd_data.current != NULL) {
-        cmd_data.is_pipe = 0;
-        cmd_data.is_redirect = 0;
-        if (ms_exe_check_syntax(data) == 1)
-            break;
-        ms_handle_heredoc(data, cmd_data.current, cmd_data.first_command_token);
-        cmd_data.next_command = ms_check_redirects(&cmd_data, cmd_data.current);
-        ms_get_args_and_exec(data, &cmd_data);
-        if (cmd_data.next_command != NULL)
-            cmd_data.current = cmd_data.next_command->next;
-        else
-            cmd_data.current = NULL;
-    }
-    for (int i = 0; i < cmd_data.num_pids; i++)
+	cmd_data.in_fd = 0;
+	cmd_data.current = data->tokens;
+	cmd_data.first_command_token = data->tokens;
+	cmd_data.num_pids = 0;
+	cmd_data.pid_list = NULL;
+	while (cmd_data.current != NULL)
 	{
-        waitpid(cmd_data.pids[i], &status, 0);
-        if (WIFEXITED(status))
-            data->last_exit_code = WEXITSTATUS(status);
+		cmd_data.is_pipe = 0;
+		cmd_data.is_redirect = 0;
+		if (ms_exe_check_syntax(data) == 1)
+			break ;
+		ms_handle_heredoc(data, cmd_data.current, cmd_data.first_command_token);
+		cmd_data.next_command = ms_check_redirects(&cmd_data, cmd_data.current);
+		ms_get_args_and_exec(data, &cmd_data);
+		if (cmd_data.next_command != NULL)
+			cmd_data.current = cmd_data.next_command->next;
+		else
+			cmd_data.current = NULL;
 	}
-	g_print_new_prompt = 0;
+	ms_wait_and_receive(data, &cmd_data);
 }
