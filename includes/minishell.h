@@ -6,7 +6,7 @@
 /*   By: tvan-bee <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/10/10 17:16:15 by tvan-bee      #+#    #+#                 */
-/*   Updated: 2023/12/14 19:28:43 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/15 15:39:03 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,12 @@ typedef struct s_quote_vars
 	char	*cleaned_str;
 }			t_quote_vars;
 
+typedef struct s_pid_node
+{
+	pid_t				pid;
+	struct s_pid_node	*next;
+}						t_pid_node;
+
 typedef struct exec_data {
 	pid_t		pid;
 	t_token_t	*current;
@@ -72,6 +78,11 @@ typedef struct exec_data {
 	int			is_pipe;
 	int			is_redirect;
 	t_token_t	*first_command_token;
+	int			num_pids;
+	t_pid_node	*pid_list;
+	int			builtin_exit_status;
+	int			has_builtin;
+	int			last_is_builtin;
 }			t_exec_t_data;
 
 typedef struct exp_data {
@@ -105,7 +116,7 @@ t_tokentype_t	parse_word_token(char **current);
 int				ms_is_whitespace(char c);
 t_token_t		*init_new_token(char *start, char *current, t_tokentype_t type);
 char			*ms_clean_quotes(t_quote_vars *vars, const char *str);
-void			ms_run_builtin(t_data *data, char **args, t_token_t *current);
+int				ms_run_builtin(t_data *data, char **args, t_token_t *current);
 int				ms_is_builtin_command(char *command);
 void			ms_resolve_command_paths(t_data *data);
 int				ms_is_directory(const char *path);
@@ -185,5 +196,9 @@ char			*ft_strjoin_free(char *s1, char *s2);
 char			*create_assignment(char *key, char *value);
 void			process_quotes(t_quote_vars *vars, t_token_t *current_token);
 int				ms_exe_check_syntax(t_data *data);
+void			ms_wait_and_receive(t_data *data, t_exec_t_data *cmd_data);
+void			free_pid_list(t_pid_node *head);
+void			add_pid(t_exec_t_data *cmd_data, pid_t new_pid);
+void			ms_builtin_exitcode(t_data *data, t_exec_t_data *cmd_data);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/14 17:00:00 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/15 15:37:49 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,8 @@ void	ms_identify_and_exec(t_data *data, t_token_t *current, char **args)
 	}
 }
 
-void	handle_parent_process(t_data *data, t_exec_t_data *cmd_data, int fds[2])
+void	handle_parent_process(t_exec_t_data *cmd_data, int fds[2])
 {
-	int	status;
-
 	if (cmd_data->in_fd != 0)
 		close(cmd_data->in_fd);
 	if (cmd_data->is_pipe)
@@ -55,9 +53,7 @@ void	handle_parent_process(t_data *data, t_exec_t_data *cmd_data, int fds[2])
 	else
 		cmd_data->in_fd = 0;
 	g_print_new_prompt = 1;
-	waitpid(cmd_data->pid, &status, 0);
-	data->last_exit_code = WEXITSTATUS(status);
-	g_print_new_prompt = 0;
+	add_pid(cmd_data, cmd_data->pid);
 }
 
 void	execute_child_process(t_data *data, t_exec_t_data *cmd_data,
@@ -88,7 +84,7 @@ void	ms_get_args_and_exec(t_data *data, t_exec_t_data *cmd_data)
 			cmd_data->next_command);
 	if (ms_is_builtin_command(cmd_data->args[0]) && !cmd_data->is_pipe
 		&& !cmd_data->is_redirect)
-		ms_run_builtin(data, cmd_data->args, cmd_data->current);
+		ms_builtin_exitcode(data, cmd_data);
 	else
 	{
 		if (cmd_data->is_pipe)
@@ -102,7 +98,7 @@ void	ms_get_args_and_exec(t_data *data, t_exec_t_data *cmd_data)
 			perror("fork");
 			exit(EXIT_FAILURE);
 		}
-		handle_parent_process(data, cmd_data, cmd_data->fds);
+		handle_parent_process(cmd_data, cmd_data->fds);
 	}
 	ms_free_2d_array(cmd_data->args);
 }
@@ -114,6 +110,8 @@ void	ms_execute_commands(t_data *data)
 	cmd_data.in_fd = 0;
 	cmd_data.current = data->tokens;
 	cmd_data.first_command_token = data->tokens;
+	cmd_data.num_pids = 0;
+	cmd_data.pid_list = NULL;
 	while (cmd_data.current != NULL)
 	{
 		cmd_data.is_pipe = 0;
@@ -128,4 +126,5 @@ void	ms_execute_commands(t_data *data)
 		else
 			cmd_data.current = NULL;
 	}
+	ms_wait_and_receive(data, &cmd_data);
 }

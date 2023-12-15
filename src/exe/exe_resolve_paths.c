@@ -6,7 +6,7 @@
 /*   By: trstn4 <trstn4@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/21 19:24:57 by trstn4        #+#    #+#                 */
-/*   Updated: 2023/12/13 15:06:35 by trstn4        ########   odam.nl         */
+/*   Updated: 2023/12/15 15:13:59 by trstn4        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ int	ms_is_directory(const char *path)
 
 void	ms_set_resolve_error(t_data *data, t_token_t *current, char **allpath)
 {
+	current->status = 0;
 	if (ft_strchr(current->value, '/') != NULL)
 	{
 		if (ms_is_directory(current->value))
