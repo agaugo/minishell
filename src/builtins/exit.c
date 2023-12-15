@@ -36,7 +36,7 @@ static void	ms_check_args_and_exit(t_data *data, t_token_t *token)
 	{
 		ft_putendl_fd("minishell: numeric argument required", STDERR);
 		wipe_data_struct(data);
-		exit(255);
+		exit(2);
 	}
 	exit_code = ft_atoi(token->value);
 	printf("exit\n");

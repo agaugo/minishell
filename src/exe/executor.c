@@ -112,6 +112,7 @@ void	ms_execute_commands(t_data *data)
 	cmd_data.first_command_token = data->tokens;
 	cmd_data.num_pids = 0;
 	cmd_data.pid_list = NULL;
+	cmd_data.last_is_builtin = 0;
 	while (cmd_data.current != NULL)
 	{
 		cmd_data.is_pipe = 0;

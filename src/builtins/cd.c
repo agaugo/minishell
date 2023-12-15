@@ -46,11 +46,24 @@ static void	ms_cd_absolute_path(t_data *data, char *path)
 	}
 }
 
+int	ms_cd_check_error(t_data *data, t_token_t *token)
+{
+	data->last_exit_code = 0;
+	if (token->next && token->next->next && token->next->next->type != T_PIPE)
+	{
+		ft_putendl_fd("minishell: too many arguments", STDERR);
+		data->last_exit_code = 1;
+		return (-1);
+	}
+	return (0);
+}
+
 void	ms_cd_command(t_data *data, t_token_t *token)
 {
 	char	*direction;
 
-	data->last_exit_code = 0;
+	if (ms_cd_check_error(data, token) == -1)
+		return ;
 	if (!token->next)
 		ms_cd_home(data);
 	else

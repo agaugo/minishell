@@ -48,7 +48,7 @@ void	ms_throw_error(t_data *data, t_token_t *current)
 	if (current->status == 126)
 	{
 		error_msg = ft_strjoin_free(ft_strdup(current->value),
-				ft_strdup(": is a directory"));
+				ft_strdup(": Is a directory"));
 		ft_putendl_fd(error_msg, STDERR);
 		free_memory(error_msg);
 		data->last_exit_code = 126;

@@ -60,7 +60,7 @@ void	ms_builtin_exitcode(t_data *data, t_exec_t_data *cmd_data)
 		is_last_command = 1;
 	cmd_data->builtin_exit_status = ms_run_builtin(data, cmd_data->args,
 			cmd_data->current);
-	cmd_data->has_builtin = true;
+	cmd_data->has_builtin = 1;
 	if (is_last_command == 1)
-		cmd_data->last_is_builtin = true;
+		cmd_data->last_is_builtin = 1;
 }
