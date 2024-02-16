@@ -1,3 +1,3 @@
-- Leaks Check
-- Manual Test
-- Eval Sheet Test
+MINISHELL
+
+Basic BASH clone.
